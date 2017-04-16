@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.videobox.commonlibs.themvp.presenter;
+package com.commonlibs.themvp.presenter;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
-import com.videobox.commonlibs.themvp.view.IDelegate;
+import com.commonlibs.themvp.view.IDelegate;
 
 
 /**

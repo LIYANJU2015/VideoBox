@@ -1,4 +1,4 @@
-package com.videobox.commonlibs.network.retrofit;
+package com.commonlibs.network.retrofit;
 
 import android.text.TextUtils;
 

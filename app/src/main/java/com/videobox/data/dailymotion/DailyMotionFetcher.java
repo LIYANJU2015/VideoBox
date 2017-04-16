@@ -2,7 +2,7 @@ package com.videobox.data.dailymotion;
 
 import com.videobox.bean.DMChannels;
 import com.videobox.bean.DMVideosPageBean;
-import com.videobox.commonlibs.network.retrofit.RetrofitManager;
+import com.commonlibs.network.retrofit.RetrofitManager;
 import com.videobox.data.APIConstant;
 import com.videobox.data.dailymotion.service.DailymotionService;
 

@@ -4,7 +4,7 @@ import com.videobox.bean.YouTubeCategories;
 import com.videobox.bean.YouTubeLanguages;
 import com.videobox.bean.YouTubeRegions;
 import com.videobox.bean.YouTubeVideoPageBean;
-import com.videobox.commonlibs.network.retrofit.RetrofitManager;
+import com.commonlibs.network.retrofit.RetrofitManager;
 import com.videobox.data.APIConstant;
 import com.videobox.data.dailymotion.DailyMotionFetcher;
 import com.videobox.data.youtube.service.YouTubeService;

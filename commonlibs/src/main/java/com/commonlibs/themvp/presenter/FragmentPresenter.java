@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.videobox.commonlibs.themvp.presenter;
+package com.commonlibs.themvp.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -24,8 +24,8 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.videobox.commonlibs.themvp.view.AppDelegate;
-import com.videobox.commonlibs.themvp.view.IDelegate;
+import com.commonlibs.themvp.view.AppDelegate;
+import com.commonlibs.themvp.view.IDelegate;
 
 /**
  * Presenter base class for Fragment
