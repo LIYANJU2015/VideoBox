@@ -8,7 +8,7 @@ import java.util.ArrayList;
  * Created by liyanju on 2017/4/14.
  */
 
-public class YouTubeVideoPageBean {
+public class YTBVideoPageBean {
 
     public String nextPageToken;
 

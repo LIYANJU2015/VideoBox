@@ -6,7 +6,7 @@ import java.util.ArrayList;
  * Created by liyanju on 2017/4/14.
  */
 
-public class YouTubeCategories {
+public class YTBCategoriesBean {
 
     public ArrayList<Categories> items;
 

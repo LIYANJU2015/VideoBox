@@ -1,6 +1,6 @@
 package com.videobox.data.dailymotion.service;
 
-import com.videobox.bean.DMChannels;
+import com.videobox.bean.DMChannelsBean;
 import com.videobox.bean.DMVideosPageBean;
 
 import java.util.Map;
@@ -22,7 +22,7 @@ public interface DailymotionService {
     public Call<DMVideosPageBean> getVideos(@QueryMap Map<String, String> options);
 
     @GET("channels")
-    public Call<DMChannels> getChannels(@QueryMap Map<String, String> options);
+    public Call<DMChannelsBean> getChannels(@QueryMap Map<String, String> options);
 
     @GET("/channel/{id}/videos")
     public Call<DMVideosPageBean> getChannelVideos(@Path("id") String id, @QueryMap Map<String, String> options);

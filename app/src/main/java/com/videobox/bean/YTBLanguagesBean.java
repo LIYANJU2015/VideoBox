@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * i18n语言列表
  */
 
-public class YouTubeLanguages {
+public class YTBLanguagesBean {
 
     public ArrayList<Languages> items;
 

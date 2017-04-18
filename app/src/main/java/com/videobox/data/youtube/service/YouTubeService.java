@@ -1,9 +1,9 @@
 package com.videobox.data.youtube.service;
 
-import com.videobox.bean.YouTubeCategories;
-import com.videobox.bean.YouTubeLanguages;
-import com.videobox.bean.YouTubeRegions;
-import com.videobox.bean.YouTubeVideoPageBean;
+import com.videobox.bean.YTBCategoriesBean;
+import com.videobox.bean.YTBLanguagesBean;
+import com.videobox.bean.YTbRegionsBean;
+import com.videobox.bean.YTBVideoPageBean;
 import com.videobox.data.APIConstant;
 
 
@@ -25,19 +25,19 @@ public interface YouTubeService {
      * @return
      */
     @GET("videos")
-    public Call<YouTubeVideoPageBean> getMostPopularVideos(@QueryMap Map<String, String> options);
+    public Call<YTBVideoPageBean> getMostPopularVideos(@QueryMap Map<String, String> options);
 
     @GET("videoCategories")
-    public Call<YouTubeCategories> getYouTubeCategories(@QueryMap Map<String, String> options);
+    public Call<YTBCategoriesBean> getYouTubeCategories(@QueryMap Map<String, String> options);
 
 
     @GET("i18nLanguages?part=snippet&key="+ APIConstant.YouTube.DEVELOPER_KEY)
-    public Call<YouTubeLanguages> getYouTubeLanguages();
+    public Call<YTBLanguagesBean> getYouTubeLanguages();
 
     @GET("i18nRegions?&part=snippet&key="+ APIConstant.YouTube.DEVELOPER_KEY)
-    public Call<YouTubeRegions> getYouTubeRegions();
+    public Call<YTbRegionsBean> getYouTubeRegions();
 
     @GET("search")
-    public Call<YouTubeVideoPageBean> getSearchVideos(@QueryMap Map<String, String> options);
+    public Call<YTBVideoPageBean> getSearchVideos(@QueryMap Map<String, String> options);
 
 }

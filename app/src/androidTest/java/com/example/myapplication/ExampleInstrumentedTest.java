@@ -1,8 +1,11 @@
 package com.example.myapplication;
 
 import android.content.Context;
+import android.content.UriMatcher;
+import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
+import android.util.Log;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,6 +24,14 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.example.myapplication", appContext.getPackageName());
+        String AUTHORITY = "com.test.yy";
+        String TABLE_NAME = "table";
+        Uri uri = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+        Log.v("XX", "getPath::: " + uri.getPath() + " getAuthority :: " + uri.getAuthority());
+        UriMatcher URI_MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
+        URI_MATCHER.addURI(uri.getAuthority(), uri.getPath(), 11);
+
+        int code = URI_MATCHER.match(uri);
+        Log.v("xx", " code " + code );
     }
 }

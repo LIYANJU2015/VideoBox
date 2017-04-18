@@ -1,9 +1,9 @@
 package com.videobox.data.youtube;
 
-import com.videobox.bean.YouTubeCategories;
-import com.videobox.bean.YouTubeLanguages;
-import com.videobox.bean.YouTubeRegions;
-import com.videobox.bean.YouTubeVideoPageBean;
+import com.videobox.bean.YTBCategoriesBean;
+import com.videobox.bean.YTBLanguagesBean;
+import com.videobox.bean.YTbRegionsBean;
+import com.videobox.bean.YTBVideoPageBean;
 import com.commonlibs.network.retrofit.RetrofitManager;
 import com.videobox.data.APIConstant;
 import com.videobox.data.dailymotion.DailyMotionFetcher;
@@ -42,32 +42,32 @@ public class YouTubeFetcher implements YouTubeService{
 
 
     @Override
-    public Call<YouTubeVideoPageBean> getMostPopularVideos(@QueryMap Map<String, String> options) {
-        Call<YouTubeVideoPageBean> call = mService.getMostPopularVideos(options);
+    public Call<YTBVideoPageBean> getMostPopularVideos(@QueryMap Map<String, String> options) {
+        Call<YTBVideoPageBean> call = mService.getMostPopularVideos(options);
         return call;
     }
 
     @Override
-    public Call<YouTubeCategories> getYouTubeCategories(@QueryMap Map<String, String> options) {
-        Call<YouTubeCategories> call = mService.getYouTubeCategories(options);
+    public Call<YTBCategoriesBean> getYouTubeCategories(@QueryMap Map<String, String> options) {
+        Call<YTBCategoriesBean> call = mService.getYouTubeCategories(options);
         return call;
     }
 
     @Override
-    public Call<YouTubeLanguages> getYouTubeLanguages() {
-        Call<YouTubeLanguages> call = mService.getYouTubeLanguages();
+    public Call<YTBLanguagesBean> getYouTubeLanguages() {
+        Call<YTBLanguagesBean> call = mService.getYouTubeLanguages();
         return call;
     }
 
     @Override
-    public Call<YouTubeRegions> getYouTubeRegions() {
-        Call<YouTubeRegions> call = mService.getYouTubeRegions();
+    public Call<YTbRegionsBean> getYouTubeRegions() {
+        Call<YTbRegionsBean> call = mService.getYouTubeRegions();
         return call;
     }
 
     @Override
-    public Call<YouTubeVideoPageBean> getSearchVideos(@QueryMap Map<String, String> options) {
-        Call<YouTubeVideoPageBean> call = mService.getSearchVideos(options);
+    public Call<YTBVideoPageBean> getSearchVideos(@QueryMap Map<String, String> options) {
+        Call<YTBVideoPageBean> call = mService.getSearchVideos(options);
         return call;
     }
 }

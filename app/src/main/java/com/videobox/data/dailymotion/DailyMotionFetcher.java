@@ -1,6 +1,6 @@
 package com.videobox.data.dailymotion;
 
-import com.videobox.bean.DMChannels;
+import com.videobox.bean.DMChannelsBean;
 import com.videobox.bean.DMVideosPageBean;
 import com.commonlibs.network.retrofit.RetrofitManager;
 import com.videobox.data.APIConstant;
@@ -46,8 +46,8 @@ public class DailyMotionFetcher implements DailymotionService{
     }
 
     @Override
-    public Call<DMChannels> getChannels(@QueryMap Map<String, String> options) {
-        Call<DMChannels> call = mService.getChannels(options);
+    public Call<DMChannelsBean> getChannels(@QueryMap Map<String, String> options) {
+        Call<DMChannelsBean> call = mService.getChannels(options);
         return call;
     }
 
