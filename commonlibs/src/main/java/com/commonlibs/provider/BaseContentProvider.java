@@ -33,17 +33,17 @@ public abstract class BaseContentProvider extends ContentProvider {
 
     private Context mContext;
 
-    abstract void onAddTableInfo(SparseArray<TableInfo> tableInfoArray);
+    public abstract void onAddTableInfo(SparseArray<TableInfo> tableInfoArray);
 
-    abstract String onDataBaseName();
+    public abstract String onDataBaseName();
 
-    abstract int onDataBaseVersion();
+    public abstract int onDataBaseVersion();
 
     public boolean onDBCreate(SQLiteDatabase db) {
         return false;
     }
 
-    abstract void onDBUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
+    public abstract void onDBUpgrade(SQLiteDatabase db, int oldVersion, int newVersion);
 
     private void addUriMatcher() {
         for (int i = 0; i < mTableInfoArray.size(); i++) {
@@ -105,7 +105,11 @@ public abstract class BaseContentProvider extends ContentProvider {
 
     private TableInfo getTableInfoByUri(Uri uri) {
         int code = URI_MATCHER.match(uri);
-        return mTableInfoArray.get(code);
+        TableInfo tableInfo = mTableInfoArray.get(code);
+        if (tableInfo == null) {
+            throw new IllegalArgumentException(" TableInfoArray not find TableInfo !!!");
+        }
+        return tableInfo;
     }
 
     @Nullable

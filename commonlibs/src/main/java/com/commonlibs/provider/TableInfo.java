@@ -11,7 +11,7 @@ import java.util.Map;
  * Created by liyanju on 2017/4/17.
  */
 
-public abstract class TableInfo implements BaseColumns{
+public abstract class TableInfo implements BaseColumns {
 
     private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
     private static final String LEFT_BRACKET = "(";
@@ -26,8 +26,15 @@ public abstract class TableInfo implements BaseColumns{
 
     public abstract void onInitColumnsMap(Map<String, String> columnsMap);
 
-    public String getCreateTableSql(){
+    public boolean isAutoIntegerPrimaryKey() {
+        return true;
+    }
+
+    public String getCreateTableSql() {
         mMapTable.clear();
+        if (isAutoIntegerPrimaryKey()) {
+            mMapTable.put(_ID, " integer primary key autoincrement");
+        }
         onInitColumnsMap(mMapTable);
         if (mMapTable.size() == 0) {
             throw new IllegalArgumentException("mMapTable size == 0");

@@ -3,8 +3,8 @@ package com.videobox.data.db;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.BaseColumns;
 
+import com.commonlibs.provider.TableInfo;
 import com.videobox.bean.DMChannelsBean;
 import com.videobox.bean.DMVideoBean;
 import com.videobox.bean.YTBCategoriesBean;
@@ -12,8 +12,7 @@ import com.videobox.bean.YTBLanguagesBean;
 import com.videobox.bean.YTBVideoPageBean;
 import com.videobox.bean.YTbRegionsBean;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static com.videobox.data.db.VideoBoxContract.DMVideo.THUMBNAIL_URL;
 
@@ -22,11 +21,6 @@ import static com.videobox.data.db.VideoBoxContract.DMVideo.THUMBNAIL_URL;
  */
 
 public class VideoBoxContract {
-
-    private static final String CREATE_TABLE = "CREATE TABLE IF NOT EXISTS ";
-    private static final String LEFT_BRACKET = "(";
-    private static final String RIGHT_BRACKET = ");";
-    private static final String COMMA = ",";
 
     public static final String AUTHORITY = "com.videobox.data.db";
 
@@ -37,28 +31,17 @@ public class VideoBoxContract {
 
     /**
      * 数据库版本号
-     * 2.2 version 2 CONTACTS_ID SIM_ID
      */
     public static final int DATABASE_VERSION = 2;
 
-    public static class DMChannels implements BaseColumns{
+    public static class DMChannels extends TableInfo{
 
-        public static final String TABLE_NAME = "DMChannelsBean";
+        public static final String TABLE_NAME = "DMChannels";
 
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 
-        public static final String TABLE_CREATE = genTableCreationSql(TABLE_NAME, getColumHashMap());
-
         public static final String CHANCEL_ID = "chancel_id";
         public static final String CHANCEL_NAME = "chancel_name";
-
-        private static HashMap<String, String> getColumHashMap() {
-            LinkedHashMap<String, String> map = new LinkedHashMap<>();
-            map.put(_ID, " integer primary key autoincrement");
-            map.put(CHANCEL_ID, "text");
-            map.put(CHANCEL_NAME, "text");
-            return map;
-        }
 
         public static ContentValues createContentValues(DMChannelsBean.Channel channel) {
             ContentValues contentValues = new ContentValues();
@@ -75,15 +58,28 @@ public class VideoBoxContract {
             return cursor.getString(cursor.getColumnIndexOrThrow(CHANCEL_NAME));
         }
 
+        @Override
+        public String onTableName() {
+            return TABLE_NAME;
+        }
+
+        @Override
+        public Uri onContentUri() {
+            return CONTENT_URI;
+        }
+
+        @Override
+        public void onInitColumnsMap(Map<String, String> columnsMap) {
+            columnsMap.put(CHANCEL_ID, "text");
+            columnsMap.put(CHANCEL_NAME, "text");
+        }
     }
 
-    public static class DMVideo implements BaseColumns{
+    public static class DMVideo extends TableInfo{
 
         public static final String TABLE_NAME = "DMVideo";
 
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-
-        public static final String TABLE_CREATE = genTableCreationSql(TABLE_NAME, getColumHashMap());
 
         public static final String CHANNEL = "channel";
         public static final String DESCRIPTION = "description";
@@ -93,20 +89,6 @@ public class VideoBoxContract {
         public static final String TITLE = "title";
         public static final String UPDATED_TIME = "updated_time";
         public static final String CHANNELID = "channelID";
-
-        private static HashMap<String, String> getColumHashMap() {
-            LinkedHashMap<String, String> map = new LinkedHashMap<>();
-            map.put(_ID, " integer primary key autoincrement");
-            map.put(CHANNEL, "text");
-            map.put(DESCRIPTION, "text");
-            map.put(DURATION, "text");
-            map.put(VIDEO_ID, "text");
-            map.put(THUMBNAIL_URL, "text");
-            map.put(TITLE, "text");
-            map.put(UPDATED_TIME, "text");
-            map.put(CHANNELID, "text");
-            return map;
-        }
 
         public static ContentValues createContentValues(DMVideoBean dmVideoBean) {
             ContentValues contentValues = new ContentValues();
@@ -145,34 +127,41 @@ public class VideoBoxContract {
             return cursor.getString(cursor.getColumnIndexOrThrow(CHANNELID));
         }
 
+        @Override
+        public String onTableName() {
+            return TABLE_NAME;
+        }
+
+        @Override
+        public Uri onContentUri() {
+            return CONTENT_URI;
+        }
+
+        @Override
+        public void onInitColumnsMap(Map<String, String> columnsMap) {
+            columnsMap.put(CHANNEL, "text");
+            columnsMap.put(DESCRIPTION, "text");
+            columnsMap.put(DURATION, "text");
+            columnsMap.put(VIDEO_ID, "text");
+            columnsMap.put(THUMBNAIL_URL, "text");
+            columnsMap.put(TITLE, "text");
+            columnsMap.put(UPDATED_TIME, "text");
+            columnsMap.put(CHANNELID, "text");
+        }
     }
 
 
-    public static class YouTubeCategories implements BaseColumns {
+    public static class YouTubeCategories extends TableInfo {
 
         public static final String TABLE_NAME = "YTBCategoriesBean";
 
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-
-        public static final String TABLE_CREATE = genTableCreationSql(TABLE_NAME, getColumHashMap());
 
         public static final String KIND = "kind";
         public static final String ETAG = "etag";
         public static final String VIDEOCATEGORYID = "videoCategoryId";
         public static final String CHANNELID = "channelId";
         public static final String TITLE = "title";
-
-        private static HashMap<String, String> getColumHashMap() {
-            LinkedHashMap<String, String> map = new LinkedHashMap<>();
-            map.put(_ID, " integer primary key autoincrement");
-            map.put(KIND, "text");
-            map.put(ETAG, "text");
-            map.put(VIDEOCATEGORYID, "text");
-            map.put(CHANNELID, "text");
-            map.put(THUMBNAIL_URL, "text");
-            map.put(TITLE, "text");
-            return map;
-        }
 
         public static ContentValues createContentValue(YTBCategoriesBean.Categories categoriesBean) {
             ContentValues contentValues = new ContentValues();
@@ -185,28 +174,37 @@ public class VideoBoxContract {
             }
             return contentValues;
         }
+
+        @Override
+        public String onTableName() {
+            return TABLE_NAME;
+        }
+
+        @Override
+        public Uri onContentUri() {
+            return CONTENT_URI;
+        }
+
+        @Override
+        public void onInitColumnsMap(Map<String, String> columnsMap) {
+            columnsMap.put(KIND, "text");
+            columnsMap.put(ETAG, "text");
+            columnsMap.put(VIDEOCATEGORYID, "text");
+            columnsMap.put(CHANNELID, "text");
+            columnsMap.put(THUMBNAIL_URL, "text");
+            columnsMap.put(TITLE, "text");
+        }
     }
 
-    public static class YouTubeLanguages implements BaseColumns {
+    public static class YouTubeLanguages extends TableInfo {
 
-        public static final String TABLE_NAME = "YTBLanguagesBean";
+        public static final String TABLE_NAME = "YTBLanguages";
 
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-
-        public static final String TABLE_CREATE = genTableCreationSql(TABLE_NAME, getColumHashMap());
 
         public static final String ID = "id";
         public static final String HL = "hl";
         public static final String NAME = "name";
-
-        private static HashMap<String, String> getColumHashMap() {
-            LinkedHashMap<String, String> map = new LinkedHashMap<>();
-            map.put(_ID, " integer primary key autoincrement");
-            map.put(ID, "text");
-            map.put(HL, "text");
-            map.put(NAME, "text");
-            return map;
-        }
 
         public static ContentValues createContentValue(YTBLanguagesBean.Languages languagesBean) {
             ContentValues contentValues = new ContentValues();
@@ -217,28 +215,34 @@ public class VideoBoxContract {
             }
             return contentValues;
         }
+
+        @Override
+        public String onTableName() {
+            return TABLE_NAME;
+        }
+
+        @Override
+        public Uri onContentUri() {
+            return CONTENT_URI;
+        }
+
+        @Override
+        public void onInitColumnsMap(Map<String, String> columnsMap) {
+            columnsMap.put(ID, "text");
+            columnsMap.put(HL, "text");
+            columnsMap.put(NAME, "text");
+        }
     }
 
-    public static class YouTubeRgions implements BaseColumns {
+    public static class YouTubeRgions extends TableInfo {
 
         public static final String TABLE_NAME = "YouTubeRgions";
 
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
 
-        public static final String TABLE_CREATE = genTableCreationSql(TABLE_NAME, getColumHashMap());
-
         public static final String ID = "id";
         public static final String GL = "gl";
         public static final String NAME = "name";
-
-        private static HashMap<String, String> getColumHashMap() {
-            LinkedHashMap<String, String> map = new LinkedHashMap<>();
-            map.put(_ID, " integer primary key autoincrement");
-            map.put(ID, "text");
-            map.put(GL, "text");
-            map.put(NAME, "text");
-            return map;
-        }
 
         public static ContentValues createContentValue(YTbRegionsBean regionsBean) {
             ContentValues contentValues = new ContentValues();
@@ -249,15 +253,30 @@ public class VideoBoxContract {
             }
             return contentValues;
         }
+
+        @Override
+        public String onTableName() {
+            return TABLE_NAME;
+        }
+
+        @Override
+        public Uri onContentUri() {
+            return CONTENT_URI;
+        }
+
+        @Override
+        public void onInitColumnsMap(Map<String, String> columnsMap) {
+            columnsMap.put(ID, "text");
+            columnsMap.put(GL, "text");
+            columnsMap.put(NAME, "text");
+        }
     }
 
-    public static class YouTubeVideo implements BaseColumns {
+    public static class YouTubeVideo extends TableInfo {
 
         public static final String TABLE_NAME = "YouTubeVideo";
 
         public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
-
-        public static final String TABLE_CREATE = genTableCreationSql(TABLE_NAME, getColumHashMap());
 
         public static final String VIDEO_ID = "video_id";
         public static final String PUBLISHEDAT = "publishedAt";
@@ -268,21 +287,6 @@ public class VideoBoxContract {
         public static final String CHANNELTITLE = "channelTitle";
         public static final String LIVEBROADCASTCONTENT = "liveBroadcastContent";
         public static final String DEFAULTAUDIOLANGUAGE = "defaultAudioLanguage";
-
-        private static HashMap<String, String> getColumHashMap() {
-            LinkedHashMap<String, String> map = new LinkedHashMap<>();
-            map.put(_ID, " integer primary key autoincrement");
-            map.put(VIDEO_ID, "text");
-            map.put(PUBLISHEDAT, "text");
-            map.put(CHANNELID, "text");
-            map.put(TITLE, "text");
-            map.put(DESCRIPTION, "text");
-            map.put(THUMBNAILS, "text");
-            map.put(CHANNELTITLE, "text");
-            map.put(LIVEBROADCASTCONTENT, "text");
-            map.put(DEFAULTAUDIOLANGUAGE, "text");
-            return map;
-        }
 
         public static ContentValues createContentValue(YTBVideoPageBean.YouTubeVideo video) {
             ContentValues contentValues = new ContentValues();
@@ -301,30 +305,28 @@ public class VideoBoxContract {
             }
             return contentValues;
         }
-    }
 
-
-    public static String genTableCreationSql(String tableName, HashMap<String, String> mapTable) {
-        StringBuffer sqlStringBuffer = new StringBuffer();
-        int i = 0;
-
-        for (String key : mapTable.keySet()) {
-            if (i == 0) {
-                sqlStringBuffer.append(CREATE_TABLE).append(tableName).append(LEFT_BRACKET);
-            }
-
-            sqlStringBuffer.append(key).append(" ").append(mapTable.get(key));
-
-            if (i == mapTable.size() - 1) {
-                sqlStringBuffer.append(RIGHT_BRACKET);
-            } else {
-                sqlStringBuffer.append(COMMA);
-            }
-
-            i++;
+        @Override
+        public String onTableName() {
+            return TABLE_NAME;
         }
 
-        return sqlStringBuffer.toString();
-    }
+        @Override
+        public Uri onContentUri() {
+            return CONTENT_URI;
+        }
 
+        @Override
+        public void onInitColumnsMap(Map<String, String> columnsMap) {
+            columnsMap.put(VIDEO_ID, "text");
+            columnsMap.put(PUBLISHEDAT, "text");
+            columnsMap.put(CHANNELID, "text");
+            columnsMap.put(TITLE, "text");
+            columnsMap.put(DESCRIPTION, "text");
+            columnsMap.put(THUMBNAILS, "text");
+            columnsMap.put(CHANNELTITLE, "text");
+            columnsMap.put(LIVEBROADCASTCONTENT, "text");
+            columnsMap.put(DEFAULTAUDIOLANGUAGE, "text");
+        }
+    }
 }
