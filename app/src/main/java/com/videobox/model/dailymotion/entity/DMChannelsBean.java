@@ -1,4 +1,4 @@
-package com.videobox.bean;
+package com.videobox.model.dailymotion.entity;
 
 import java.util.ArrayList;
 

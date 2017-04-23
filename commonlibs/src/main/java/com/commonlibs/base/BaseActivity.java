@@ -12,18 +12,22 @@ import com.trello.rxlifecycle.components.support.RxAppCompatActivity;
 
 public abstract class BaseActivity extends RxAppCompatActivity {
     protected final String TAG = this.getClass().getSimpleName();
-    protected BaseApplication mApplication;
+
+    protected AppComponent mAppComponent;
 
     public static final String IS_NOT_ADD_ACTIVITY_LIST = "is_add_activity_list";//是否加入到activity的list，管理
 
-    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mApplication = (BaseApplication) getApplication();
-        setContentView(initView());
-        initData();
+        mAppComponent = ((BaseApplication)getApplication()).getAppComponent();
     }
+
+    public AppComponent getAppComponent() {
+        return mAppComponent;
+    }
+
+
 
     public void fullScreencall() {
         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
@@ -36,9 +40,4 @@ public abstract class BaseActivity extends RxAppCompatActivity {
             decorView.setSystemUiVisibility(uiOptions);
         }
     }
-
-    protected abstract View initView();
-
-    protected abstract void initData();
-
 }

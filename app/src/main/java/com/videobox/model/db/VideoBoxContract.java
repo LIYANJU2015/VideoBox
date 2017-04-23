@@ -1,20 +1,20 @@
-package com.videobox.data.db;
+package com.videobox.model.db;
 
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
 import com.commonlibs.provider.TableInfo;
-import com.videobox.bean.DMChannelsBean;
-import com.videobox.bean.DMVideoBean;
-import com.videobox.bean.YTBCategoriesBean;
-import com.videobox.bean.YTBLanguagesBean;
-import com.videobox.bean.YTBVideoPageBean;
-import com.videobox.bean.YTbRegionsBean;
+import com.videobox.model.dailymotion.entity.DMChannelsBean;
+import com.videobox.model.dailymotion.entity.DMVideoBean;
+import com.videobox.model.youtube.entity.YTBCategoriesBean;
+import com.videobox.model.youtube.entity.YTBLanguagesBean;
+import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.model.youtube.entity.YTbRegionsBean;
 
 import java.util.Map;
 
-import static com.videobox.data.db.VideoBoxContract.DMVideo.THUMBNAIL_URL;
+import static com.videobox.model.db.VideoBoxContract.DMVideo.THUMBNAIL_URL;
 
 /**
  * Created by liyanju on 2017/4/17.

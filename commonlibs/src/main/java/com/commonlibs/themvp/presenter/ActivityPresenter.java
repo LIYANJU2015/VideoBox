@@ -20,6 +20,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.commonlibs.base.BaseActivity;
 import com.commonlibs.themvp.view.IDelegate;
 
 
@@ -30,7 +31,7 @@ import com.commonlibs.themvp.view.IDelegate;
  * @param <T> View delegate class type
  * @author kymjs (http://www.kymjs.com/) on 10/23/15.
  */
-public abstract class ActivityPresenter<T extends IDelegate> extends AppCompatActivity {
+public abstract class ActivityPresenter<T extends IDelegate> extends BaseActivity {
     protected T viewDelegate;
 
     public ActivityPresenter() {

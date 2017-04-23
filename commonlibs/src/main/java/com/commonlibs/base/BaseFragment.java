@@ -29,7 +29,7 @@ public abstract class BaseFragment extends RxFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mActivity = (BaseActivity) getActivity();
-        mAppComponent = mActivity.mApplication.getAppComponent();
+        mAppComponent = mActivity.getAppComponent();
         initData();
     }
 

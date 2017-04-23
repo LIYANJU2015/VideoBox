@@ -8,7 +8,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.videobox.MainActivity">
+        <activity android:name="com.videobox.presenter.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -17,8 +17,8 @@
         </activity>
 
         <provider
-            android:authorities="com.videobox.data.db"
-            android:name=".data.db.VideoBoxContentProvider"/>
+            android:authorities="com.videobox.model.db"
+            android:name=".model.db.VideoBoxContentProvider"/>
     </application>
 
 </manifest>

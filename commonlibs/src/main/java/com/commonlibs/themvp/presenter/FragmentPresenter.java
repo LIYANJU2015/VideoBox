@@ -24,6 +24,7 @@ import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.commonlibs.themvp.view.IDelegate;
 
@@ -34,7 +35,7 @@ import com.commonlibs.themvp.view.IDelegate;
  * @param <T> View delegate class type
  * @author kymjs (http://www.kymjs.com/) on 10/23/15.
  */
-public abstract class FragmentPresenter<T extends IDelegate> extends Fragment {
+public abstract class FragmentPresenter<T extends IDelegate> extends BaseFragment {
     public T viewDelegate;
 
     @Override

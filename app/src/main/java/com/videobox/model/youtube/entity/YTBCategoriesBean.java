@@ -1,4 +1,4 @@
-package com.videobox.bean;
+package com.videobox.model.youtube.entity;
 
 import java.util.ArrayList;
 

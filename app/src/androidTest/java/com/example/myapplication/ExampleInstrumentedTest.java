@@ -1,19 +1,16 @@
 package com.example.myapplication;
 
 import android.content.Context;
-import android.content.UriMatcher;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
-import com.videobox.bean.DMChannelsBean;
-import com.videobox.data.db.VideoBoxContract;
+import com.videobox.model.dailymotion.entity.DMChannelsBean;
+import com.videobox.model.db.VideoBoxContract;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import static org.junit.Assert.*;
 
 /**
  * Instrumentation test, which will execute on an Android device.

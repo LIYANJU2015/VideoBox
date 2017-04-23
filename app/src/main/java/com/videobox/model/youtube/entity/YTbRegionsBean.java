@@ -1,4 +1,4 @@
-package com.videobox.bean;
+package com.videobox.model.youtube.entity;
 
 /**
  * Created by liyanju on 2017/4/14.

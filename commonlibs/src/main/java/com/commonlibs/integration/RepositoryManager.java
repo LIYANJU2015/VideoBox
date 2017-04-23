@@ -16,7 +16,6 @@ import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.converter.scalars.ScalarsConverterFactory;
 
 
 /**
@@ -30,12 +29,15 @@ public class RepositoryManager implements IRepositoryManager {
     private final Map<String, Object> mRetrofitServiceCache = new LinkedHashMap<>();
     private final Map<String, Object> mCacheServiceCache = new LinkedHashMap<>();
 
-    public RepositoryManager(Context context, Retrofit retrofit) {
-        this.mRetrofit = retrofit;
-
+    public RepositoryManager(Context context) {
         File cacheDirectory = new File(FileUtils.getCacheFile(context), "RxCache");
         this.mRxCache = new RxCache.Builder().persistence(FileUtils.makeDirs(cacheDirectory),
                 new GsonSpeaker());
+    }
+
+    public RepositoryManager(Context context, Retrofit retrofit) {
+        this(context);
+        this.mRetrofit = retrofit;
     }
 
     /**
@@ -51,7 +53,7 @@ public class RepositoryManager implements IRepositoryManager {
         }
     }
 
-    public void setRetrofitServiceCache(Retrofit retrofit, Class<?>... services) {
+    public void setRetrofitService(Retrofit retrofit, Class<?>... services) {
         for (Class<?> service : services) {
             if (mRetrofitServiceCache.containsKey(service.getName())) continue;
             mRetrofitServiceCache.put(service.getName(), retrofit.create(service));
@@ -117,7 +119,6 @@ public class RepositoryManager implements IRepositoryManager {
 
         public Retrofit build() {
             return new Retrofit.Builder().baseUrl(baseUrl)
-                    .addConverterFactory(ScalarsConverterFactory.create())
                     .client(okHttpClient)
                     .addConverterFactory(GsonConverterFactory.create())
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

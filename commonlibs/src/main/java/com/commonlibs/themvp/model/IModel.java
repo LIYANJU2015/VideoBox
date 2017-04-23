@@ -22,4 +22,6 @@ package com.commonlibs.themvp.model;
  * @author kymjs (http://www.kymjs.com/) on 10/23/15.
  */
 public interface IModel {
+
+    public void onDestroy();
 }

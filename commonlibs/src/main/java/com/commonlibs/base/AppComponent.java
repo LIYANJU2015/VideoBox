@@ -18,11 +18,8 @@ import okhttp3.OkHttpClient;
 
 public interface AppComponent {
 
-    Application Application();
-
     //用于管理网络请求层,以及数据缓存层
     IRepositoryManager repositoryManager();
-
 
     OkHttpClient okHttpClient();
 

@@ -1,6 +1,4 @@
-package com.videobox.bean;
-
-import com.google.gson.annotations.SerializedName;
+package com.videobox.model.youtube.entity;
 
 import java.util.ArrayList;
 

@@ -1,10 +1,10 @@
-package com.videobox.data.youtube.service;
+package com.videobox.model.youtube.service;
 
-import com.videobox.bean.YTBCategoriesBean;
-import com.videobox.bean.YTBLanguagesBean;
-import com.videobox.bean.YTbRegionsBean;
-import com.videobox.bean.YTBVideoPageBean;
-import com.videobox.data.APIConstant;
+import com.videobox.model.APIConstant;
+import com.videobox.model.youtube.entity.YTBCategoriesBean;
+import com.videobox.model.youtube.entity.YTBLanguagesBean;
+import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.model.youtube.entity.YTbRegionsBean;
 
 
 import java.util.Map;

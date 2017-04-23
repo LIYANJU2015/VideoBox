@@ -1,4 +1,4 @@
-package com.videobox.data.db;
+package com.videobox.model.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.SparseArray;
