@@ -1,5 +1,6 @@
 package com.videobox.data.youtube;
 
+import com.commonlibs.base.BaseApplication;
 import com.videobox.bean.YTBCategoriesBean;
 import com.videobox.bean.YTBLanguagesBean;
 import com.videobox.bean.YTbRegionsBean;
