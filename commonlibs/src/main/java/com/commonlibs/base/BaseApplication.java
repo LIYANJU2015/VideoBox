@@ -24,8 +24,6 @@ import okhttp3.OkHttpClient;
 
 public abstract class BaseApplication extends Application{
 
-    private AppManager mAppManager;
-
     private static Context sContext;
 
     protected AppComponent mAppComponent;
@@ -41,7 +39,7 @@ public abstract class BaseApplication extends Application{
 
         ((BaseAppComponent)mAppComponent).setRepositoryManager(createRepositoryManager());
 
-        registerActivityLifecycleCallbacks(new ActivityLifecycle(mAppManager));
+        registerActivityLifecycleCallbacks(new ActivityLifecycle(mAppComponent.appManager()));
     }
 
     public static Context getContext() {
