@@ -3,6 +3,7 @@ package com.videobox;
 import android.content.Context;
 
 import com.commonlibs.base.BaseApplication;
+import com.commonlibs.base.GlobalConfig;
 import com.commonlibs.http.GlobeHttpHandler;
 import com.commonlibs.http.RequestInterceptor;
 import com.commonlibs.integration.IRepositoryManager;
@@ -27,8 +28,8 @@ public class AppAplication extends BaseApplication {
     }
 
     @Override
-    public IRepositoryManager createRepositoryManager() {
-        OkHttpClient okHttpClient = mAppComponent.okHttpClient();
+    public IRepositoryManager createRepositoryManager(GlobalConfig config) {
+        OkHttpClient okHttpClient = config.getOkHttpClient();
 
         RepositoryManager repositoryManager = new RepositoryManager(this);
         Retrofit youtobeRetrofit = new RepositoryManager.RetrofitBuilder().client(okHttpClient)
@@ -44,7 +45,7 @@ public class AppAplication extends BaseApplication {
 
 
     @Override
-    public void applyOptions(Context context, ConfigBuilder builder) {
+    public void applyOptions(Context context, GlobalConfig.ConfigBuilder builder) {
         builder.addInterceptor(new RequestInterceptor(GlobeHttpHandler.EMPTY));
         builder.cacheFile(FileUtils.getCacheFile(this));
     }
