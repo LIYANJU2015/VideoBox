@@ -33,6 +33,8 @@ import okio.BufferedSource;
  */
 @Singleton
 public class RequestInterceptor implements Interceptor {
+
+    private static final String TAG = RequestInterceptor.class.getSimpleName();
     private GlobeHttpHandler mHandler;
 
     @Inject
@@ -52,11 +54,7 @@ public class RequestInterceptor implements Interceptor {
             request.body().writeTo(requestbuffer);
         }
 
-        //打印请求信息
-        LogUtils.w(getTag(request, "Response_Info"), "Params : 「 %s 」%nConnection : 「 %s 」%nHeaders : %n「 %s 」"
-                , hasRequestBody ? parseParams(request.body(), requestbuffer) : "Null"
-                , chain.connection()
-                , request.headers());
+        LogUtils.v(TAG, "request url ", request.url().toString());
 
         long t1 = System.nanoTime();
 
@@ -70,10 +68,6 @@ public class RequestInterceptor implements Interceptor {
         long t2 = System.nanoTime();
 
         String bodySize = originalResponse.body().contentLength() != -1 ? originalResponse.body().contentLength() + "-byte" : "unknown-length";
-
-        //打印响应时间以及响应头
-        LogUtils.w(getTag(request, "Response_Info"), "Received response in [ %d-ms ] , [ %s ]%n%s"
-                , TimeUnit.NANOSECONDS.toMillis(t2 - t1), bodySize, originalResponse.headers());
 
         //打印响应结果
         String bodyString = printResult(request, originalResponse);
@@ -113,19 +107,13 @@ public class RequestInterceptor implements Interceptor {
             //解析response content
             bodyString = parseContent(responseBody, encoding, clone);
 
-            LogUtils.w(getTag(request, "Response_Result"), isJson(responseBody) ? CharactorHandler.jsonFormat(bodyString) : bodyString);
+            LogUtils.w(TAG, isJson(responseBody) ? CharactorHandler.jsonFormat(bodyString) : bodyString);
 
         } else {
-            LogUtils.w(getTag(request, "Response_Result"), "This result isn't parsed");
+            LogUtils.w(TAG, "This result isn't parsed");
         }
         return bodyString;
     }
-
-
-    private String getTag(Request request, String tag) {
-        return String.format(" [%s] 「 %s 」>>> %s", request.method(), request.url().toString(), tag);
-    }
-
 
     /**
      * 解析服务器响应的内容

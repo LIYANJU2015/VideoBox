@@ -11,10 +11,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.Target;
 import com.commonlibs.widget.imageloader.BaseImageLoaderStrategy;
 
-import io.reactivex.Observable;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
+
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 /**
@@ -87,11 +86,11 @@ public class GlideImageLoaderStrategy implements BaseImageLoaderStrategy<GlideIm
 
 
         if (config.isClearDiskCache()) {//清除本地缓存
-            Observable.just(0)
+            rx.Observable.just(0)
                     .observeOn(Schedulers.io())
-                    .subscribe(new Consumer<Integer>() {
+                    .subscribe(new Action1<Integer>() {
                         @Override
-                        public void accept(Integer integer) {
+                        public void call(Integer integer) {
                             Glide.get(ctx).clearDiskCache();
                         }
                     });

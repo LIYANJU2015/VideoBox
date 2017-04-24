@@ -98,13 +98,15 @@ public class APIConstant {
 
         public static String HOST_URL = "https://api.dailymotion.com/";
 
+        public static String PAGE = "page";
+
         static {
             String country = Locale.getDefault().getCountry().toLowerCase();
-//        if ("us".equals(country)) {
-//            country = "en";
-//        }
+            if ("cn".equals(country)) {
+                country = "en";
+            }
             sWatchVideosMap.put("list", "what-to-watch");
-            sWatchVideosMap.put("languages", country);
+            //sWatchVideosMap.put("languages", country);
             sWatchVideosMap.put("sort", "visited");
             sWatchVideosMap.put("fields", "title,channel,channel.id,description,duration,id,thumbnail_url,updated_time");
             sWatchVideosMap.put("limit", "10");

@@ -8,13 +8,13 @@ import java.util.ArrayList;
 
 public class DMVideosPageBean {
 
-    public int page;
+    public int page; //当前页数
 
-    public int limit;
+    public int limit; // 一页显示个数
 
     public boolean explicit;
 
-    public boolean has_more;
+    public boolean has_more; //是否有更多
 
     public int total;// 视频总个数
 

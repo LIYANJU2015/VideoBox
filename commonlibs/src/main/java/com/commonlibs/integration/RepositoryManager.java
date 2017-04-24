@@ -4,13 +4,14 @@ package com.commonlibs.integration;
 import android.content.Context;
 
 import com.commonlibs.util.FileUtils;
+import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.Preconditions;
 
 import java.io.File;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import io.rx_cache2.internal.RxCache;
+import io.rx_cache.internal.RxCache;
 import io.victoralbertos.jolyglot.GsonSpeaker;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;

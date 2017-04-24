@@ -9,7 +9,9 @@ import com.commonlibs.http.RequestInterceptor;
 import com.commonlibs.integration.IRepositoryManager;
 import com.commonlibs.integration.RepositoryManager;
 import com.commonlibs.util.FileUtils;
+import com.commonlibs.util.LogUtils;
 import com.videobox.model.APIConstant;
+import com.videobox.model.dailymotion.cache.DailyMotionCache;
 import com.videobox.model.dailymotion.service.DailymotionService;
 import com.videobox.model.youtube.service.YouTubeService;
 
@@ -40,6 +42,7 @@ public class AppAplication extends BaseApplication {
                 .baseUrl(APIConstant.DailyMontion.HOST_URL).build();
         repositoryManager.setRetrofitService(dmRetrofit, DailymotionService.class);
 
+        repositoryManager.setCacheService(DailyMotionCache.class);
         return repositoryManager;
     }
 

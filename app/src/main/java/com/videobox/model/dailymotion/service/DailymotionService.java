@@ -5,12 +5,13 @@ import com.videobox.model.dailymotion.entity.DMVideosPageBean;
 
 import java.util.Map;
 
-import io.reactivex.Observable;
+
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import retrofit2.http.QueryMap;
+import rx.Observable;
 
 
 /**
@@ -19,16 +20,16 @@ import retrofit2.http.QueryMap;
 
 public interface DailymotionService {
 
-    @GET("videos")
-    public Observable<DMVideosPageBean> getVideos(@QueryMap Map<String, String> options);
+    @GET("videos?limit=20")
+    public Observable<DMVideosPageBean> getVideos(@Query("page") int page, @QueryMap Map<String, String> options);
 
-    @GET("channels")
-    public Observable<DMChannelsBean> getChannels(@QueryMap Map<String, String> options);
+    @GET("channels?limit=20")
+    public Observable<DMChannelsBean> getChannels(@QueryMap Map<String, String> options, @Query("page") int page);
 
-    @GET("/channel/{id}/videos")
-    public Observable<DMVideosPageBean> getChannelVideos(@Path("id") String id, @QueryMap Map<String, String> options);
+    @GET("/channel/{id}/videos?limit=20")
+    public Observable<DMVideosPageBean> getChannelVideos(@Path("id") String id, @QueryMap Map<String, String> options, @Query("page") int page);
 
-    @GET("playlists")
-    public Observable<DMVideosPageBean> getSearchVideo(@QueryMap Map<String, String> options, @Query("search") String search);
+    @GET("playlists?limit=20")
+    public Observable<DMVideosPageBean> getSearchVideo(@QueryMap Map<String, String> options, @Query("search") String search, @Query("page") int page);
 
 }
