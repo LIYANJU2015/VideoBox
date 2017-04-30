@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.commonlibs.integration.AppManager;
 import com.commonlibs.integration.IRepositoryManager;
+import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.widget.imageloader.ImageLoader;
 import com.commonlibs.widget.imageloader.glide.GlideImageLoaderStrategy;
 
@@ -26,11 +27,15 @@ public class AppComponentImpl implements AppComponent {
     private File mCacheFile;
     private AppManager mAppManager;
     private Application mApplicaiton;
+    private RxErrorHandler mRxErrorHandler;
+
 
     public AppComponentImpl(Application application, OkHttpClient okHttpClient,
-                            File cacheFile, ImageLoader imageLoader, IRepositoryManager repositoryManager) {
+                            File cacheFile, ImageLoader imageLoader,
+                            IRepositoryManager repositoryManager, RxErrorHandler rxErrorHandler) {
         mApplicaiton = application;
         mIRepositoryManager = repositoryManager;
+        mRxErrorHandler = rxErrorHandler;
 
         if (imageLoader == null) {
             mImageLoader = new ImageLoader(new GlideImageLoaderStrategy());
@@ -47,6 +52,11 @@ public class AppComponentImpl implements AppComponent {
 
     public void setRepositoryManager(IRepositoryManager repositoryManager) {
         mIRepositoryManager = repositoryManager;
+    }
+
+    @Override
+    public RxErrorHandler rxErrorHandler() {
+        return mRxErrorHandler;
     }
 
     public  void initOkHttpClient(Interceptor netWorkInterceptor, List<Interceptor> appInterceptors) {

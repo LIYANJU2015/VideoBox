@@ -60,6 +60,8 @@ public abstract class AppDelegate implements IDelegate {
         return null;
     }
 
+    public void onDestroy(){}
+
     public ListView getListView() {
         return null;
     }

@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.commonlibs.integration.AppManager;
 import com.commonlibs.integration.IRepositoryManager;
+import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.widget.imageloader.ImageLoader;
 import com.google.gson.Gson;
 
@@ -31,4 +32,6 @@ public interface AppComponent {
 
     //用于管理所有activity
     AppManager appManager();
+
+    RxErrorHandler rxErrorHandler();
 }

@@ -17,7 +17,6 @@ package com.commonlibs.themvp.presenter;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -66,10 +65,10 @@ public abstract class FragmentPresenter<T extends IDelegate> extends BaseFragmen
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewDelegate.initWidget();
-        bindEvenListener();
+        initAndBindEvent();
     }
 
-    protected void bindEvenListener() {
+    protected void initAndBindEvent() {
     }
 
     @Override
@@ -97,6 +96,7 @@ public abstract class FragmentPresenter<T extends IDelegate> extends BaseFragmen
     @Override
     public void onDestroy() {
         super.onDestroy();
+        viewDelegate.onDestroy();
         viewDelegate = null;
     }
 

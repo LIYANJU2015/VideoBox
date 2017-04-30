@@ -1,5 +1,6 @@
 package com.commonlibs.base;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -18,19 +19,11 @@ public abstract class BaseFragment extends RxFragment {
 
     private AppComponent mAppComponent;
 
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        mRootView = initView(inflater,container);
-        return mRootView;
-    }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
         mActivity = (BaseActivity) getActivity();
         mAppComponent = mActivity.getAppComponent();
-        initData();
     }
 
     public AppComponent getAppComponent() {
@@ -43,9 +36,5 @@ public abstract class BaseFragment extends RxFragment {
         this.mActivity = null;
         this.mRootView = null;
     }
-
-    protected abstract View initView(LayoutInflater inflater, ViewGroup container);
-
-    protected abstract void initData();
 
 }

@@ -16,7 +16,6 @@
 package com.commonlibs.themvp.presenter;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
@@ -51,10 +50,10 @@ public abstract class ActivityPresenter<T extends IDelegate> extends BaseActivit
         setContentView(viewDelegate.getRootView());
         initToolbar();
         viewDelegate.initWidget();
-        bindEvenListener();
+        iniAndBindEven();
     }
 
-    protected void bindEvenListener() {
+    protected void iniAndBindEven() {
     }
 
     protected void initToolbar() {
@@ -89,6 +88,7 @@ public abstract class ActivityPresenter<T extends IDelegate> extends BaseActivit
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        viewDelegate.onDestroy();
         viewDelegate = null;
     }
 

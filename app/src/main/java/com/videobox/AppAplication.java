@@ -8,8 +8,11 @@ import com.commonlibs.http.GlobeHttpHandler;
 import com.commonlibs.http.RequestInterceptor;
 import com.commonlibs.integration.IRepositoryManager;
 import com.commonlibs.integration.RepositoryManager;
+import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
+import com.commonlibs.rxerrorhandler.handler.listener.ResponseErroListener;
 import com.commonlibs.util.FileUtils;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.Utils;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.cache.DailyMotionCache;
 import com.videobox.model.dailymotion.service.DailymotionService;
@@ -22,11 +25,12 @@ import retrofit2.Retrofit;
  * Created by liyanju on 2017/4/23.
  */
 
-public class AppAplication extends BaseApplication {
+public class AppAplication extends BaseApplication implements ResponseErroListener {
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Utils.init(getContext());
     }
 
     @Override
@@ -51,5 +55,11 @@ public class AppAplication extends BaseApplication {
     public void applyOptions(Context context, GlobalConfig.ConfigBuilder builder) {
         builder.addInterceptor(new RequestInterceptor(GlobeHttpHandler.EMPTY));
         builder.cacheFile(FileUtils.getCacheFile(this));
+        builder.rxErrorHandler(RxErrorHandler.builder().with(getContext()).responseErroListener(this).build());
+    }
+
+    @Override
+    public void handleResponseError(Context context, Exception e) {
+            LogUtils.v("handleResponseError", e.getMessage());
     }
 }

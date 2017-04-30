@@ -4,6 +4,7 @@ import android.app.Application;
 
 import com.commonlibs.integration.AppManager;
 import com.commonlibs.integration.IRepositoryManager;
+import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.util.Preconditions;
 import com.commonlibs.widget.imageloader.ImageLoader;
 import com.commonlibs.widget.imageloader.glide.GlideImageLoaderStrategy;
@@ -28,10 +29,12 @@ public class GlobalConfig {
     private File mCacheFile;
     private AppManager mAppManager;
     private Application mApplicaiton;
+    private RxErrorHandler mRxErrorHandler;
 
     public GlobalConfig(Application application, List<Interceptor> interceptors, Interceptor networkInterceptor,
-                        File cacheFile, ImageLoader imageLoader) {
+                        File cacheFile, ImageLoader imageLoader, RxErrorHandler rxErrorHandler) {
         mApplicaiton = application;
+        this.mRxErrorHandler = rxErrorHandler;
 
         if (imageLoader == null) {
             mImageLoader = new ImageLoader(new GlideImageLoaderStrategy());
@@ -52,7 +55,7 @@ public class GlobalConfig {
 
     public AppComponent createAppComponent(IRepositoryManager repositoryManager) {
         return new AppComponentImpl(mApplicaiton, mOkHttpClient,
-                mCacheFile, mImageLoader, repositoryManager);
+                mCacheFile, mImageLoader, repositoryManager, mRxErrorHandler);
     }
 
     private void initOkHttpClient(Interceptor netWorkInterceptor, List<Interceptor> appInterceptors) {
@@ -82,6 +85,7 @@ public class GlobalConfig {
         private ImageLoader imageLoader;
         private IRepositoryManager iRepositoryManager;
         private Application application;
+        private RxErrorHandler rxErrorHandler;
 
         public ConfigBuilder(Application application){
             this.application = application;
@@ -107,10 +111,16 @@ public class GlobalConfig {
             return this;
         }
 
+        public GlobalConfig.ConfigBuilder rxErrorHandler(RxErrorHandler rxErrorHandler) {
+            this.rxErrorHandler = rxErrorHandler;
+            return this;
+        }
+
+
         public GlobalConfig build() {
             Preconditions.checkNotNull(cacheFile, "cacheFile is required");
             return new GlobalConfig(application, interceptors, networkInterceptor,
-                    cacheFile, imageLoader);
+                    cacheFile, imageLoader, rxErrorHandler);
         }
     }
 }
