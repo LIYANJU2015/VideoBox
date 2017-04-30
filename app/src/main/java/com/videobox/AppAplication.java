@@ -1,6 +1,7 @@
 package com.videobox;
 
 import android.content.Context;
+import android.graphics.Typeface;
 
 import com.commonlibs.base.BaseApplication;
 import com.commonlibs.base.GlobalConfig;
@@ -27,10 +28,21 @@ import retrofit2.Retrofit;
 
 public class AppAplication extends BaseApplication implements ResponseErroListener {
 
+    private static final String CANARO_EXTRA_BOLD_PATH = "fonts/canaro_extra_bold.otf";
+    private static final String PROXIMA_NOVA_REGULAR_PATH = "fonts/Proxima_Nova_Regular.otf";
+    public static Typeface sCanaroExtraBold;
+    public static Typeface sProximaRegular;
+
     @Override
     public void onCreate() {
         super.onCreate();
         Utils.init(getContext());
+        initTypeface();
+    }
+
+    private void initTypeface() {
+        sCanaroExtraBold = Typeface.createFromAsset(getAssets(), CANARO_EXTRA_BOLD_PATH);
+        sProximaRegular = Typeface.createFromAsset(getAssets(), PROXIMA_NOVA_REGULAR_PATH);
     }
 
     @Override

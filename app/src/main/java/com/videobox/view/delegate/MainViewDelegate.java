@@ -1,31 +1,26 @@
 package com.videobox.view.delegate;
 
-import android.animation.Animator;
-import android.animation.ValueAnimator;
-import android.os.Handler;
-import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
+import android.support.v4.widget.DrawerLayout;
 import android.view.View;
-import android.view.ViewTreeObserver;
-import android.widget.FrameLayout;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 
-import com.bumptech.glide.Glide;
 import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.view.AppDelegate;
-import com.commonlibs.util.LogUtils;
-import com.commonlibs.util.MyAnimatorListener;
 import com.commonlibs.widget.imageloader.glide.GlideImageConfig;
 import com.videobox.R;
+import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.presenter.DailyMotionFragment;
 import com.videobox.presenter.MainActivity;
+import com.videobox.view.adapter.MenuItemAdapter;
+import com.videobox.view.widget.ActionBarDrawerToggle;
 import com.videobox.view.widget.CoordinatorTabLayout;
 import com.videobox.view.widget.DrawerArrowDrawable;
 import com.videobox.view.widget.LoadHeaderImagesListener;
-import com.yalantis.guillotine.animation.GuillotineAnimation;
 
 import java.util.ArrayList;
 
@@ -49,22 +44,21 @@ public class MainViewDelegate extends AppDelegate {
 
     private ViewPager mMainViewPager;
 
-    private ImageView mNavigationIV;
-
     private AdapterViewPager mMainViewPagerAdaper;
+
+    private ImageView mNavigationLeft;
+
+    private DrawerLayout mDrawerLayout;
+
+    private ListView mDrawerList;
+
+    private ActionBarDrawerToggle mDrawerToggle;
 
     private final String[] mTitles = {"Android", "Web", "iOS", "Other"};
 
-    private DrawerArrowDrawable mDrawerArrowDrawable;
-
-    private AppBarLayout mAppBarLayout;
-
-    private View mMainMenuView;
-
-    private boolean mIsFirst = true;
-
-    private static final String BACK_TAG = "back_tag";
-    private static final String MENU_TAG = "menu_tag";
+    private int mCurrentMenuState = MENU_CLOSE;
+    private static final int MENU_OPEN = 1;
+    private static final int MENU_CLOSE = 0;
 
     @Override
     public int getRootLayoutId() {
@@ -83,6 +77,54 @@ public class MainViewDelegate extends AppDelegate {
         mMainViewPagerAdaper.bindData(list, mTitles);
         mMainViewPager.setAdapter(mMainViewPagerAdaper);
 
+        initCoordinatortab();
+
+        mNavigationLeft = get(R.id.navigation_left);
+        setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
+                    mDrawerLayout.closeDrawer(mDrawerList);
+                } else {
+                    mDrawerLayout.openDrawer(mDrawerList);
+                }
+            }
+        }, R.id.navigation_left);
+
+        initDrawerMenu();
+
+        mDrawerList = get(R.id.navdrawer);
+        MenuItemAdapter menuItemAdapter = new MenuItemAdapter(mContext);
+        ArrayList<DMChannelsBean.Channel> arrayList = new ArrayList<>();
+        arrayList.add(new DMChannelsBean.Channel());
+        arrayList.add(new DMChannelsBean.Channel());
+        arrayList.add(new DMChannelsBean.Channel());
+        menuItemAdapter.updateDMChannel(arrayList);
+        mDrawerList.setAdapter(menuItemAdapter);
+
+    }
+
+    private void initDrawerMenu() {
+        mDrawerLayout = get(R.id.drawer_layout);
+        DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(mMainActivity) {
+            @Override
+            public boolean isLayoutRtl() {
+                return false;
+            }
+        };
+        mDrawerToggle = new ActionBarDrawerToggle(mMainActivity, mDrawerLayout,
+                drawerArrow, R.string.drawer_open,
+                R.string.drawer_close, mNavigationLeft);
+        mDrawerLayout.addDrawerListener(mDrawerToggle);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onDestroy() {
+        mDrawerLayout.removeDrawerListener(mDrawerToggle);
+    }
+
+    private void initCoordinatortab() {
         mCoordinatorTabLayout = get(R.id.coordinatortablayout);
         mCoordinatorTabLayout.setTitle("")
                 .setContentScrimColorArray(mColorArray)
@@ -98,124 +140,5 @@ public class MainViewDelegate extends AppDelegate {
                     }
                 })
                 .setupWithViewPager(mMainViewPager);
-
-        mNavigationIV = get(R.id.navigation_left);
-        mNavigationIV.setTag(BACK_TAG);
-        mDrawerArrowDrawable = new DrawerArrowDrawable(this.getActivity()) {
-            @Override
-            public boolean isLayoutRtl() {
-                return false;
-            }
-        };
-        mDrawerArrowDrawable.setProgress(1.f);
-        mNavigationIV.setImageDrawable(mDrawerArrowDrawable);
-        setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                if (BACK_TAG.equals(view.getTag())) {
-                    mMainActivity.finish();
-                } else {
-
-                }
-
-            }
-        }, R.id.navigation_left);
-
-        mAppBarLayout = get(R.id.appbar_layout);
-        mAppBarLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                new Handler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        mAppBarLayout.addOnOffsetChangedListener(listener);
-                    }
-                });
-            }
-        });
-
-        DrawerArrowDrawable drawerArrowDrawable = new DrawerArrowDrawable(this.getActivity()) {
-            @Override
-            public boolean isLayoutRtl() {
-                return false;
-            }
-        };
-        mMainMenuView = LayoutInflater.from(mContext).inflate(R.layout.main_menu_layout, null);
-        ((ImageView)mMainMenuView.findViewById(R.id.guillotine_hamburger)).setImageDrawable(drawerArrowDrawable);
-        ((FrameLayout)get(R.id.content)).addView(mMainMenuView);
-        new GuillotineAnimation.GuillotineBuilder(mMainMenuView,
-                mMainMenuView.findViewById(R.id.guillotine_hamburger), mNavigationIV)
-                .setStartDelay(250)
-                .setActionBarViewForAnimation(get(R.id.toolbar))
-                .setClosedOnStart(true)
-                .build();
     }
-
-    @Override
-    public void onDestroy() {
-        mAppBarLayout.removeOnOffsetChangedListener(listener);
-    }
-
-    private ValueAnimator mNavigationAnimator;
-
-    private void showMenuNavigationAnimation() {
-        if (mNavigationAnimator != null && mNavigationAnimator.isRunning()) {
-            mNavigationAnimator.cancel();
-        }
-        mNavigationAnimator = ValueAnimator.ofFloat(1.f, 0.f);
-        mNavigationAnimator.setDuration(800);
-        mNavigationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                Float value = (Float)valueAnimator.getAnimatedValue();
-                mDrawerArrowDrawable.setProgress(value);
-            }
-        });
-        mNavigationAnimator.addListener(new MyAnimatorListener(){
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                mNavigationIV.setTag(MENU_TAG);
-            }
-        });
-        mNavigationAnimator.start();
-    }
-
-    private void showBackNavigationAnimation() {
-        if (mNavigationAnimator != null && mNavigationAnimator.isRunning()) {
-            mNavigationAnimator.cancel();
-        }
-        mNavigationAnimator = ValueAnimator.ofFloat(0.f, 1.f);
-        mNavigationAnimator.setDuration(800);
-        mNavigationAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                Float value = (Float)valueAnimator.getAnimatedValue();
-                mDrawerArrowDrawable.setProgress(value);
-            }
-        });
-        mNavigationAnimator.addListener(new MyAnimatorListener(){
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                mNavigationIV.setRotation(-360);
-                mNavigationIV.setTag(BACK_TAG);
-            }
-        });
-        mNavigationAnimator.start();
-    }
-
-    AppBarLayout.OnOffsetChangedListener listener = new AppBarLayout.OnOffsetChangedListener() {
-        @Override
-        public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-            if (mIsFirst) {
-                mIsFirst = false;
-                return;
-            }
-
-            if (Math.abs(verticalOffset) == appBarLayout.getTotalScrollRange()) { //滑动顶部
-                showMenuNavigationAnimation();
-            } else if (verticalOffset == 0) { //滑动底部
-                showBackNavigationAnimation();
-            }
-        }
-    };
 }

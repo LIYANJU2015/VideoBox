@@ -5,4 +5,7 @@
     <color name="colorAccent">#FF4081</color>
 
     <color name="ldrawer_color">#FFFFFF</color>
+
+    <color name="guillotine_background">#444153</color>
+
 </resources>
