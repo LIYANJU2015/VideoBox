@@ -1,21 +1,27 @@
 package com.videobox.view.delegate;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.graphics.Palette;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.view.AppDelegate;
-import com.commonlibs.widget.imageloader.glide.GlideImageConfig;
+import com.commonlibs.util.LogUtils;
 import com.videobox.R;
 import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.presenter.DailyMotionFragment;
 import com.videobox.presenter.MainActivity;
+import com.videobox.presenter.YouTubeFragment;
 import com.videobox.view.adapter.MenuItemAdapter;
 import com.videobox.view.widget.ActionBarDrawerToggle;
 import com.videobox.view.widget.CoordinatorTabLayout;
@@ -31,12 +37,6 @@ import java.util.ArrayList;
 public class MainViewDelegate extends AppDelegate {
 
     private static final String TAG = MainViewDelegate.class.getSimpleName();
-
-    private int[] mColorArray = new int[]{
-        android.R.color.holo_blue_light,
-                android.R.color.holo_red_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_green_light};
 
     private CoordinatorTabLayout mCoordinatorTabLayout;
 
@@ -54,11 +54,10 @@ public class MainViewDelegate extends AppDelegate {
 
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private final String[] mTitles = {"Android", "Web", "iOS", "Other"};
+    private final String[] mTitles = {"dailymotion", "YouTube"};
 
-    private int mCurrentMenuState = MENU_CLOSE;
-    private static final int MENU_OPEN = 1;
-    private static final int MENU_CLOSE = 0;
+    private DailyMotionFragment mDailyMotionFragment;
+    private YouTubeFragment mYouTubeFragment;
 
     @Override
     public int getRootLayoutId() {
@@ -72,15 +71,17 @@ public class MainViewDelegate extends AppDelegate {
         mMainViewPager = get(R.id.main_viewpager);
         mMainViewPagerAdaper = new AdapterViewPager(mMainActivity.getSupportFragmentManager());
         ArrayList<BaseFragment> list = new ArrayList<>();
-        list.add(new DailyMotionFragment());
-        list.add(new DailyMotionFragment());
+        mDailyMotionFragment = new DailyMotionFragment();
+        list.add(mDailyMotionFragment);
+        mYouTubeFragment = new YouTubeFragment();
+        list.add(mYouTubeFragment);
         mMainViewPagerAdaper.bindData(list, mTitles);
         mMainViewPager.setAdapter(mMainViewPagerAdaper);
 
         initCoordinatortab();
 
         mNavigationLeft = get(R.id.navigation_left);
-        setOnClickListener(new View.OnClickListener(){
+        setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
@@ -126,19 +127,59 @@ public class MainViewDelegate extends AppDelegate {
 
     private void initCoordinatortab() {
         mCoordinatorTabLayout = get(R.id.coordinatortablayout);
-        mCoordinatorTabLayout.setTitle("")
-                .setContentScrimColorArray(mColorArray)
+        mCoordinatorTabLayout.setTitle(null)
                 .setLoadHeaderImagesListener(new LoadHeaderImagesListener() {
                     @Override
-                    public void loadHeaderImages(ImageView imageView, TabLayout.Tab tab) {
+                    public void loadHeaderImages(final ImageView imageView, TabLayout.Tab tab) {
                         switch (tab.getPosition()) {
-                            default:
-                                String url = "https://raw.githubusercontent.com/hugeterry/CoordinatorTabLayout/master/sample/src/main/res/mipmap-hdpi/bg_android.jpg";
-                                mMainActivity.getAppComponent().imageLoader().loadImage(mMainActivity, GlideImageConfig.builder().imageView(imageView).url(url).build());
+                            case 0:
+                                Glide.with(mContext).load(R.drawable.dailymotion_poster).asBitmap().into(new SimpleTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                        imageView.setImageBitmap(resource);
+                                        changeToolbarColor(resource);
+                                    }
+                                });
+                                break;
+                            case 1:
+                                Glide.with(mContext).load(R.drawable.youtube_poster).asBitmap().into(new SimpleTarget<Bitmap>() {
+                                    @Override
+                                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                                        imageView.setImageBitmap(resource);
+                                        changeToolbarColor(resource);
+                                    }
+                                });
+                                break;
 
                         }
                     }
                 })
                 .setupWithViewPager(mMainViewPager);
+    }
+
+    private void changeToolbarColor(Bitmap bitmap) {
+        Palette.Builder builder = Palette.from(bitmap);
+        builder.generate(new Palette.PaletteAsyncListener() {
+            @Override
+            public void onGenerated(Palette palette) {
+                LogUtils.v("changeToolbarColor");
+                //获取到充满活力的这种色调
+                Palette.Swatch vibrant = palette.getVibrantSwatch();
+                Palette.Swatch darkvibrant = palette.getDarkVibrantSwatch();
+                mCoordinatorTabLayout.setContentScrimColor(vibrant.getRgb());
+                mCoordinatorTabLayout.getTabLayout().setSelectedTabIndicatorColor(darkvibrant.getRgb());
+            }
+        });
+    }
+
+    private int colorBurn(int RGBValues) {
+        int alpha = RGBValues >> 24;
+        int red = RGBValues >> 16 & 0xFF;
+        int green = RGBValues >> 8 & 0xFF;
+        int blue = RGBValues & 0xFF;
+        red = (int) Math.floor(red * (1 - 0.1));
+        green = (int) Math.floor(green * (1 - 0.1));
+        blue = (int) Math.floor(blue * (1 - 0.1));
+        return Color.rgb(red, green, blue);
     }
 }

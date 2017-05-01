@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 
 /**
- * dailymotion
+ * dailymotion_poster
  *
  * https://api.dailymotion.com/playlists?search=rr
  *

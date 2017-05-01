@@ -1,13 +1,18 @@
 package com.videobox.view.adapter;
 
+import android.app.Activity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.videobox.R;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
+import com.videobox.model.dailymotion.service.DailymotionService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,14 +21,16 @@ import java.util.List;
 
 public class DailyMotionRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoBean>{
 
+    private Activity mActivity;
 
-    public DailyMotionRecyclerAdapter(List<DMVideoBean> infos) {
+    public DailyMotionRecyclerAdapter(List<DMVideoBean> infos, Activity activity) {
         super(infos);
+        mActivity = activity;
     }
 
     @Override
     public BaseHolder<DMVideoBean> getHolder(View v, int viewType) {
-        return new DailyMotionItemHolder(v);
+        return new DailyMotionItemHolder(v, mActivity);
     }
 
     @Override
@@ -33,15 +40,20 @@ public class DailyMotionRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoB
 
     public static class DailyMotionItemHolder extends BaseHolder<DMVideoBean> {
 
-        private TextView textView;
+        private ImageView videoPoster;
 
-        public DailyMotionItemHolder(View itemView){
+        private Activity mActivity;
+
+        public DailyMotionItemHolder(View itemView, Activity activity){
             super(itemView);
-            textView = (TextView) itemView.findViewById(R.id.text);
+            mActivity = activity;
+            videoPoster = (ImageView) itemView.findViewById(R.id.video_poster);
         }
         @Override
         public void setData(DMVideoBean data, int position) {
-            textView.setText("1111111111");
+            Glide.with(mActivity).load(data.thumbnail_url)
+                    .placeholder(R.drawable.dm_item_img_default)
+                    .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
         }
     }
 }

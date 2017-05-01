@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
@@ -187,6 +188,12 @@ public class CoordinatorTabLayout extends CoordinatorLayout {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+    }
+
+    public void setContentScrimColor(@ColorInt int color) {
+        if (mCollapsingToolbarLayout != null) {
+            mCollapsingToolbarLayout.setContentScrimColor(color);
+        }
     }
 
     /**

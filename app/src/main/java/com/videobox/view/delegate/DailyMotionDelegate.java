@@ -1,16 +1,13 @@
 package com.videobox.view.delegate;
 
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
 import com.commonlibs.themvp.view.AppDelegate;
+import com.paginate.Paginate;
 import com.videobox.R;
-import com.videobox.model.dailymotion.entity.DMVideoBean;
-import com.videobox.view.adapter.DailyMotionRecyclerAdapter;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.videobox.presenter.DailyMotionFragment;
 
 /**
  * Created by liyanju on 2017/4/29.
@@ -20,6 +17,10 @@ public class DailyMotionDelegate extends AppDelegate {
 
     private RecyclerView mRecyclerView;
 
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+
+    private DailyMotionFragment mDailymotionFragment;
+
     @Override
     public int getRootLayoutId() {
         return R.layout.daily_motion_fragment_layout;
@@ -27,12 +28,22 @@ public class DailyMotionDelegate extends AppDelegate {
 
     @Override
     public void initWidget() {
+        mDailymotionFragment = getFragment();
+
         mRecyclerView = get(R.id.dm_recyclerview);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-        List<DMVideoBean> infos = new ArrayList<>();
-        for (int i = 0; i < 20; i++) {
-            infos.add(new DMVideoBean());
-        }
-        mRecyclerView.setAdapter(new DailyMotionRecyclerAdapter(infos));
+        mRecyclerView.setAdapter(mDailymotionFragment.getDailyMotionRecyclerAdapter());
+
+        mSwipeRefreshLayout = get(R.id.dm_swipeRefresh);
+        mSwipeRefreshLayout.setOnRefreshListener(mDailymotionFragment);
+    }
+
+    public void showLoading() {
+        mSwipeRefreshLayout.setRefreshing(true);
+    }
+
+    public void hideLoading() {
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 }

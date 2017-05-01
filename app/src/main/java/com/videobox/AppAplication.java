@@ -2,6 +2,8 @@ package com.videobox;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v4.content.ContextCompat;
+import android.view.View;
 
 import com.commonlibs.base.BaseApplication;
 import com.commonlibs.base.GlobalConfig;
@@ -13,6 +15,7 @@ import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.rxerrorhandler.handler.listener.ResponseErroListener;
 import com.commonlibs.util.FileUtils;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.SnackbarUtils;
 import com.commonlibs.util.Utils;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.cache.DailyMotionCache;
@@ -73,5 +76,14 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
     @Override
     public void handleResponseError(Context context, Exception e) {
             LogUtils.v("handleResponseError", e.getMessage());
+        try {
+            View view = getAppComponent().appManager().getCurrentActivity()
+                    .getWindow().getDecorView().findViewById(android.R.id.content);
+            SnackbarUtils.showShortSnackbar(view, getString(R.string.netwokr_error),
+                    ContextCompat.getColor(this, R.color.material_white),
+                    ContextCompat.getColor(this, R.color.md_indigo500));
+        } catch (Exception e2) {
+            e2.printStackTrace();
+        }
     }
 }
