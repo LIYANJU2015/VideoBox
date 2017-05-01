@@ -9,7 +9,7 @@
         android:id="@+id/coordinatortablayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:tabIndicatorColor="@color/colorPrimary">
+        app:tabIndicatorColor="@color/colorAccent">
 
 
         <android.support.v4.view.ViewPager
@@ -20,16 +20,66 @@
 
     </com.videobox.view.widget.CoordinatorTabLayout>
 
-    <ListView
+    <LinearLayout
+        android:id="@+id/left_menu"
         android:layout_marginTop="?attr/actionBarSize"
-        android:id="@+id/navdrawer"
-        android:layout_width="@dimen/navdrawer_width"
         android:layout_height="match_parent"
+        android:layout_width="@dimen/navdrawer_width"
+        android:background="@color/material_grey900"
         android:layout_gravity="start"
-        android:background="@color/colorPrimary"
-        android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0dp"
-        android:drawSelectorOnTop="false"/>
+        android:orientation="vertical">
+
+        <com.videobox.view.widget.CanaroTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginLeft="15dp"
+            android:gravity="center|left"
+            android:text="@string/home_text"
+            android:textColor="@color/material_white"
+            android:id="@+id/menu_home"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_marginLeft="10dp"
+            android:background="@color/material_grey600"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <com.videobox.view.widget.CanaroTextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:gravity="center|left"
+            android:text="@string/category_text"
+            android:textColor="@color/material_white"
+            android:textSize="20sp" />
+
+        <View
+            android:layout_marginLeft="10dp"
+            android:background="@color/material_grey600"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"/>
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/menu_swipeRefresh"
+            android:layout_height="match_parent"
+            android:layout_width="@dimen/navdrawer_width">
+
+            <ListView
+                android:id="@+id/navdrawer"
+                android:layout_width="@dimen/navdrawer_width"
+                android:layout_height="match_parent"
+                android:choiceMode="singleChoice"
+                android:paddingLeft="10dp"
+                android:divider="@color/material_grey600"
+                android:dividerHeight="1dp"
+                android:drawSelectorOnTop="false" />
+        </android.support.v4.widget.SwipeRefreshLayout>
+    </LinearLayout>
 
 </android.support.v4.widget.DrawerLayout>

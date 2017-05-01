@@ -3,13 +3,14 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-<com.videobox.view.widget.CanaroTextView
-    android:gravity="center"
+<com.videobox.view.widget.ProximaTextView
+    android:gravity="center|left"
     android:paddingTop="20dp"
     android:paddingBottom="20dp"
-    android:text="222"
+    android:paddingLeft="5dp"
+    android:paddingRight="10dp"
     android:id="@+id/channel_tv"
-    android:textSize="20sp"
+    android:textSize="17sp"
     android:textColor="@color/material_white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content" />

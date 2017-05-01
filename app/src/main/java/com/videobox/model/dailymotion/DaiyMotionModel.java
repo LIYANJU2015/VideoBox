@@ -54,7 +54,7 @@ public class DaiyMotionModel extends BaseModel {
 
     public Observable<DMVideosPageBean> getChannelVideos(String id, Map<String, String> options, int page, boolean update) {
         Observable<DMVideosPageBean> oDMChannelVideo = mService.getChannelVideos(id, options, page);
-        return mCache.getChannelVideos(oDMChannelVideo, new DynamicKey(page), new EvictDynamicKey(update))
+        return mCache.getChannelVideos(oDMChannelVideo, id, new DynamicKey(page), new EvictDynamicKey(update))
                 .flatMap(new Func1<Reply<DMVideosPageBean>, Observable<DMVideosPageBean>>() {
                     @Override
                     public Observable<DMVideosPageBean> call(Reply<DMVideosPageBean> dmVideosPageBeanReply) {

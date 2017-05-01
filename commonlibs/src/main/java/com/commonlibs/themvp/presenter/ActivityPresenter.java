@@ -50,10 +50,10 @@ public abstract class ActivityPresenter<T extends IDelegate> extends BaseActivit
         setContentView(viewDelegate.getRootView());
         initToolbar();
         viewDelegate.initWidget();
-        iniAndBindEven();
+        initAndBindEven();
     }
 
-    protected void iniAndBindEven() {
+    protected void initAndBindEven() {
     }
 
     protected void initToolbar() {

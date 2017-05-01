@@ -5,9 +5,11 @@ import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.graphics.Palette;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 
 import com.bumptech.glide.Glide;
@@ -18,7 +20,6 @@ import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.commonlibs.util.LogUtils;
 import com.videobox.R;
-import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.presenter.DailyMotionFragment;
 import com.videobox.presenter.MainActivity;
 import com.videobox.presenter.YouTubeFragment;
@@ -59,6 +60,12 @@ public class MainViewDelegate extends AppDelegate {
     private DailyMotionFragment mDailyMotionFragment;
     private YouTubeFragment mYouTubeFragment;
 
+    private SwipeRefreshLayout mMenuSwipeRefresh;
+
+    public MenuItemAdapter menuItemAdapter;
+
+    private LinearLayout mLeftMenuLinear;
+
     @Override
     public int getRootLayoutId() {
         return R.layout.activity_main;
@@ -84,29 +91,29 @@ public class MainViewDelegate extends AppDelegate {
         setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mDrawerLayout.isDrawerOpen(mDrawerList)) {
-                    mDrawerLayout.closeDrawer(mDrawerList);
-                } else {
-                    mDrawerLayout.openDrawer(mDrawerList);
-                }
+                drawerToggle();
             }
         }, R.id.navigation_left);
 
         initDrawerMenu();
+    }
 
-        mDrawerList = get(R.id.navdrawer);
-        MenuItemAdapter menuItemAdapter = new MenuItemAdapter(mContext);
-        ArrayList<DMChannelsBean.Channel> arrayList = new ArrayList<>();
-        arrayList.add(new DMChannelsBean.Channel());
-        arrayList.add(new DMChannelsBean.Channel());
-        arrayList.add(new DMChannelsBean.Channel());
-        menuItemAdapter.updateDMChannel(arrayList);
-        mDrawerList.setAdapter(menuItemAdapter);
-
+    public void drawerToggle() {
+        mDrawerLayout.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (mDrawerLayout.isDrawerOpen(mLeftMenuLinear)) {
+                    mDrawerLayout.closeDrawer(mLeftMenuLinear);
+                } else {
+                    mDrawerLayout.openDrawer(mLeftMenuLinear);
+                }
+            }
+        }, 200);
     }
 
     private void initDrawerMenu() {
         mDrawerLayout = get(R.id.drawer_layout);
+        mLeftMenuLinear = get(R.id.left_menu);
         DrawerArrowDrawable drawerArrow = new DrawerArrowDrawable(mMainActivity) {
             @Override
             public boolean isLayoutRtl() {
@@ -118,6 +125,25 @@ public class MainViewDelegate extends AppDelegate {
                 R.string.drawer_close, mNavigationLeft);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
+
+        mMenuSwipeRefresh = get(R.id.menu_swipeRefresh);
+        mMenuSwipeRefresh.setOnRefreshListener(mMainActivity);
+
+        mDrawerList = get(R.id.navdrawer);
+        menuItemAdapter = new MenuItemAdapter(mContext);
+        mDrawerList.setAdapter(menuItemAdapter);
+    }
+
+    public void showLoading() {
+        if (mMenuSwipeRefresh != null) {
+            mMenuSwipeRefresh.setRefreshing(true);
+        }
+    }
+
+    public void hideLoading() {
+        if (mMenuSwipeRefresh != null) {
+            mMenuSwipeRefresh.setRefreshing(false);
+        }
     }
 
     @Override
@@ -133,7 +159,8 @@ public class MainViewDelegate extends AppDelegate {
                     public void loadHeaderImages(final ImageView imageView, TabLayout.Tab tab) {
                         switch (tab.getPosition()) {
                             case 0:
-                                Glide.with(mContext).load(R.drawable.dailymotion_poster).asBitmap().into(new SimpleTarget<Bitmap>() {
+                                mMainActivity.setVideoListFragment(mDailyMotionFragment);
+                                Glide.with(mContext).load(R.drawable.dailymotion_poster2).asBitmap().into(new SimpleTarget<Bitmap>() {
                                     @Override
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         imageView.setImageBitmap(resource);
@@ -142,7 +169,8 @@ public class MainViewDelegate extends AppDelegate {
                                 });
                                 break;
                             case 1:
-                                Glide.with(mContext).load(R.drawable.youtube_poster).asBitmap().into(new SimpleTarget<Bitmap>() {
+                                mMainActivity.setVideoListFragment(mYouTubeFragment);
+                                Glide.with(mContext).load(R.drawable.youtube_poster3).asBitmap().into(new SimpleTarget<Bitmap>() {
                                     @Override
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         imageView.setImageBitmap(resource);
@@ -165,9 +193,9 @@ public class MainViewDelegate extends AppDelegate {
                 LogUtils.v("changeToolbarColor");
                 //获取到充满活力的这种色调
                 Palette.Swatch vibrant = palette.getVibrantSwatch();
-                Palette.Swatch darkvibrant = palette.getDarkVibrantSwatch();
-                mCoordinatorTabLayout.setContentScrimColor(vibrant.getRgb());
-                mCoordinatorTabLayout.getTabLayout().setSelectedTabIndicatorColor(darkvibrant.getRgb());
+                if (vibrant != null) {
+                    mCoordinatorTabLayout.setContentScrimColor(vibrant.getRgb());
+                }
             }
         });
     }

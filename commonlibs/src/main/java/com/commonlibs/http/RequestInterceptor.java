@@ -107,7 +107,7 @@ public class RequestInterceptor implements Interceptor {
             //解析response content
             bodyString = parseContent(responseBody, encoding, clone);
 
-            LogUtils.w(TAG, isJson(responseBody) ? CharactorHandler.jsonFormat(bodyString) : bodyString);
+            //LogUtils.w(TAG, isJson(responseBody) ? CharactorHandler.jsonFormat(bodyString) : bodyString);
 
         } else {
             LogUtils.w(TAG, "This result isn't parsed");

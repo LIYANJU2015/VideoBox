@@ -1,28 +1,32 @@
 package com.videobox.presenter;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.ImageView;
+import android.widget.AdapterView;
 
-import com.bumptech.glide.Glide;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
+import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
+import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
 import com.videobox.R;
+import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
+import com.videobox.model.dailymotion.entity.DMChannelsBean;
+import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.MainViewDelegate;
-import com.videobox.view.widget.CoordinatorTabLayout;
-import com.videobox.view.widget.LoadHeaderImagesListener;
 
 import java.util.ArrayList;
 
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
+
 
 /**
- * dailymotion_poster
+ * dailymotion_poster2
  *
  * https://api.dailymotion.com/playlists?search=rr
  *
@@ -33,12 +37,16 @@ import java.util.ArrayList;
  *
  */
 
-public class MainActivity extends ActivityPresenter<MainViewDelegate> implements View.OnClickListener{
+public class MainActivity extends ActivityPresenter<MainViewDelegate> implements SwipeRefreshLayout.OnRefreshListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
     private DaiyMotionModel mDaiyMotionModel;
     private RxErrorHandler mRxErrorHandler;
+
+    private ArrayList<DMChannelsBean.Channel> mDMChannel = new ArrayList<>();
+
+    private Contract.IVideoListFragment mIVideoListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,13 +54,75 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
-        mDaiyMotionModel = new DaiyMotionModel(getAppComponent().repositoryManager());
-        mRxErrorHandler = getAppComponent().rxErrorHandler();
+
+    }
+
+    public void setVideoListFragment(Contract.IVideoListFragment videoListFragment) {
+        mIVideoListFragment = videoListFragment;
     }
 
     @Override
-    protected void iniAndBindEven() {
+    protected void initAndBindEven() {
+        mDaiyMotionModel = new DaiyMotionModel(getAppComponent().repositoryManager());
+        mRxErrorHandler = getAppComponent().rxErrorHandler();
 
+        requestDMChannel(false);
+
+        viewDelegate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
+                DMChannelsBean.Channel channel = mDMChannel.get(postion);
+                if (mIVideoListFragment != null) {
+                    mIVideoListFragment.showChannelVideoByID(channel.id);
+                }
+                viewDelegate.drawerToggle();
+            }
+        }, R.id.navdrawer);
+
+        viewDelegate.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                if (mIVideoListFragment != null) {
+                    mIVideoListFragment.showChannelVideoByID(null);
+                }
+            }
+        }, R.id.menu_home);
+    }
+
+    private void requestDMChannel(boolean update) {
+        mDaiyMotionModel.getChannels(APIConstant.DailyMontion.sChannelsMap, update, 1)
+                .subscribeOn(Schedulers.io())
+                .compose(this.<DMChannelsBean>bindToLifecycle())
+                .retryWhen(new RetryWithDelay(3, 2))
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (viewDelegate != null) {
+                            viewDelegate.showLoading();
+                        }
+                    }
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        if (viewDelegate != null) {
+                            viewDelegate.hideLoading();
+                        }
+                    }
+                })
+                .subscribe(new ErrorHandleSubscriber<DMChannelsBean>(mRxErrorHandler) {
+                    @Override
+                    public void onNext(DMChannelsBean dmChannelsBean) {
+                        mDMChannel.clear();
+
+                        if (dmChannelsBean.list != null) {
+                            mDMChannel.addAll(dmChannelsBean.list);
+                        }
+
+                        viewDelegate.menuItemAdapter.updateDMChannel(mDMChannel);
+                    }
+                });
     }
 
     @Override
@@ -67,20 +137,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
     }
 
     @Override
-    public void onClick(View v) {
-//        switch (v.getId()) {
-//            case R.id.btn1:
-//                mDaiyMotionModel.getVideos(APIConstant.DailyMontion.sWatchVideosMap, false, 1)
-//                        .compose(this.<DMVideosPageBean>bindToLifecycle())
-//                        .retryWhen(new RetryWithDelay(3, 2))
-//                        .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
-//                        .subscribe(new ErrorHandleSubscriber<DMVideosPageBean>(mRxErrorHandler) {
-//                            @Override
-//                            public void onNext(DMVideosPageBean dmVideosPageBean) {
-//                                ToastUtils.showShortToast(String.valueOf(dmVideosPageBean.total));
-//                            }
-//                        });
-//                break;
-//        }
+    public void onRefresh() {
+        requestDMChannel(true);
     }
 }

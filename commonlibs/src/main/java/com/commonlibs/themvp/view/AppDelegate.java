@@ -24,6 +24,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -98,6 +99,15 @@ public abstract class AppDelegate implements IDelegate {
         }
         for (int id : ids) {
             get(id).setOnClickListener(listener);
+        }
+    }
+
+    public void setOnItemClickListener(AdapterView.OnItemClickListener listener, int... ids) {
+        if (ids == null) {
+            return;
+        }
+        for (int id : ids) {
+            ((AdapterView)get(id)).setOnItemClickListener(listener);
         }
     }
 

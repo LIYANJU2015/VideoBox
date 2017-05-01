@@ -111,7 +111,7 @@ public class APIConstant {
             sWatchVideosMap.put("fields", "title,channel,channel.id,description,duration,id,thumbnail_url,updated_time");
             sWatchVideosMap.put("limit", "10");
 
-            sChannelsMap.put("fields", "id,name,");
+            sChannelsMap.put("fields", "id,name,description,");
 
             sChannelVideosMap.put("fields", "title,channel,channel.id,description,duration,id,thumbnail_url,updated_time");
             sChannelVideosMap.put("sort", "visited");

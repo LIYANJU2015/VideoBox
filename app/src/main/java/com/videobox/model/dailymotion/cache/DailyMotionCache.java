@@ -29,14 +29,14 @@ public interface DailyMotionCache {
                                                   EvictProvider evictProvider);
 
     @LifeCache(duration = 30, timeUnit = TimeUnit.DAYS)
-    Observable<Reply<DMVideosPageBean>> getChannelVideos(Observable<DMVideosPageBean> oVideoPage,
-                                                  DynamicKey idLastUserQueried,
-                                                  EvictProvider evictProvider);
+    Observable<Reply<DMVideosPageBean>> getChannelVideos(Observable<DMVideosPageBean> oVideoPage, String id,
+                                                         DynamicKey idLastUserQueried,
+                                                         EvictProvider evictProvider);
 
     @LifeCache(duration = 30, timeUnit = TimeUnit.DAYS)
     Observable<Reply<DMVideosPageBean>> getSearchVideo(Observable<DMVideosPageBean> oVideoPage,
-                                                         DynamicKey idLastUserQueried,
-                                                         EvictProvider evictProvider);
+                                                       DynamicKey idLastUserQueried,
+                                                       EvictProvider evictProvider);
 }
 
 

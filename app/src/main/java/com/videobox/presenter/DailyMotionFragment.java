@@ -11,6 +11,7 @@ import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.FragmentPresenter;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.StringUtils;
 import com.commonlibs.widget.imageloader.ImageLoader;
 import com.paginate.Paginate;
 import com.videobox.R;
@@ -19,6 +20,7 @@ import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
 import com.videobox.view.adapter.DailyMotionRecyclerAdapter;
+import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.DailyMotionDelegate;
 
 import java.util.ArrayList;
@@ -35,7 +37,7 @@ import static android.media.CamcorderProfile.get;
  */
 
 public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> implements
-        SwipeRefreshLayout.OnRefreshListener, Paginate.Callbacks {
+        SwipeRefreshLayout.OnRefreshListener, Paginate.Callbacks,Contract.IVideoListFragment {
 
     private static final String TAG = DailyMotionFragment.class.getSimpleName();
 
@@ -59,6 +61,10 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
     private int pagenum = 1;
 
     private Paginate mPaginate;
+
+    private boolean mInHome = true;
+
+    private String mCurChannelID;
 
     @Override
     protected Class<DailyMotionDelegate> getDelegateClass() {
@@ -87,6 +93,75 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
     public DailyMotionRecyclerAdapter getDailyMotionRecyclerAdapter() {
         mAdapter = new DailyMotionRecyclerAdapter(mDMVideoList, getActivity());
         return mAdapter;
+    }
+
+    @Override
+    public void showChannelVideoByID(String id) {
+        pagenum = 1;
+        mCurChannelID = id;
+        mDMVideoList.clear();
+        if (!StringUtils.isEmpty(id)) {
+            mInHome = false;
+            getChannelVideoByID(id, pagenum, true, true);
+        } else {
+            mInHome = true;
+            getVideoData(true);
+        }
+    }
+
+    private void getChannelVideoByID(String id, int page, boolean update, final boolean pullToRefresh) {
+        LogUtils.v("getChannelVideoByID ", "id " + id);
+        mDaiyMotionModel.getChannelVideos(id,
+                APIConstant.DailyMontion.sChannelVideosMap, page, update)
+                .subscribeOn(Schedulers.io())
+                .compose(this.<DMVideosPageBean>bindToLifecycle())
+                .retryWhen(new RetryWithDelay(3, 2))
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        LogUtils.v("getChannelVideoByID doOnSubscribe call");
+                        if (pullToRefresh && viewDelegate != null) {
+                            viewDelegate.showLoading();
+                        } else {
+                            mIsLoadingMore = true;
+                        }
+                    }
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        LogUtils.v("getChannelVideoByID", "doAfterTerminate pullToRefresh " + pullToRefresh);
+                        if (viewDelegate != null && pullToRefresh) {
+                            viewDelegate.hideLoading();
+                        } else {
+                            mIsLoadingMore = false;
+                        }
+                    }
+                })
+                .subscribe(new ErrorHandleSubscriber<DMVideosPageBean>(mRxErrorHandler) {
+                    @Override
+                    public void onNext(DMVideosPageBean dmVideosPageBean) {
+                        LogUtils.v("getChannelVideoByID", "onNext");
+                        if (pullToRefresh) {
+                            mDMVideoList.clear();
+                        }
+
+                        if (dmVideosPageBean.has_more) {
+                            pagenum = dmVideosPageBean.page + 1;
+                        }
+
+                        int preEndIndex = mDMVideoList.size();
+                        if (dmVideosPageBean.list != null) {
+                            mDMVideoList.addAll(dmVideosPageBean.list);
+                        }
+
+                        if (pullToRefresh)
+                            mAdapter.notifyDataSetChanged();
+                        else
+                            mAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
+                    }
+                });
     }
 
     private void getVideoData(final boolean pullToRefresh) {
@@ -150,13 +225,21 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     @Override
     public void onRefresh() { //下拉刷新当前页
-        getVideoData(true);
+        if (mInHome) {
+            getVideoData(true);
+        } else {
+            getChannelVideoByID(mCurChannelID, pagenum, true, true);
+        }
     }
 
     @Override
     public void onLoadMore() { //加载更多
         LogUtils.v("onLoadMore " + mIsLoadingMore);
-        getVideoData(false);
+        if (mInHome) {
+            getVideoData(false);
+        } else {
+            getChannelVideoByID(mCurChannelID, pagenum, true, false);
+        }
     }
 
     @Override

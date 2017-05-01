@@ -5,12 +5,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.videobox.R;
 import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.model.youtube.entity.YTBCategoriesBean;
 
 import java.util.ArrayList;
+
+import static android.media.CamcorderProfile.get;
 
 /**
  * Created by liyanju on 2017/4/30.
@@ -34,14 +37,12 @@ public class MenuItemAdapter extends BaseAdapter{
 
     public void updateDMChannel(ArrayList<DMChannelsBean.Channel> channels) {
         mChannels.addAll(channels);
-        channels.clear();
         mCurChannelType = DM_TYPE;
         notifyDataSetChanged();
     }
 
     public void updateYouTubeCategories(ArrayList<YTBCategoriesBean.Categories> channels) {
         mCategories.addAll(channels);
-        channels.clear();
         mCurChannelType = YOUTUBE_TYPE;
         notifyDataSetChanged();
     }
@@ -70,9 +71,19 @@ public class MenuItemAdapter extends BaseAdapter{
     }
 
     @Override
-    public View getView(int i, View view, ViewGroup viewGroup) {
+    public View getView(int postion, View view, ViewGroup viewGroup) {
         if (view == null) {
             view = LayoutInflater.from(mContext).inflate(R.layout.channel_item, null);
+        }
+
+        TextView channelTV = (TextView)view.findViewById(R.id.channel_tv);
+
+        if (mCurChannelType == DM_TYPE) {
+            DMChannelsBean.Channel channel = mChannels.get(postion);
+            channelTV.setText(channel.name);
+        } else {
+            YTBCategoriesBean.Categories categories = mCategories.get(postion);
+            channelTV.setText(categories.snippet.title);
         }
 
         return view;
