@@ -3,10 +3,11 @@
     package="com.videobox">
 
     <application
+        android:name=".AppAplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name=".AppAplication"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name="com.videobox.presenter.MainActivity">
@@ -17,9 +18,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".presenter.DaiyMotionPlayerActivity"
+            android:configChanges="orientation|screenSize"
+            android:launchMode="singleTask" />
+
         <provider
-            android:authorities="com.videobox.model.db"
-            android:name=".model.db.VideoBoxContentProvider"/>
+            android:name=".model.db.VideoBoxContentProvider"
+            android:authorities="com.videobox.model.db" />
     </application>
 
 </manifest>

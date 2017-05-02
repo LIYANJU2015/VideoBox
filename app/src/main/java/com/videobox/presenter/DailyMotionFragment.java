@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.widget.ImageView;
 
+import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
@@ -37,7 +39,8 @@ import static android.media.CamcorderProfile.get;
  */
 
 public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> implements
-        SwipeRefreshLayout.OnRefreshListener, Paginate.Callbacks,Contract.IVideoListFragment {
+        SwipeRefreshLayout.OnRefreshListener, Paginate.Callbacks,Contract.IVideoListFragment,
+        BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<DMVideoBean> {
 
     private static final String TAG = DailyMotionFragment.class.getSimpleName();
 
@@ -92,6 +95,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     public DailyMotionRecyclerAdapter getDailyMotionRecyclerAdapter() {
         mAdapter = new DailyMotionRecyclerAdapter(mDMVideoList, getActivity());
+        mAdapter.setOnItemClickListener(this);
         return mAdapter;
     }
 
@@ -251,5 +255,11 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
     @Override
     public boolean hasLoadedAllItems() {
         return false;
+    }
+
+    @Override
+    public void onItemClick(View view, int viewType, DMVideoBean data, int position) {
+        LogUtils.v("onItemClick", " video id " + data.id);
+        DaiyMotionPlayerActivity.launch(data.id);
     }
 }
