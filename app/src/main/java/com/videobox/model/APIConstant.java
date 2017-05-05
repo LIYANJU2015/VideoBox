@@ -96,6 +96,8 @@ public class APIConstant {
 
         public static HashMap<String, String> sSearchVideosMap = new HashMap<>();
 
+        public static HashMap<String, String> sRelatedVideosMap = new HashMap<>();
+
         public static String HOST_URL = "https://api.dailymotion.com/";
 
         public static String PAGE = "page";
@@ -118,6 +120,9 @@ public class APIConstant {
             sChannelVideosMap.put("limit", "10");
 
             sSearchVideosMap.put("fields", "description,id,name,thumbnail_url,updated_time,");
+
+            sRelatedVideosMap.put("fields", "title,channel,channel.id,description,duration,id,thumbnail_url,updated_time");
+            sRelatedVideosMap.put("limit", "10");
         }
     }
 }

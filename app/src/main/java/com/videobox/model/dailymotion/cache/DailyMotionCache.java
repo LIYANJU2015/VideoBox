@@ -37,6 +37,11 @@ public interface DailyMotionCache {
     Observable<Reply<DMVideosPageBean>> getSearchVideo(Observable<DMVideosPageBean> oVideoPage,
                                                        DynamicKey idLastUserQueried,
                                                        EvictProvider evictProvider);
+
+    @LifeCache(duration = 5, timeUnit = TimeUnit.MINUTES)
+    Observable<Reply<DMVideosPageBean>> getVideoRelated(Observable<DMVideosPageBean> oVideoPage,
+                                                         DynamicKey idLastUserQueried,
+                                                         EvictProvider evictProvider);
 }
 
 

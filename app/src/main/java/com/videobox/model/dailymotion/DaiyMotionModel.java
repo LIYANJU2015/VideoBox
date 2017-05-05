@@ -73,4 +73,15 @@ public class DaiyMotionModel extends BaseModel {
                     }
                 });
     }
+
+    public Observable<DMVideosPageBean> getVideoRelated(Map<String, String> options, String videoId, int page, boolean update) {
+        Observable<DMVideosPageBean> oDMVideosPageBean = mService.getVideoRelated(videoId, options, page);
+        return mCache.getVideoRelated(oDMVideosPageBean, new DynamicKey(page), new EvictDynamicKey(update))
+                .flatMap(new Func1<Reply<DMVideosPageBean>, Observable<DMVideosPageBean>>() {
+                    @Override
+                    public Observable<DMVideosPageBean> call(Reply<DMVideosPageBean> dmVideosPageBeanReply) {
+                        return Observable.just(dmVideosPageBeanReply.getData());
+                    }
+                });
+    }
 }

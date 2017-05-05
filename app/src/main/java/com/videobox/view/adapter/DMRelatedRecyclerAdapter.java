@@ -1,6 +1,7 @@
 package com.videobox.view.adapter;
 
 import android.app.Activity;
+import android.content.pm.ProviderInfo;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,20 +11,18 @@ import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.videobox.R;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
-import com.videobox.model.dailymotion.service.DailymotionService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by liyanju on 2017/4/29.
+ * Created by liyanju on 2017/5/5.
  */
 
-public class DailyMotionRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoBean> {
+public class DMRelatedRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoBean> {
 
     private Activity mActivity;
 
-    public DailyMotionRecyclerAdapter(List<DMVideoBean> infos, Activity activity) {
+    public DMRelatedRecyclerAdapter(List<DMVideoBean> infos, Activity activity) {
         super(infos);
         mActivity = activity;
     }
@@ -35,26 +34,28 @@ public class DailyMotionRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoB
 
     @Override
     public int getLayoutId(int viewType) {
-        return R.layout.daily_motion_item;
+        return R.layout.dm_related_item;
     }
 
     public static class DailyMotionItemHolder extends BaseHolder<DMVideoBean> {
 
         private ImageView videoPoster;
+        private TextView nameTV;
 
         private Activity mActivity;
 
-        public DailyMotionItemHolder(View itemView, Activity activity) {
+        public DailyMotionItemHolder(View itemView, Activity activity){
             super(itemView);
             mActivity = activity;
-            videoPoster = (ImageView) itemView.findViewById(R.id.video_poster);
+            videoPoster = (ImageView) itemView.findViewById(R.id.dm_poster);
+            nameTV = (TextView)itemView.findViewById(R.id.name);
         }
-
         @Override
         public void setData(DMVideoBean data, int position) {
             Glide.with(mActivity).load(data.thumbnail_url)
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
+            nameTV.setText(data.title);
         }
     }
 }

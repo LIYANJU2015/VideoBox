@@ -69,6 +69,8 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     private String mCurChannelID;
 
+    private boolean mIsLoadedAll = false;
+
     @Override
     protected Class<DailyMotionDelegate> getDelegateClass() {
         return DailyMotionDelegate.class;
@@ -104,6 +106,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
         pagenum = 1;
         mCurChannelID = id;
         mDMVideoList.clear();
+        mIsLoadedAll = false;
         if (!StringUtils.isEmpty(id)) {
             mInHome = false;
             getChannelVideoByID(id, pagenum, true, true);
@@ -150,7 +153,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                         if (pullToRefresh) {
                             mDMVideoList.clear();
                         }
-
+                        mIsLoadedAll = !dmVideosPageBean.has_more;
                         if (dmVideosPageBean.has_more) {
                             pagenum = dmVideosPageBean.page + 1;
                         }
@@ -209,7 +212,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                         if (pullToRefresh) {
                             mDMVideoList.clear();
                         }
-
+                        mIsLoadedAll = !dmVideosPageBean.has_more;
                         if (dmVideosPageBean.has_more) {
                             pagenum = dmVideosPageBean.page + 1;
                         }
@@ -254,12 +257,12 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     @Override
     public boolean hasLoadedAllItems() {
-        return false;
+        return mIsLoadedAll;
     }
 
     @Override
     public void onItemClick(View view, int viewType, DMVideoBean data, int position) {
         LogUtils.v("onItemClick", " video id " + data.id);
-        DaiyMotionPlayerActivity.launch(data.id);
+        DaiyMotionPlayerActivity.launch(data);
     }
 }

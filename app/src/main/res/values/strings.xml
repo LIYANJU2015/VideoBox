@@ -5,5 +5,7 @@
     <string name="netwokr_error">Network Error</string>
     <string name="category_text">category</string>
     <string name="home_text">home</string>
-
+    
+    <string name="player_introduction">Introduction</string>
+    <string name="player_related">Related</string>
 </resources>
