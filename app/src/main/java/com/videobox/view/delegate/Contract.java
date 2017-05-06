@@ -1,5 +1,6 @@
 package com.videobox.view.delegate;
 
+import com.dailymotion.websdk.DMWebVideoView;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 
 /**
@@ -18,5 +19,7 @@ public class Contract {
         DMVideoBean getCurrentVideoBean();
 
         String getCurrentVid();
+
+        DMWebVideoView getCurrentPlayer();
     }
 }

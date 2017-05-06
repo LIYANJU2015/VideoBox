@@ -24,9 +24,9 @@ import java.lang.reflect.Method;
  *     desc  : 栏相关工具类
  * </pre>
  */
-public class BarUtils {
+public class StatusBarColorCompat {
 
-    private BarUtils() {
+    private StatusBarColorCompat() {
         throw new UnsupportedOperationException("u can't instantiate me...");
     }
 

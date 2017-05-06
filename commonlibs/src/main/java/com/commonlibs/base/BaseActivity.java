@@ -1,6 +1,7 @@
 package com.commonlibs.base;
 
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,12 +16,15 @@ public abstract class BaseActivity extends RxAppCompatActivity {
 
     protected AppComponent mAppComponent;
 
+    protected Context mContext;
+
     public static final String IS_NOT_ADD_ACTIVITY_LIST = "is_add_activity_list";//是否加入到activity的list，管理
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mAppComponent = ((BaseApplication)getApplication()).getAppComponent();
+        mContext = getApplicationContext();
     }
 
     public AppComponent getAppComponent() {

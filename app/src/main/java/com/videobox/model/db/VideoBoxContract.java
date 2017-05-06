@@ -1,6 +1,7 @@
 package com.videobox.model.db;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
@@ -12,9 +13,12 @@ import com.videobox.model.youtube.entity.YTBLanguagesBean;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 import com.videobox.model.youtube.entity.YTbRegionsBean;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.videobox.model.db.VideoBoxContract.DMVideo.THUMBNAIL_URL;
+import static com.videobox.model.db.VideoBoxContract.YouTubeRgions.GL;
 
 /**
  * Created by liyanju on 2017/4/17.
@@ -327,6 +331,93 @@ public class VideoBoxContract {
             columnsMap.put(CHANNELTITLE, "text");
             columnsMap.put(LIVEBROADCASTCONTENT, "text");
             columnsMap.put(DEFAULTAUDIOLANGUAGE, "text");
+        }
+    }
+
+    public static class SearchHistory extends TableInfo {
+
+        public static final String TABLE_NAME = "SearchHistory";
+
+        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+
+        public static final String SEARCH_CONTENT = "search_content";
+        public static final String SEARCH_TIME = "search_time";
+
+        public static ContentValues createContentValue(String searchHistory) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(SEARCH_CONTENT, searchHistory);
+            contentValues.put(SEARCH_TIME, String.valueOf(System.currentTimeMillis()));
+            return contentValues;
+        }
+
+        @Override
+        public String onTableName() {
+            return TABLE_NAME;
+        }
+
+        @Override
+        public Uri onContentUri() {
+            return CONTENT_URI;
+        }
+
+        @Override
+        public void onInitColumnsMap(Map<String, String> columnsMap) {
+            columnsMap.put(SEARCH_CONTENT, "text");
+            columnsMap.put(SEARCH_TIME, "text");
+        }
+
+        public static String getSearchContent(Cursor cursor) {
+            return cursor.getString(cursor.getColumnIndex(SEARCH_CONTENT));
+        }
+        public static String getSearchTime(Cursor cursor) {
+            return cursor.getString(cursor.getColumnIndex(SEARCH_TIME));
+        }
+
+        public static Cursor query(Context context) {
+            return context.getContentResolver().query(CONTENT_URI, null, null, null, SEARCH_TIME + " desc ");
+        }
+
+        public static Uri insert(Context context, ContentValues values) {
+            return context.getContentResolver().insert(CONTENT_URI, values);
+        }
+
+        public static Uri insertNewHistroy(Context context, ContentValues values) {
+            Cursor cursor = null;
+            try {
+                cursor = query(context);
+                if (cursor != null && cursor.getCount() > 10) {
+                    cursor.moveToLast();
+                    String where = SEARCH_TIME + " = " + getSearchTime(cursor);
+                    context.getContentResolver().delete(CONTENT_URI, where, null);
+                    return insert(context, values);
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+            return null;
+        }
+
+        public static String[] getAllSearchHistory(Context context) {
+            Cursor cursor = null;
+            try {
+                 cursor = query(context);
+                if (cursor != null) {
+                    String strs[] = new String[cursor.getCount()];
+                    int i = 0;
+                    while (cursor.moveToNext()) {
+                        strs[i] = getSearchContent(cursor);
+                        i++;
+                    }
+                    return strs;
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+            return new String[0];
         }
     }
 }

@@ -20,6 +20,13 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         this.mInfos = infos;
     }
 
+    public void clearAdapter() {
+        if (mInfos != null) {
+            mInfos.clear();
+        }
+        notifyDataSetChanged();
+    }
+
     /**
      * 创建Hodler
      *

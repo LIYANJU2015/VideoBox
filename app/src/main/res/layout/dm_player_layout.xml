@@ -7,6 +7,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dip"
         android:id="@+id/dmWebVideoView"
+        android:background="@color/material_grey900"
         />
 
     <android.support.design.widget.TabLayout

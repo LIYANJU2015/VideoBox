@@ -15,6 +15,7 @@ import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMChannelsBean;
+import com.videobox.search.SearchActivity;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.MainViewDelegate;
 
@@ -87,6 +88,13 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                 }
             }
         }, R.id.menu_home);
+
+        viewDelegate.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                SearchActivity.launch(mContext);
+            }
+        }, R.id.search);
     }
 
     private void requestDMChannel(boolean update) {

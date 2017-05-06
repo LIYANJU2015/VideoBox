@@ -44,8 +44,8 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
 
         mVideoView = viewDelegate.get(R.id.dmWebVideoView);
         mVideoView.setVideoId(videoId);
-        mVideoView.setAutoPlay(true);
         mVideoView.load();
+        mVideoView.play();
     }
 
     public DMVideoBean getCurrentVideoBean() {
@@ -54,6 +54,11 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
 
     public String getCurrentVid(){
         return videoId;
+    }
+
+    @Override
+    public DMWebVideoView getCurrentPlayer() {
+        return mVideoView;
     }
 
     public List<BaseFragment> getAdapterFragment() {

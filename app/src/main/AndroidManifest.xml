@@ -25,7 +25,12 @@
 
         <provider
             android:name=".model.db.VideoBoxContentProvider"
-            android:authorities="com.videobox.model.db" />
+            android:authorities="com.videobox.data.db" />
+
+        <activity android:name=".search.SearchActivity"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            />
     </application>
 
 </manifest>

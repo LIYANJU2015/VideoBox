@@ -21,7 +21,7 @@ import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
-import com.videobox.view.adapter.DailyMotionRecyclerAdapter;
+import com.videobox.view.adapter.DMMainRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.DailyMotionDelegate;
 
@@ -55,7 +55,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     private ArrayList<DMVideoBean> mDMVideoList = new ArrayList<>();
 
-    private DailyMotionRecyclerAdapter mAdapter;
+    private DMMainRecyclerAdapter mAdapter;
 
     private ImageLoader mImageLoader;
 
@@ -95,8 +95,8 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
         getVideoData(true);
     }
 
-    public DailyMotionRecyclerAdapter getDailyMotionRecyclerAdapter() {
-        mAdapter = new DailyMotionRecyclerAdapter(mDMVideoList, getActivity());
+    public DMMainRecyclerAdapter getDailyMotionRecyclerAdapter() {
+        mAdapter = new DMMainRecyclerAdapter(mDMVideoList, getActivity());
         mAdapter.setOnItemClickListener(this);
         return mAdapter;
     }

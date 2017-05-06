@@ -7,10 +7,11 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class AdapterViewPager extends FragmentStatePagerAdapter {
-    private List<BaseFragment> list;
+    private List<BaseFragment> mList;
     private CharSequence[] mTitles;
 
     public AdapterViewPager(FragmentManager fragmentManager) {
@@ -18,19 +19,26 @@ public class AdapterViewPager extends FragmentStatePagerAdapter {
     }
 
     public void bindData(List<BaseFragment> list) {
-        this.list = list;
+        this.mList = list;
         notifyDataSetChanged();
     }
 
     public void bindData(List<BaseFragment> list, CharSequence[] titles) {
-        this.list = list;
+        this.mList = list;
         this.mTitles = titles;
         notifyDataSetChanged();
     }
 
+    public void bindData(CharSequence[] titles, BaseFragment ...fragments) {
+        this.mList = Arrays.asList(fragments);
+        this.mTitles = titles;
+        notifyDataSetChanged();
+    }
+
+
     @Override
     public Fragment getItem(int position) {
-        return list.get(position);
+        return mList.get(position);
     }
 
     @Override
@@ -43,7 +51,7 @@ public class AdapterViewPager extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return list.size();
+        return mList.size();
     }
 
     @Override
@@ -62,7 +70,7 @@ public class AdapterViewPager extends FragmentStatePagerAdapter {
 
     @Override
     public void destroyItem(ViewGroup container, int position, Object object) {
-        View view = list.get(position).getView();
+        View view = mList.get(position).getView();
         if (view != null)
             container.removeView(view);
     }

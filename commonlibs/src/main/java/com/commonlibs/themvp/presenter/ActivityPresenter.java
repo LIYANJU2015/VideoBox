@@ -15,6 +15,7 @@
  */
 package com.commonlibs.themvp.presenter;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -32,6 +33,7 @@ import com.commonlibs.themvp.view.IDelegate;
  */
 public abstract class ActivityPresenter<T extends IDelegate> extends BaseActivity {
     protected T viewDelegate;
+    protected Context mContext;
 
     public ActivityPresenter() {
         try {
@@ -46,6 +48,7 @@ public abstract class ActivityPresenter<T extends IDelegate> extends BaseActivit
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = getApplicationContext();
         viewDelegate.create(getLayoutInflater(), null, savedInstanceState);
         setContentView(viewDelegate.getRootView());
         initToolbar();
