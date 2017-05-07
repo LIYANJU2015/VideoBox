@@ -55,11 +55,13 @@ public class APIConstant {
 
         public static final String QUERY_CONTNET = "q";
 
-        public static HashMap<String, String> sMostPopularVideos = new HashMap<>();
+        public static HashMap<String, String> sMostPopularVideos = new HashMap<>(8);
 
-        public static HashMap<String, String> sCategoriesMap = new HashMap<>();
+        public static HashMap<String, String> sCategoriesMap = new HashMap<>(8);
 
-        public static HashMap<String, String> sSearchMap = new HashMap<>();
+        public static HashMap<String, String> sSearchMap = new HashMap<>(8);
+
+        public static HashMap<String, String> sSearchRelatedMap = new HashMap<>(8);
 
         public static final ArrayList<HashMap<String, String>> sParamsMapList = new ArrayList<>();
 
@@ -67,6 +69,7 @@ public class APIConstant {
             sParamsMapList.add(sMostPopularVideos);
             sParamsMapList.add(sCategoriesMap);
             sParamsMapList.add(sSearchMap);
+            sParamsMapList.add(sSearchRelatedMap);
 
             //add common param
             for (HashMap<String, String> map : sParamsMapList) {
@@ -83,6 +86,11 @@ public class APIConstant {
             sMostPopularVideos.put(REGION_CODE, country);
 
             sCategoriesMap.put(REGION_CODE, country);
+
+            sSearchMap.put("safeSearch", "none");
+
+            sSearchRelatedMap.put("type", "video");
+            sSearchRelatedMap.put("maxResults", "20");
         }
     }
 

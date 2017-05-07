@@ -12,18 +12,35 @@ import com.commonlibs.http.RequestInterceptor;
 import com.commonlibs.integration.IRepositoryManager;
 import com.commonlibs.integration.RepositoryManager;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
+import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
+import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.rxerrorhandler.handler.listener.ResponseErroListener;
 import com.commonlibs.util.FileUtils;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.SPUtils;
 import com.commonlibs.util.SnackbarUtils;
+import com.commonlibs.util.StringUtils;
 import com.commonlibs.util.Utils;
+import com.paginate.Paginate;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.cache.DailyMotionCache;
 import com.videobox.model.dailymotion.service.DailymotionService;
+import com.videobox.model.youtube.YouTuBeModel;
+import com.videobox.model.youtube.cache.YoutubeCache;
+import com.videobox.model.youtube.entity.YTBLanguagesBean;
+import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.model.youtube.entity.YTbRegionsBean;
+import com.videobox.model.youtube.entity.YTbRegionsListBean;
 import com.videobox.model.youtube.service.YouTubeService;
+import com.videobox.search.YoutubeSearchFragment;
+
+import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action0;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by liyanju on 2017/4/23.
@@ -36,11 +53,71 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
     public static Typeface sCanaroExtraBold;
     public static Typeface sProximaRegular;
 
+    public static SPUtils spUtils;
+
     @Override
     public void onCreate() {
         super.onCreate();
         Utils.init(getContext());
+        spUtils = new SPUtils("video_box");
         initTypeface();
+        initYouTubeRegions();
+        initYouTubeLanguages();
+    }
+
+    private void initYouTubeRegions() {
+        YouTuBeModel youTuBeModel = new YouTuBeModel(getAppComponent().repositoryManager());
+        youTuBeModel.getYouTubeRegions(true)
+                .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(3, 2))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ErrorHandleSubscriber<YTbRegionsListBean>(getAppComponent().rxErrorHandler()) {
+                    @Override
+                    public void onNext(YTbRegionsListBean regionsBean) {
+                        String currentCountry = Locale.getDefault().getCountry().toLowerCase();
+                        if (currentCountry.equals("cn")) {
+                            spUtils.put("region", "hk");
+                        } if (regionsBean.items != null) {
+                            for (YTbRegionsBean region : regionsBean.items) {
+                                if (currentCountry.equals(region.id.toLowerCase())) {
+                                    spUtils.put("region", currentCountry);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+    private void initYouTubeLanguages() {
+        YouTuBeModel youTuBeModel = new YouTuBeModel(getAppComponent().repositoryManager());
+        youTuBeModel.getYouTubeLanguages(true)
+                .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(3, 2))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ErrorHandleSubscriber<YTBLanguagesBean>(getAppComponent().rxErrorHandler()) {
+                    @Override
+                    public void onNext(YTBLanguagesBean regionsBean) {
+                        String currentLanguage = Locale.getDefault().getLanguage();
+                        if (regionsBean != null && regionsBean.items != null) {
+                            for (YTBLanguagesBean.Languages languages : regionsBean.items) {
+                                if (currentLanguage.equals(languages.id)) {
+                                    spUtils.put("language", currentLanguage);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                });
+    }
+
+
+    public static String getCurrentRegions() {
+        return spUtils.getString("region", "us");
+    }
+
+    public static String getCurrentLanguage() {
+        return spUtils.getString("language", "en");
     }
 
     private void initTypeface() {
@@ -61,7 +138,12 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
                 .baseUrl(APIConstant.DailyMontion.HOST_URL).build();
         repositoryManager.setRetrofitService(dmRetrofit, DailymotionService.class);
 
+        Retrofit ytbRetrofit = new RepositoryManager.RetrofitBuilder().client(okHttpClient)
+                .baseUrl(APIConstant.YouTube.HOST_URL).build();
+        repositoryManager.setRetrofitService(ytbRetrofit, YouTubeService.class);
+
         repositoryManager.setCacheService(DailyMotionCache.class);
+        repositoryManager.setCacheService(YoutubeCache.class);
         return repositoryManager;
     }
 

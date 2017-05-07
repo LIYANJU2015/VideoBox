@@ -1,5 +1,7 @@
 package com.videobox.model.youtube.entity;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.ArrayList;
 
 /**
@@ -44,6 +46,8 @@ public class YTBVideoPageBean {
             public String kind;
 
             public String videoId;
+
+            public String playlistId;
         }
 
     }
@@ -68,13 +72,26 @@ public class YTBVideoPageBean {
 
         public String defaultAudioLanguage;
 
+        public ResourceId resourceId;
+
         public class Thumbnails {
 
-            public Standard standard;
+            @SerializedName("default")
+            public Default default1;
 
-            public class Standard {
+            public High higth;
+
+            public class High {
                 public String url;
             }
+
+            public class Default {
+                public String url;
+            }
+        }
+
+        public class ResourceId {
+            public String videoId;
         }
     }
 

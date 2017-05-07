@@ -85,7 +85,7 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
         DaiyMotionPlayerActivity.launch(data);
     }
 
-    public void gotoSearchDMVideo(String search) {
+    public void gotoSearchVideo(String search) {
         mSearchStr = search;
         pagenum = 1;
         mIsLoadingMore = false;
@@ -93,6 +93,7 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
         mRecyclerAdapter.clearAdapter();
         if (mPaginate != null) {
             mPaginate.unbind();
+            mPaginate = null;
         }
         searchDMVideo(true);
     }

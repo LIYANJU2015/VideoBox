@@ -301,7 +301,7 @@ public class VideoBoxContract {
                 contentValues.put(TITLE, video.snippet.title);
                 contentValues.put(DESCRIPTION, video.snippet.description);
                 if (video.snippet.thumbnails != null) {
-                    contentValues.put(THUMBNAILS, video.snippet.thumbnails.standard.url);
+                    contentValues.put(THUMBNAILS, video.snippet.thumbnails.higth.url);
                 }
                 contentValues.put(CHANNELTITLE, video.snippet.channelTitle);
                 contentValues.put(LIVEBROADCASTCONTENT, video.snippet.liveBroadcastContent);

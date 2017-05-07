@@ -141,7 +141,9 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     @Override
     public boolean onQueryTextSubmit(final String query) {
         LogUtils.v("onQueryTextSubmit", " query " + query);
-        mDailyMotionSearch.gotoSearchDMVideo(query);
+        mDailyMotionSearch.gotoSearchVideo(query);
+        mYoutubeSearch.gotoSearchVideo(query);
+
         KeyboardUtils.hideSoftInput(this);
         Observable.just(0).observeOn(Schedulers.io())
                 .subscribe(new Action1<Integer>() {
