@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ListView;
 
 import com.commonlibs.base.AdapterViewPager;
@@ -20,6 +19,8 @@ import com.commonlibs.util.KeyboardUtils;
 import com.commonlibs.util.LogUtils;
 import com.videobox.R;
 import com.videobox.model.db.VideoBoxContract;
+import com.videobox.view.delegate.Contract;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import rx.Emitter;
 import rx.Observable;
@@ -27,14 +28,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static rx.Emitter.BackpressureMode.NONE;
 
 /**
  * Created by liyanju on 2017/5/6.
  */
 
-public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener, Filter.FilterListener {
+public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener,
+        Filter.FilterListener, Contract.CommonHost {
 
     private ViewPager mSearchViewPager;
     private TabLayout mSearchTabLayout;
@@ -50,6 +51,10 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     private ListView mSearchHistroyListView;
 
     private ArrayAdapter<String> mTextAdapter;
+
+    private AVLoadingIndicatorView mLoadView;
+
+    private boolean isClickSuggest;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -76,8 +81,11 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         mSearchHistroyListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                isClickSuggest = true;
                 String searchContent = mTextAdapter.getItem(position);
                 mSearchView.setQuery(searchContent, true);
+                mSearchHistroyListView.setVisibility(View.GONE);
+                isClickSuggest = false;
             }
         });
 
@@ -85,6 +93,23 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
         mSearchHistroyListView.setVisibility(View.GONE);
 
+        mLoadView = (AVLoadingIndicatorView)findViewById(R.id.loading_view);
+
+    }
+
+    @Override
+    public void showLoading() {
+        if (mLoadView != null) {
+            mLoadView.setVisibility(View.VISIBLE);
+            mLoadView.show();
+        }
+    }
+
+    @Override
+    public void hideLoading() {
+        if (mLoadView != null && mLoadView.isShown()) {
+            mLoadView.hide();
+        }
     }
 
     private void initSearchContented() {
@@ -122,18 +147,23 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        VideoBoxContract.SearchHistory.insert(mContext,
+                        VideoBoxContract.SearchHistory.insertNewHistroy(mContext,
                                 VideoBoxContract.SearchHistory.createContentValue(query));
                     }
                 });
         mTextAdapter.clear();
         initSearchContented();
         mSearchHistroyListView.setVisibility(View.GONE);
+        mSearchView.clearFocus();
         return true;
     }
 
     @Override
     public boolean onQueryTextChange(String newText) {
+        LogUtils.v("onQueryTextChange", " isClickSuggest " + isClickSuggest);
+        if (isClickSuggest) {
+            return true;
+        }
         if (mTextAdapter != null) {
             Filter filter = mTextAdapter.getFilter();
             if (newText == null || newText.length() == 0) {
@@ -153,6 +183,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     @Override
     public void onFilterComplete(int count) {
+        LogUtils.v(" onFilterComplete ");
         if (count > 0) {
             mSearchHistroyListView.setVisibility(View.VISIBLE);
         } else {

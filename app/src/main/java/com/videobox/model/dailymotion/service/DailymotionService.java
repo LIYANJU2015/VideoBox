@@ -27,7 +27,7 @@ public interface DailymotionService {
     @GET("/channel/{id}/videos")
     public Observable<DMVideosPageBean> getChannelVideos(@Path("id") String id, @QueryMap Map<String, String> options, @Query("page") int page);
 
-    @GET("playlists")
+    @GET("videos")
     public Observable<DMVideosPageBean> getSearchVideo(@QueryMap Map<String, String> options, @Query("search") String search, @Query("page") int page);
 
     @GET("/video/{id}/related")

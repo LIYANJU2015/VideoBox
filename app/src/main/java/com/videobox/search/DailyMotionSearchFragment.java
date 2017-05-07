@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.commonlibs.base.BaseFragment;
+import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
@@ -18,7 +19,9 @@ import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
+import com.videobox.presenter.DaiyMotionPlayerActivity;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
+import com.videobox.view.delegate.Contract;
 
 import java.util.ArrayList;
 
@@ -30,7 +33,8 @@ import rx.schedulers.Schedulers;
  * Created by liyanju on 2017/5/6.
  */
 
-public class DailyMotionSearchFragment extends BaseFragment implements Paginate.Callbacks{
+public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost> implements Paginate.Callbacks,
+        BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<DMVideoBean> {
 
     private ArrayList<DMVideoBean> mVideoList = new ArrayList<>();
     private DMListRecyclerAdapter mRecyclerAdapter;
@@ -38,17 +42,21 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
     private int pagenum = 1;
     private boolean mIsLoadingMore = false;
     private boolean isLoadedAll = false;
+
     private Paginate mPaginate;
 
     private String mSearchStr;
 
+    private RecyclerView searchRecyclerView;
+
     @Override
     public void onLoadMore() {
-        searchDMVideo();
+        searchDMVideo(false);
     }
 
     @Override
     public boolean isLoading() {
+        LogUtils.v("isLoading ", "mIsLoadingMore " + mIsLoadingMore);
         return mIsLoadingMore;
     }
 
@@ -61,19 +69,20 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.recyclerview_layout, null);
-        RecyclerView searchRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerview);
+        searchRecyclerView = (RecyclerView)view.findViewById(R.id.recyclerview);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         searchRecyclerView.setHasFixedSize(true);
         mRecyclerAdapter = new DMListRecyclerAdapter(mVideoList, mActivity);
+        mRecyclerAdapter.setOnItemClickListener(this);
         searchRecyclerView.setAdapter(mRecyclerAdapter);
-
-        mPaginate = Paginate.with(searchRecyclerView, this)
-                .setLoadingTriggerThreshold(0)
-                .build();
-        mPaginate.setHasMoreDataToLoad(false);
 
         mDaiyMotionModel = new DaiyMotionModel(getAppComponent().repositoryManager());
         return view;
+    }
+
+    @Override
+    public void onItemClick(View view, int viewType, DMVideoBean data, int position) {
+        DaiyMotionPlayerActivity.launch(data);
     }
 
     public void gotoSearchDMVideo(String search) {
@@ -82,10 +91,13 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
         mIsLoadingMore = false;
         isLoadedAll = false;
         mRecyclerAdapter.clearAdapter();
-        searchDMVideo();
+        if (mPaginate != null) {
+            mPaginate.unbind();
+        }
+        searchDMVideo(true);
     }
 
-    private void searchDMVideo() {
+    private void searchDMVideo(final boolean isFirst) {
         LogUtils.v("searchDMVideo", " searchStr " + mSearchStr);
         if (!isAdded()) {
             return;
@@ -98,7 +110,11 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
                     @Override
                     public void call() {
                         LogUtils.v("searchDMVideo doOnSubscribe call");
-                        mIsLoadingMore = true;
+                        if (!isFirst) {
+                            mIsLoadingMore = true;
+                        } else {
+                            mHost.showLoading();
+                        }
                     }
                 }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -107,6 +123,9 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
                     public void call() {
                         LogUtils.v("searchDMVideo", "doAfterTerminate ");
                         mIsLoadingMore = false;
+                        if (isFirst) {
+                            mHost.hideLoading();
+                        }
                     }
                 })
                 .subscribe(new ErrorHandleSubscriber<DMVideosPageBean>(getAppComponent().rxErrorHandler()) {
@@ -124,6 +143,13 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
                         }
 
                         mRecyclerAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
+
+                        if (mVideoList.size() > 0 && mPaginate == null) {
+                            mPaginate = Paginate.with(searchRecyclerView, DailyMotionSearchFragment.this)
+                                    .setLoadingTriggerThreshold(0)
+                                    .build();
+                            mPaginate.setHasMoreDataToLoad(false);
+                        }
                     }
                 });
     }

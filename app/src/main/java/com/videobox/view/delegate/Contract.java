@@ -22,4 +22,11 @@ public class Contract {
 
         DMWebVideoView getCurrentPlayer();
     }
+
+    public interface CommonHost {
+
+        void showLoading();
+
+        void hideLoading();
+    }
 }

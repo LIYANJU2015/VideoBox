@@ -86,6 +86,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                 if (mIVideoListFragment != null) {
                     mIVideoListFragment.showChannelVideoByID(null);
                 }
+                viewDelegate.drawerToggle();
             }
         }, R.id.menu_home);
 
@@ -93,6 +94,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
             @Override
             public void onClick(View v) {
                 SearchActivity.launch(mContext);
+                viewDelegate.drawerToggle();
             }
         }, R.id.search);
     }

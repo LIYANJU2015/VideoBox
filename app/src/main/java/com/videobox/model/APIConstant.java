@@ -119,7 +119,9 @@ public class APIConstant {
             sChannelVideosMap.put("sort", "visited");
             sChannelVideosMap.put("limit", "10");
 
-            sSearchVideosMap.put("fields", "description,id,name,thumbnail_url,updated_time,");
+            sSearchVideosMap.put("fields", "title,channel,channel.id,description,duration,id,thumbnail_url,updated_time");
+            sSearchVideosMap.put("sort", "random");
+            sSearchVideosMap.put("limit", "10");
 
             sRelatedVideosMap.put("fields", "title,channel,channel.id,description,duration,id,thumbnail_url,updated_time");
             sRelatedVideosMap.put("limit", "10");

@@ -373,8 +373,8 @@ public class VideoBoxContract {
             return cursor.getString(cursor.getColumnIndex(SEARCH_TIME));
         }
 
-        public static Cursor query(Context context) {
-            return context.getContentResolver().query(CONTENT_URI, null, null, null, SEARCH_TIME + " desc ");
+        public static Cursor query(Context context, String selection) {
+            return context.getContentResolver().query(CONTENT_URI, null, selection, null, SEARCH_TIME + " desc ");
         }
 
         public static Uri insert(Context context, ContentValues values) {
@@ -384,11 +384,18 @@ public class VideoBoxContract {
         public static Uri insertNewHistroy(Context context, ContentValues values) {
             Cursor cursor = null;
             try {
-                cursor = query(context);
+                cursor = query(context, null);
                 if (cursor != null && cursor.getCount() > 10) {
                     cursor.moveToLast();
                     String where = SEARCH_TIME + " = " + getSearchTime(cursor);
                     context.getContentResolver().delete(CONTENT_URI, where, null);
+                }
+                String selction = SEARCH_CONTENT + " = '" + values.getAsString(SEARCH_CONTENT)+"'";
+                cursor = query(context, selction);
+                if (cursor.getCount() > 0) {
+                    context.getContentResolver().update(CONTENT_URI, values,
+                            selction, null);
+                } else {
                     return insert(context, values);
                 }
             } finally {
@@ -402,7 +409,7 @@ public class VideoBoxContract {
         public static String[] getAllSearchHistory(Context context) {
             Cursor cursor = null;
             try {
-                 cursor = query(context);
+                 cursor = query(context, null);
                 if (cursor != null) {
                     String strs[] = new String[cursor.getCount()];
                     int i = 0;
