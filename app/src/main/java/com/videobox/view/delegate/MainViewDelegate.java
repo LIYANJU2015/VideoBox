@@ -31,6 +31,8 @@ import com.videobox.view.widget.LoadHeaderImagesListener;
 
 import java.util.ArrayList;
 
+import static android.R.attr.tag;
+
 /**
  * Created by liyanju on 2017/4/23.
  */
@@ -99,16 +101,11 @@ public class MainViewDelegate extends AppDelegate {
     }
 
     public void drawerToggle() {
-        mDrawerLayout.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mDrawerLayout.isDrawerOpen(mLeftMenuLinear)) {
-                    mDrawerLayout.closeDrawer(mLeftMenuLinear);
-                } else {
-                    mDrawerLayout.openDrawer(mLeftMenuLinear);
-                }
-            }
-        }, 200);
+        if (mDrawerLayout.isDrawerOpen(mLeftMenuLinear)) {
+            mDrawerLayout.closeDrawer(mLeftMenuLinear);
+        } else {
+            mDrawerLayout.openDrawer(mLeftMenuLinear);
+        }
     }
 
     private void initDrawerMenu() {
@@ -157,6 +154,7 @@ public class MainViewDelegate extends AppDelegate {
                 .setLoadHeaderImagesListener(new LoadHeaderImagesListener() {
                     @Override
                     public void loadHeaderImages(final ImageView imageView, TabLayout.Tab tab) {
+                        LogUtils.v("loadHeaderImages", tab.getPosition());
                         switch (tab.getPosition()) {
                             case 0:
                                 mMainActivity.setVideoListFragment(mDailyMotionFragment);
@@ -183,6 +181,8 @@ public class MainViewDelegate extends AppDelegate {
                     }
                 })
                 .setupWithViewPager(mMainViewPager);
+
+        mCoordinatorTabLayout.getTabLayout().addOnTabSelectedListener(mMainActivity);
     }
 
     private void changeToolbarColor(Bitmap bitmap) {

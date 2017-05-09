@@ -233,6 +233,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
     @Override
     public void onRefresh() { //下拉刷新当前页
         if (mInHome) {
+            pagenum = 1;
             getVideoData(true);
         } else {
             getChannelVideoByID(mCurChannelID, pagenum, true, true);

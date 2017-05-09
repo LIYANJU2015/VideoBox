@@ -14,6 +14,8 @@ import io.rx_cache.LifeCache;
 import io.rx_cache.Reply;
 import rx.Observable;
 
+import static android.R.attr.y;
+
 /**
  * Created by liyanju on 2017/5/7.
  */
@@ -46,4 +48,7 @@ public interface YoutubeCache {
 
     @LifeCache(duration = 5, timeUnit = TimeUnit.MINUTES)
     Observable<Reply<YTBVideoPageBean>> getPlaylistItems(Observable<YTBVideoPageBean> videos, DynamicKey idLastUserQueried, EvictProvider evictProvider);
-}
+
+    @LifeCache(duration = 30, timeUnit = TimeUnit.DAYS)
+    Observable<Reply<YTBVideoPageBean>> getCategoryVideos(Observable<YTBVideoPageBean> videos, DynamicKey idLastUserQueried, EvictProvider evictProvider);
+ }

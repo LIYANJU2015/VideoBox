@@ -1,6 +1,7 @@
 package com.videobox.presenter;
 
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.Window;
@@ -11,19 +12,27 @@ import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
+import com.commonlibs.util.DeviceUtils;
+import com.commonlibs.util.LogUtils;
+import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMChannelsBean;
+import com.videobox.model.youtube.YouTuBeModel;
+import com.videobox.model.youtube.entity.YTBCategoriesBean;
 import com.videobox.search.SearchActivity;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.MainViewDelegate;
+import com.videobox.view.widget.CoordinatorTabLayout;
 
 import java.util.ArrayList;
 
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
+
+import static android.media.CamcorderProfile.get;
 
 
 /**
@@ -38,7 +47,8 @@ import rx.schedulers.Schedulers;
  *
  */
 
-public class MainActivity extends ActivityPresenter<MainViewDelegate> implements SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends ActivityPresenter<MainViewDelegate> implements SwipeRefreshLayout.OnRefreshListener,
+        TabLayout.OnTabSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
 
@@ -47,7 +57,15 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
 
     private ArrayList<DMChannelsBean.Channel> mDMChannel = new ArrayList<>();
 
+    private ArrayList<YTBCategoriesBean.Categories> mYouTubeChannel = new ArrayList<>();
+
     private Contract.IVideoListFragment mIVideoListFragment;
+
+    private int mChannelType = DAILY_MOTION_TYPE;
+    public static final int YOU_TU_BE_TYPE = 1;
+    public static final int DAILY_MOTION_TYPE = 2;
+
+    private YouTuBeModel mYoutuBeModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,16 +83,22 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
     @Override
     protected void initAndBindEven() {
         mDaiyMotionModel = new DaiyMotionModel(getAppComponent().repositoryManager());
+        mYoutuBeModel = new YouTuBeModel(getAppComponent().repositoryManager());
         mRxErrorHandler = getAppComponent().rxErrorHandler();
-
-        requestDMChannel(false);
 
         viewDelegate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
-                DMChannelsBean.Channel channel = mDMChannel.get(postion);
-                if (mIVideoListFragment != null) {
-                    mIVideoListFragment.showChannelVideoByID(channel.id);
+                if (mChannelType == DAILY_MOTION_TYPE) {
+                    DMChannelsBean.Channel channel = mDMChannel.get(postion);
+                    if (mIVideoListFragment != null) {
+                        mIVideoListFragment.showChannelVideoByID(channel.id);
+                    }
+                } else {
+                    YTBCategoriesBean.Categories categories = mYouTubeChannel.get(postion);
+                    if (mIVideoListFragment != null) {
+                        mIVideoListFragment.showChannelVideoByID(categories.id);
+                    }
                 }
                 viewDelegate.drawerToggle();
             }
@@ -97,6 +121,50 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                 viewDelegate.drawerToggle();
             }
         }, R.id.search);
+
+        CoordinatorTabLayout coordinatorTabLayout = viewDelegate.get(R.id.coordinatortablayout);
+        coordinatorTabLayout.getTabLayout().getTabAt(0).setTag(DAILY_MOTION_TYPE);
+        coordinatorTabLayout.getTabLayout().getTabAt(1).setTag(YOU_TU_BE_TYPE);
+        coordinatorTabLayout.getTabLayout().addOnTabSelectedListener(this);
+
+        requestDMChannel(false);
+    }
+
+    private void requestYouTubeChannel(boolean update) {
+        mYoutuBeModel.getYouTubeCategories(AppAplication.getCurrentRegions(), APIConstant.YouTube.sCategoriesMap, update)
+                .subscribeOn(Schedulers.io())
+                .compose(this.<YTBCategoriesBean>bindToLifecycle())
+                .retryWhen(new RetryWithDelay(3, 2))
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        if (viewDelegate != null) {
+                            viewDelegate.showLoading();
+                        }
+                    }
+                }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doAfterTerminate(new Action0() {
+                    @Override
+                    public void call() {
+                        if (viewDelegate != null) {
+                            viewDelegate.hideLoading();
+                        }
+                    }
+                })
+                .subscribe(new ErrorHandleSubscriber<YTBCategoriesBean>(mRxErrorHandler) {
+                    @Override
+                    public void onNext(YTBCategoriesBean dmChannelsBean) {
+                        mYouTubeChannel.clear();
+
+                        if (dmChannelsBean.items != null) {
+                            mYouTubeChannel.addAll(dmChannelsBean.items);
+                        }
+
+                        viewDelegate.menuItemAdapter.updateYouTubeCategories(mYouTubeChannel);
+                    }
+                });
+
     }
 
     private void requestDMChannel(boolean update) {
@@ -148,6 +216,40 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
 
     @Override
     public void onRefresh() {
-        requestDMChannel(true);
+        if (mChannelType == DAILY_MOTION_TYPE) {
+            requestDMChannel(true);
+        } else {
+            requestYouTubeChannel(false);
+        }
+    }
+
+    @Override
+    public void onTabSelected(TabLayout.Tab tab) {
+        LogUtils.v("onTabSelected", "getTag " + tab.getTag());
+        if (((int)tab.getTag()) == YOU_TU_BE_TYPE) {
+            mChannelType = YOU_TU_BE_TYPE;
+            if (mYouTubeChannel.size() == 0) {
+                requestYouTubeChannel(false);
+            } else {
+                viewDelegate.menuItemAdapter.updateYouTubeCategories(mYouTubeChannel);
+            }
+        } else {
+            mChannelType = DAILY_MOTION_TYPE;
+            if (mDMChannel.size() == 0) {
+                requestDMChannel(false);
+            } else {
+                viewDelegate.menuItemAdapter.updateDMChannel(mDMChannel);
+            }
+        }
+    }
+
+    @Override
+    public void onTabUnselected(TabLayout.Tab tab) {
+
+    }
+
+    @Override
+    public void onTabReselected(TabLayout.Tab tab) {
+
     }
 }

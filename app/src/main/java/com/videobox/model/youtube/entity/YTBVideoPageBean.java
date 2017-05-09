@@ -4,6 +4,8 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
+import static android.R.attr.thumbnail;
+
 /**
  * Created by liyanju on 2017/4/14.
  */
@@ -39,6 +41,20 @@ public class YTBVideoPageBean {
                 return ((ID)id).videoId;
             }
             return "-1";
+        }
+
+        public String getThumbnailsUrl(){
+            String url = "";
+            if (snippet != null && snippet.thumbnails != null) {
+                if (snippet.thumbnails.standard != null) {
+                    url = snippet.thumbnails.standard.url;
+                } else if (snippet.thumbnails.higth != null) {
+                    url = snippet.thumbnails.higth.url;
+                } else if (snippet.thumbnails.default1 != null) {
+                    url = snippet.thumbnails.default1.url;
+                }
+            }
+            return url;
         }
 
         public class ID {
@@ -80,6 +96,12 @@ public class YTBVideoPageBean {
             public Default default1;
 
             public High higth;
+
+            public Standard standard;
+
+            public class Standard {
+                public String url;
+            }
 
             public class High {
                 public String url;

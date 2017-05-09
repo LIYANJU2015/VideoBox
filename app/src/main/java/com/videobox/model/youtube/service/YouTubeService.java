@@ -53,8 +53,11 @@ public interface YouTubeService {
     @GET("search")
     public Observable<YTBVideoPageBean> getRelatedVideo(@Query("relatedToVideoId") String relatedToVideoId, @QueryMap Map<String, String> options);
 
-
+    @GET("playlistItems")
     public Observable<YTBVideoPageBean> getPlaylistItems(@Query("playlistId") String playlistId, @QueryMap Map<String, String> options);
+
+    @GET("videos")
+    public Observable<YTBVideoPageBean> getCategoryVideos(@Query("pageToken") String pageToken, @Query("videoCategoryId") String videoCategoryId, @QueryMap Map<String, String> options);
 
 
 

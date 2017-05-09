@@ -36,12 +36,14 @@ public class MenuItemAdapter extends BaseAdapter{
 
 
     public void updateDMChannel(ArrayList<DMChannelsBean.Channel> channels) {
+        mCategories.clear();
         mChannels.addAll(channels);
         mCurChannelType = DM_TYPE;
         notifyDataSetChanged();
     }
 
     public void updateYouTubeCategories(ArrayList<YTBCategoriesBean.Categories> channels) {
+        mChannels.clear();
         mCategories.addAll(channels);
         mCurChannelType = YOUTUBE_TYPE;
         notifyDataSetChanged();
