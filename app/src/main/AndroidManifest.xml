@@ -10,7 +10,11 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.videobox.presenter.MainActivity">
+        <activity
+            android:name="com.videobox.presenter.MainActivity"
+            android:configChanges="locale|keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,14 +25,17 @@
         <activity
             android:name=".presenter.DaiyMotionPlayerActivity"
             android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
             android:launchMode="singleTask" />
 
         <provider
             android:name=".model.db.VideoBoxContentProvider"
+            android:screenOrientation="portrait"
             android:authorities="com.videobox.data.db" />
 
         <activity android:name=".search.SearchActivity"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden"
             />
     </application>

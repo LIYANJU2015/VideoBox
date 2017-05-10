@@ -4,6 +4,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.paginate.Paginate;
 import com.videobox.R;
@@ -33,10 +34,13 @@ public class DailyMotionDelegate extends AppDelegate {
         mRecyclerView = get(R.id.dm_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-        mRecyclerView.setAdapter(mDailymotionFragment.getDailyMotionRecyclerAdapter());
 
         mSwipeRefreshLayout = get(R.id.dm_swipeRefresh);
         mSwipeRefreshLayout.setOnRefreshListener(mDailymotionFragment);
+    }
+
+    public void setAdapter(BaseRecyclerViewAdapter adapter) {
+        mRecyclerView.setAdapter(adapter);
     }
 
     public void showLoading() {

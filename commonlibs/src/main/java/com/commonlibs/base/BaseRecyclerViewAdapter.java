@@ -27,6 +27,10 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         notifyDataSetChanged();
     }
 
+    public void setData(List<T> infos){
+        mInfos = infos;
+    }
+
     /**
      * 创建Hodler
      *

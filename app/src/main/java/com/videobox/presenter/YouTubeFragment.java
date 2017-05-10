@@ -17,6 +17,7 @@ import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.view.adapter.YouTubeListRecyclerAdapter;
 import com.videobox.view.adapter.YouTubeMainRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.YouTubeDelegate;
@@ -38,7 +39,8 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
 
     private ArrayList<YTBVideoPageBean.YouTubeVideo> mVideoList = new ArrayList<>();
 
-    private YouTubeMainRecyclerAdapter mAdapter;
+    private YouTubeMainRecyclerAdapter mMainAdapter;
+    private YouTubeListRecyclerAdapter mListAdapter;
 
     private YouTuBeModel mYoutuBeModel;
     private RxErrorHandler mRxErrorHandler;
@@ -124,6 +126,12 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                             mVideoList.addAll(dmVideosPageBean.items);
                         }
 
+                        if (mMainAdapter == null) {
+                            mMainAdapter = new YouTubeMainRecyclerAdapter(mVideoList, mActivity);
+                            mMainAdapter.setOnItemClickListener(YouTubeFragment.this);
+                            viewDelegate.setAdapter(mMainAdapter);
+                        }
+
                         if (mPaginate == null && mVideoList.size() > 0) {
                             mPaginate = Paginate.with(((RecyclerView) viewDelegate.get(R.id.ytb_recyclerview)), YouTubeFragment.this)
                                     .setLoadingTriggerThreshold(0)
@@ -132,16 +140,15 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                         }
 
                         if (pullToRefresh)
-                            mAdapter.notifyDataSetChanged();
+                            mMainAdapter.notifyDataSetChanged();
                         else
-                            mAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
+                            mMainAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
                     }
                 });
     }
 
     @Override
     public void showChannelVideoByID(String id) {
-        mAdapter.clearAdapter();
         mCurChannelID = id;
         pageToken = "";
         mIsLoadedAll = false;
@@ -152,10 +159,17 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
         }
 
         if (!StringUtils.isEmpty(id)) {
-            mInHome = false;
+            if (mMainAdapter != null) {
+                mMainAdapter.clearAdapter();
+                mMainAdapter = null;
+            }
             requestChannelVideo(true, true);
         } else {
             mInHome = true;
+            if (mListAdapter != null) {
+                mListAdapter.clearAdapter();
+                mListAdapter = null;
+            }
             getVideoData(true);
         }
     }
@@ -205,6 +219,12 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                             mVideoList.addAll(dmVideosPageBean.items);
                         }
 
+                        if (mListAdapter == null) {
+                            mListAdapter = new YouTubeListRecyclerAdapter(mVideoList, mActivity);
+                            mListAdapter.setOnItemClickListener(YouTubeFragment.this);
+                            viewDelegate.setAdapter(mListAdapter);
+                        }
+
                         if (mPaginate == null && mVideoList.size() > 0) {
                             mPaginate = Paginate.with(((RecyclerView) viewDelegate.get(R.id.ytb_recyclerview)), YouTubeFragment.this)
                                     .setLoadingTriggerThreshold(0)
@@ -213,9 +233,9 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                         }
 
                         if (pullToRefresh)
-                            mAdapter.notifyDataSetChanged();
+                            mListAdapter.notifyDataSetChanged();
                         else
-                            mAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
+                            mListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
                     }
                 });
     }
@@ -228,12 +248,6 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
         } else {
             requestChannelVideo(true, true);
         }
-    }
-
-    public YouTubeMainRecyclerAdapter getYouTubeRecyclerAdapter() {
-        mAdapter = new YouTubeMainRecyclerAdapter(mVideoList, getActivity());
-        mAdapter.setOnItemClickListener(this);
-        return mAdapter;
     }
 
     @Override

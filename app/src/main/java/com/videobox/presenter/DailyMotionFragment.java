@@ -21,6 +21,7 @@ import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
+import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.adapter.DMMainRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.DailyMotionDelegate;
@@ -56,6 +57,8 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
     private ArrayList<DMVideoBean> mDMVideoList = new ArrayList<>();
 
     private DMMainRecyclerAdapter mAdapter;
+    private DMListRecyclerAdapter mListAdapter;
+
 
     private ImageLoader mImageLoader;
 
@@ -88,30 +91,33 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     @Override
     protected void initAndBindEvent() {
-        mPaginate = Paginate.with(((RecyclerView) viewDelegate.get(R.id.dm_recyclerview)), this)
-                .setLoadingTriggerThreshold(0)
-                .build();
-        mPaginate.setHasMoreDataToLoad(false);
         getVideoData(true);
-    }
-
-    public DMMainRecyclerAdapter getDailyMotionRecyclerAdapter() {
-        mAdapter = new DMMainRecyclerAdapter(mDMVideoList, getActivity());
-        mAdapter.setOnItemClickListener(this);
-        return mAdapter;
     }
 
     @Override
     public void showChannelVideoByID(String id) {
         pagenum = 1;
         mCurChannelID = id;
-        mDMVideoList.clear();
         mIsLoadedAll = false;
+
+        if (mPaginate != null) {
+            mPaginate.unbind();
+            mPaginate = null;
+        }
+
         if (!StringUtils.isEmpty(id)) {
             mInHome = false;
+            if (mAdapter != null) {
+                mAdapter.clearAdapter();
+                mAdapter = null;
+            }
             getChannelVideoByID(id, pagenum, true, true);
         } else {
             mInHome = true;
+            if (mListAdapter != null) {
+                mListAdapter.clearAdapter();
+                mListAdapter = null;
+            }
             getVideoData(true);
         }
     }
@@ -163,10 +169,22 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                             mDMVideoList.addAll(dmVideosPageBean.list);
                         }
 
+                        if (mListAdapter == null) {
+                            mListAdapter = new DMListRecyclerAdapter(mDMVideoList, mActivity);
+                            viewDelegate.setAdapter(mListAdapter);
+                        }
+
+                        if (mPaginate == null && mDMVideoList.size() > 0) {
+                            mPaginate = Paginate.with(((RecyclerView) viewDelegate.get(R.id.dm_recyclerview)), DailyMotionFragment.this)
+                                    .setLoadingTriggerThreshold(0)
+                                    .build();
+                            mPaginate.setHasMoreDataToLoad(false);
+                        }
+
                         if (pullToRefresh)
-                            mAdapter.notifyDataSetChanged();
+                            mListAdapter.notifyDataSetChanged();
                         else
-                            mAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
+                            mListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
                     }
                 });
     }
@@ -220,6 +238,18 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                         int preEndIndex = mDMVideoList.size();
                         if (dmVideosPageBean.list != null) {
                             mDMVideoList.addAll(dmVideosPageBean.list);
+                        }
+
+                        if (mAdapter == null) {
+                            mAdapter = new DMMainRecyclerAdapter(mDMVideoList, mActivity);
+                            viewDelegate.setAdapter(mAdapter);
+                        }
+
+                        if (mPaginate == null && mDMVideoList.size() > 0) {
+                            mPaginate = Paginate.with(((RecyclerView) viewDelegate.get(R.id.dm_recyclerview)), DailyMotionFragment.this)
+                                    .setLoadingTriggerThreshold(0)
+                                    .build();
+                            mPaginate.setHasMoreDataToLoad(false);
                         }
 
                         if (pullToRefresh)

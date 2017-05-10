@@ -4,6 +4,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.videobox.R;
 import com.videobox.presenter.YouTubeFragment;
@@ -30,10 +31,13 @@ public class YouTubeDelegate extends AppDelegate{
         mRecyclerView = get(R.id.ytb_recyclerview);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext()));
-        mRecyclerView.setAdapter(mYouTubeFragment.getYouTubeRecyclerAdapter());
 
         mSwipeRefreshLayout = get(R.id.ytb_swipeRefresh);
         mSwipeRefreshLayout.setOnRefreshListener(mYouTubeFragment);
+    }
+
+    public void setAdapter(BaseRecyclerViewAdapter adapter) {
+        mRecyclerView.setAdapter(adapter);
     }
 
     public void showLoading() {
