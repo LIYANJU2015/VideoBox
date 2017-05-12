@@ -20,9 +20,9 @@ import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.commonlibs.util.LogUtils;
 import com.videobox.R;
-import com.videobox.presenter.DailyMotionFragment;
-import com.videobox.presenter.MainActivity;
-import com.videobox.presenter.YouTubeFragment;
+import com.videobox.main.DailyMotionFragment;
+import com.videobox.main.MainActivity;
+import com.videobox.main.YouTubeFragment;
 import com.videobox.view.adapter.MenuItemAdapter;
 import com.videobox.view.widget.ActionBarDrawerToggle;
 import com.videobox.view.widget.CoordinatorTabLayout;
@@ -30,8 +30,6 @@ import com.videobox.view.widget.DrawerArrowDrawable;
 import com.videobox.view.widget.LoadHeaderImagesListener;
 
 import java.util.ArrayList;
-
-import static android.R.attr.tag;
 
 /**
  * Created by liyanju on 2017/4/23.

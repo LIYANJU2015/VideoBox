@@ -1,4 +1,4 @@
-package com.videobox.presenter;
+package com.videobox.main;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
@@ -12,7 +12,6 @@ import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
-import com.commonlibs.util.DeviceUtils;
 import com.commonlibs.util.LogUtils;
 import com.videobox.AppAplication;
 import com.videobox.R;

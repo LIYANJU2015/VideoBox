@@ -121,7 +121,10 @@ public class YouTuBeModel extends BaseModel {
 
     public Observable<YTBVideoPageBean> getPlaylistItems(Map<String, String> options, String playlistId,
                                                          boolean update, String pageToken) {
-        Observable<YTBVideoPageBean> videoObservable = mService.getPlaylistItems(playlistId, options);
+        Observable<YTBVideoPageBean> videoObservable = mService.getPlaylistItems(playlistId, options, pageToken);
+        if (StringUtils.isEmpty(pageToken)) {
+            pageToken = "pageToken";
+        }
         return mCache.getPlaylistItems(videoObservable, new DynamicKey(pageToken), new EvictProvider(update))
                 .flatMap(new Func1<Reply<YTBVideoPageBean>,
                         Observable<YTBVideoPageBean>>() {
@@ -135,6 +138,9 @@ public class YouTuBeModel extends BaseModel {
     public Observable<YTBVideoPageBean> getCategoryVideos(String pageToken, String videoCategoryId,
                                                           Map<String, String> options, boolean update) {
         Observable<YTBVideoPageBean> videoObservable = mService.getCategoryVideos(pageToken, videoCategoryId, options);
+        if (StringUtils.isEmpty(pageToken)) {
+            pageToken = "pageToken";
+        }
         return mCache.getCategoryVideos(videoObservable, new DynamicKey(pageToken), new EvictProvider(update))
                 .flatMap(new Func1<Reply<YTBVideoPageBean>,
                         Observable<YTBVideoPageBean>>() {

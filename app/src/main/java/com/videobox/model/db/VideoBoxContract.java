@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.commonlibs.provider.TableInfo;
+import com.videobox.model.bean.PlayRecordBean;
 import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.youtube.entity.YTBCategoriesBean;
@@ -17,7 +18,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import static android.R.attr.type;
 import static com.videobox.model.db.VideoBoxContract.DMVideo.THUMBNAIL_URL;
+import static com.videobox.model.db.VideoBoxContract.SearchHistory.SEARCH_CONTENT;
+import static com.videobox.model.db.VideoBoxContract.SearchHistory.SEARCH_TIME;
 import static com.videobox.model.db.VideoBoxContract.YouTubeRgions.GL;
 
 /**
@@ -331,6 +335,93 @@ public class VideoBoxContract {
             columnsMap.put(CHANNELTITLE, "text");
             columnsMap.put(LIVEBROADCASTCONTENT, "text");
             columnsMap.put(DEFAULTAUDIOLANGUAGE, "text");
+        }
+    }
+
+    public static class PlayRecord extends TableInfo {
+
+        public static final String TABLE_NAME = "PlayRecord";
+
+        public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY + "/" + TABLE_NAME);
+
+        public static final String PLAY_TYPE = "play_type";
+        public static final String PLAY_TIME = "play_time";
+        public static final String VIDEO_ID = "video_id";
+        public static final String TITLE = "title";
+        public static final String THUMBNAILURL = "thumbnailUrl";
+        public static final String PLAYLISTID = "playlistId";
+        public static final String TOTAL_TIME = "total_time";
+
+        @Override
+        public String onTableName() {
+            return TABLE_NAME;
+        }
+
+        @Override
+        public Uri onContentUri() {
+            return CONTENT_URI;
+        }
+
+        @Override
+        public void onInitColumnsMap(Map<String, String> columnsMap) {
+            columnsMap.put(PLAY_TYPE, "int");
+            columnsMap.put(PLAY_TIME, "int");
+            columnsMap.put(VIDEO_ID, "text");
+            columnsMap.put(TITLE, "text");
+            columnsMap.put(THUMBNAILURL, "text");
+            columnsMap.put(PLAYLISTID, "text");
+            columnsMap.put(TOTAL_TIME, "int");
+        }
+
+        public static void addPlayRecord(Context context, PlayRecordBean recordBean) {
+            Cursor cursor = null;
+            try {
+                String selection = PLAY_TYPE + " = " + recordBean.type + " and " + VIDEO_ID + "= '" + recordBean.vid + "'";
+                cursor = context.getContentResolver().query(CONTENT_URI, null, selection, null, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    context.getContentResolver().update(CONTENT_URI, PlayRecordBean.toContentValues(recordBean), selection, null);
+                } else {
+                    context.getContentResolver().insert(CONTENT_URI, PlayRecordBean.toContentValues(recordBean));
+                }
+            }finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+        }
+
+        public static long getPlayRecordTimeByVid(Context context, String vid, int type) {
+            Cursor cursor = null;
+            try {
+                String selection = PLAY_TYPE + " = " + type + " and " + VIDEO_ID + "= '" + vid + "'";
+                cursor = context.getContentResolver().query(CONTENT_URI, null, selection, null, null);
+                if (cursor != null && cursor.getCount() > 0) {
+                    cursor.moveToFirst();
+                    return PlayRecordBean.getPlayTime(cursor);
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+            return 0;
+        }
+
+        public static PlayRecordBean getPlayRecordTimeByPlaylistId(Context context, String playlistId, int type) {
+            Cursor cursor = null;
+            try {
+                String selection = PLAY_TYPE + " = " + type + " and " + PLAYLISTID + "= '" + playlistId + "'";
+                cursor = context.getContentResolver().query(CONTENT_URI, null, selection, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    return PlayRecordBean.cursorToPlayRecord(cursor);
+                }
+            } finally {
+                if (cursor != null) {
+                    cursor.close();
+                }
+            }
+            return null;
         }
     }
 

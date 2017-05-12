@@ -1,4 +1,4 @@
-package com.videobox.presenter;
+package com.videobox.main;
 
 import android.app.Activity;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -252,7 +252,7 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
 
     @Override
     public void onItemClick(View view, int viewType, YTBVideoPageBean.YouTubeVideo data, int position) {
-
+        data.intoPlayer(mContext);
     }
 
     @Override

@@ -9,4 +9,6 @@
     <string name="player_introduction">Introduction</string>
     <string name="player_related">Related</string>
     <string name="search">Search</string>
+
+    <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
 </resources>

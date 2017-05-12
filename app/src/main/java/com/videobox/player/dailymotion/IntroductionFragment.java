@@ -1,4 +1,4 @@
-package com.videobox.presenter;
+package com.videobox.player.dailymotion;
 
 import android.app.Activity;
 import android.os.Bundle;

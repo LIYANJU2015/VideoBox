@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.videobox.R;
-import com.videobox.presenter.YouTubeFragment;
+import com.videobox.main.YouTubeFragment;
 
 /**
  * Created by liyanju on 2017/5/1.

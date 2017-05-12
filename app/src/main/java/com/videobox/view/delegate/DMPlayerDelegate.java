@@ -5,12 +5,11 @@ import android.support.v4.view.ViewPager;
 
 import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.themvp.view.AppDelegate;
-import com.commonlibs.util.DeviceUtils;
 import com.commonlibs.util.ScreenUtils;
 import com.dailymotion.websdk.DMWebVideoView;
 import com.videobox.AppAplication;
 import com.videobox.R;
-import com.videobox.presenter.DaiyMotionPlayerActivity;
+import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
 
 /**
  * Created by liyanju on 2017/5/1.

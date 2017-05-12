@@ -1,4 +1,4 @@
-package com.videobox.presenter;
+package com.videobox.main;
 
 import android.app.Activity;
 import android.content.Context;
@@ -21,6 +21,7 @@ import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
+import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.adapter.DMMainRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
@@ -171,6 +172,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
                         if (mListAdapter == null) {
                             mListAdapter = new DMListRecyclerAdapter(mDMVideoList, mActivity);
+                            mListAdapter.setOnItemClickListener(DailyMotionFragment.this);
                             viewDelegate.setAdapter(mListAdapter);
                         }
 
@@ -242,6 +244,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
                         if (mAdapter == null) {
                             mAdapter = new DMMainRecyclerAdapter(mDMVideoList, mActivity);
+                            mAdapter.setOnItemClickListener(DailyMotionFragment.this);
                             viewDelegate.setAdapter(mAdapter);
                         }
 

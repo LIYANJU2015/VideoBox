@@ -11,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.videobox.presenter.MainActivity"
+            android:name="com.videobox.main.MainActivity"
             android:configChanges="locale|keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="adjustNothing|stateAlwaysHidden"
             android:screenOrientation="portrait">
@@ -23,7 +23,7 @@
         </activity>
 
         <activity
-            android:name=".presenter.DaiyMotionPlayerActivity"
+            android:name=".player.dailymotion.DaiyMotionPlayerActivity"
             android:configChanges="orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" />
@@ -38,6 +38,15 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateHidden"
             />
+
+        <activity android:name=".player.youtube.YouTubePlayerActivity"
+            android:screenOrientation="nosensor"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            >
+            <meta-data android:name="@string/minVersion" android:value="11"/>
+            <meta-data android:name="@string/isLaunchableActivity" android:value="true"/>
+        </activity>
+
     </application>
 
 </manifest>

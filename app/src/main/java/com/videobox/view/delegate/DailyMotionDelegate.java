@@ -6,9 +6,8 @@ import android.support.v7.widget.RecyclerView;
 
 import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.themvp.view.AppDelegate;
-import com.paginate.Paginate;
 import com.videobox.R;
-import com.videobox.presenter.DailyMotionFragment;
+import com.videobox.main.DailyMotionFragment;
 
 /**
  * Created by liyanju on 2017/4/29.

@@ -1,4 +1,4 @@
-package com.videobox.presenter;
+package com.videobox.player.dailymotion;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

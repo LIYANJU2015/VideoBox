@@ -19,7 +19,7 @@ import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
-import com.videobox.presenter.DaiyMotionPlayerActivity;
+import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
 

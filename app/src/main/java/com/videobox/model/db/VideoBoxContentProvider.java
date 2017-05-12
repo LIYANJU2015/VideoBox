@@ -20,6 +20,7 @@ public class VideoBoxContentProvider extends BaseContentProvider{
     private static final int REGIONS_CODE = 104;
     private static final int VIDEO_CODE = 105;
     private static final int SEARCH_HISTORY_CODE =106;
+    private static final int PLAYRECORD_CODE = 107;
 
     @Override
     public void onAddTableInfo(SparseArray<TableInfo> tableInfoArray) {
@@ -30,6 +31,7 @@ public class VideoBoxContentProvider extends BaseContentProvider{
         tableInfoArray.put(REGIONS_CODE, new VideoBoxContract.YouTubeRgions());
         tableInfoArray.put(VIDEO_CODE, new VideoBoxContract.YouTubeVideo());
         tableInfoArray.put(SEARCH_HISTORY_CODE, new VideoBoxContract.SearchHistory());
+        tableInfoArray.put(PLAYRECORD_CODE, new VideoBoxContract.PlayRecord());
     }
 
     @Override

@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.commonlibs.base.BaseFragment;
+import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
@@ -36,7 +37,8 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
  * Created by liyanju on 2017/5/6.
  */
 
-public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> implements Paginate.Callbacks{
+public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> implements Paginate.Callbacks,
+        BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<YTBVideoPageBean.YouTubeVideo> {
 
     private YouTuBeModel mYoutubeModel;
 
@@ -66,10 +68,16 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
         searchRecyclerView.setHasFixedSize(true);
         searchRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mRecyclerAdapter = new YouTubeListRecyclerAdapter(mVideoList, mActivity);
+        mRecyclerAdapter.setOnItemClickListener(this);
         searchRecyclerView.setAdapter(mRecyclerAdapter);
 
         mYoutubeModel = new YouTuBeModel(getAppComponent().repositoryManager());
         return view;
+    }
+
+    @Override
+    public void onItemClick(View view, int viewType, YTBVideoPageBean.YouTubeVideo data, int position) {
+        data.intoPlayer(mContext);
     }
 
     @Override

@@ -65,12 +65,14 @@ public class APIConstant {
 
         public static final ArrayList<HashMap<String, String>> sParamsMapList = new ArrayList<>();
 
+        public static HashMap<String, String> sPlayItemMap = new HashMap<>(8);
+
         static {
             sParamsMapList.add(sMostPopularVideos);
             sParamsMapList.add(sCategoriesMap);
             sParamsMapList.add(sSearchMap);
             sParamsMapList.add(sSearchRelatedMap);
-
+            sParamsMapList.add(sPlayItemMap);
             //add common param
             for (HashMap<String, String> map : sParamsMapList) {
                 map.put(KEY, DEVELOPER_KEY);

@@ -17,6 +17,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.SparseArray;
 
+import com.commonlibs.util.LogUtils;
+
 import java.util.ArrayList;
 
 /**
@@ -49,10 +51,14 @@ public abstract class BaseContentProvider extends ContentProvider {
         for (int i = 0; i < mTableInfoArray.size(); i++) {
             TableInfo tableInfo = mTableInfoArray.valueAt(i);
             int code = mTableInfoArray.keyAt(i);
+            String path = tableInfo.onContentUri().getPath();
+            path = path.substring(path.indexOf("/") +1, path.length());
             URI_MATCHER.addURI(tableInfo.onContentUri().getAuthority(),
-                    tableInfo.onContentUri().getPath(), code);
+                    path, code);
             URI_MATCHER.addURI(tableInfo.onContentUri().getAuthority(),
-                    tableInfo.onContentUri().getPath() + "/#", code);
+                    path + "/#", code);
+            LogUtils.v("addUriMatcher", " getAuthority " + tableInfo.onContentUri().getAuthority()
+                    + " getPath " + path);
         }
     }
 

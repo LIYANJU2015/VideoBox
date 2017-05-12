@@ -1,18 +1,31 @@
 package com.videobox.view.adapter;
 
 import android.app.Activity;
+import android.media.Image;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
+import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubeThumbnailLoader;
+import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.videobox.R;
+import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static android.R.attr.thumbnail;
+import static android.R.attr.type;
 
 /**
  * Created by liyanju on 2017/5/7.
@@ -22,6 +35,15 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
 
     private Activity mActivity;
 
+    private int mType = COMMON_TYPE;
+    public static final int COMMON_TYPE = 1;
+    public static final int PLAYLIST_TYPE = 2;
+
+    public YouTubeListRecyclerAdapter(List<YTBVideoPageBean.YouTubeVideo> infos, Activity activity, int type) {
+        this(infos, activity);
+        mType = type;
+    }
+
     public YouTubeListRecyclerAdapter(List<YTBVideoPageBean.YouTubeVideo> infos, Activity activity) {
         super(infos);
         mActivity = activity;
@@ -29,18 +51,51 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
 
     @Override
     public BaseHolder<YTBVideoPageBean.YouTubeVideo> getHolder(View v, int viewType) {
-        return new YouTubeItemHolder(v, mActivity);
+        if (mType == PLAYLIST_TYPE) {
+            return new YouTubePlayItemHodler(v, mActivity);
+        } else {
+            return new YouTubeItemHolder(v, mActivity);
+        }
     }
 
     @Override
     public int getLayoutId(int viewType) {
-        return R.layout.dm_related_item;
+        if (mType == PLAYLIST_TYPE) {
+            return R.layout.playitem_list_layout;
+        } else {
+            return R.layout.dm_related_item;
+        }
+    }
+
+    public class YouTubePlayItemHodler extends BaseHolder<YTBVideoPageBean.YouTubeVideo> {
+
+        private Activity mActivity;
+
+        private TextView mTitleIV;
+        private ImageView thumbnail;
+
+        public YouTubePlayItemHodler(View itemView, Activity activity) {
+            super(itemView);
+            mActivity = activity;
+            thumbnail = (ImageView) itemView.findViewById(R.id.item_poseter);
+            mTitleIV = (TextView)itemView.findViewById(R.id.title);
+        }
+
+        @Override
+        public void setData(YTBVideoPageBean.YouTubeVideo data, int position) {
+            mTitleIV.setText(data.snippet.title);
+            Glide.with(mActivity).load(data.getThumbnailsUrl())
+                    .placeholder(R.drawable.dm_item_img_default)
+                    .error(R.drawable.dm_item_img_default).crossFade().into(thumbnail);
+        }
+
     }
 
     public static class YouTubeItemHolder extends BaseHolder<YTBVideoPageBean.YouTubeVideo> {
 
         private ImageView videoPoster;
         private TextView nameTV;
+        private LinearLayout bgLinear;
 
         private Activity mActivity;
 
@@ -49,19 +104,19 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
             mActivity = activity;
             videoPoster = (ImageView) itemView.findViewById(R.id.dm_poster);
             nameTV = (TextView)itemView.findViewById(R.id.name);
+            bgLinear = (LinearLayout)itemView.findViewById(R.id.bg_linear);
         }
         @Override
         public void setData(YTBVideoPageBean.YouTubeVideo data, int position) {
-            String thumbnailUrl;
-            if (data.snippet.thumbnails.higth != null && !StringUtils.isEmpty(data.snippet.thumbnails.higth.url)) {
-                thumbnailUrl = data.snippet.thumbnails.higth.url;
-            } else {
-                thumbnailUrl = data.snippet.thumbnails.default1.url;
-            }
-            Glide.with(mActivity).load(thumbnailUrl)
+            Glide.with(mActivity).load(data.getThumbnailsUrl())
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
             nameTV.setText(data.snippet.title);
+            if (data.isPlaying) {
+                bgLinear.setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.playing_bg));
+            } else {
+                bgLinear.setBackgroundDrawable(null);
+            }
         }
     }
 }

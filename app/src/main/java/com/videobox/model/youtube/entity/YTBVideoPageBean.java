@@ -1,10 +1,14 @@
 package com.videobox.model.youtube.entity;
 
+import android.content.Context;
+
+import com.commonlibs.util.StringUtils;
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.videobox.player.youtube.YouTubePlayerActivity;
 
 import java.util.ArrayList;
-
-import static android.R.attr.thumbnail;
+import java.util.Map;
 
 /**
  * Created by liyanju on 2017/4/14.
@@ -29,18 +33,31 @@ public class YTBVideoPageBean {
 
     public static class YouTubeVideo {
 
+        @Expose
+        public boolean isPlaying = false;
 
         public Object id;
 
         public Snippet snippet;
 
+        public String kind;
+
+        public String etag;
+
         public String getVideoID() {
             if (id instanceof String) {
                 return (String)id;
-            } else if (id instanceof ID) {
-                return ((ID)id).videoId;
+            } else if (id instanceof Map) {
+                return ((Map<String, String>)id).get("videoId");
             }
-            return "-1";
+            return "";
+        }
+
+        public String getPlaylistID() {
+            if (id != null && id instanceof Map) {
+                return ((Map<String, String>)id).get("playlistId");
+            }
+            return "";
         }
 
         public String getThumbnailsUrl(){
@@ -64,6 +81,16 @@ public class YTBVideoPageBean {
             public String videoId;
 
             public String playlistId;
+        }
+
+        public void intoPlayer(Context context) {
+            String videoID = getVideoID();
+            String playlistID = getPlaylistID();
+            if (!StringUtils.isEmpty(videoID)) {
+                YouTubePlayerActivity.launchVideoID(context, videoID);
+            } else if (!StringUtils.isEmpty(playlistID)) {
+                YouTubePlayerActivity.launchPlayListID(context, playlistID);
+            }
         }
 
     }
