@@ -35,6 +35,7 @@ public class PlayRecordBean {
         contentValues.put(VideoBoxContract.PlayRecord.THUMBNAILURL, playRecordBean.thumbnailUrl);
         contentValues.put(VideoBoxContract.PlayRecord.TITLE, playRecordBean.title);
         contentValues.put(VideoBoxContract.PlayRecord.PLAYLISTID, playRecordBean.playlistId);
+        contentValues.put(VideoBoxContract.PlayRecord.TOTAL_TIME, playRecordBean.totalTime);
         return contentValues;
     }
 

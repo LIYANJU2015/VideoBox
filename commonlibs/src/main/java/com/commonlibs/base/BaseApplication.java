@@ -5,6 +5,7 @@ import android.content.Context;
 
 import com.commonlibs.integration.ActivityLifecycle;
 import com.commonlibs.integration.IRepositoryManager;
+import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 
 /**
  * Created by liyanju on 2017/4/23.

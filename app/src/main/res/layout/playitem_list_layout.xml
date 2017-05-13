@@ -4,11 +4,13 @@
     android:layout_height="wrap_content"
     android:gravity="center"
     android:padding="10dp"
+    android:id="@+id/bg_linear"
     >
 
     <ImageView
         android:id="@+id/item_poseter"
         android:src="@drawable/dm_item_img_default"
+        android:padding="1dp"
         android:scaleType="centerCrop"
         android:layout_width="160dp"
         android:layout_height="90dp" />

@@ -67,17 +67,23 @@ public class APIConstant {
 
         public static HashMap<String, String> sPlayItemMap = new HashMap<>(8);
 
+        public static HashMap<String, String> sVideoList = new HashMap<>(8);
+
         static {
             sParamsMapList.add(sMostPopularVideos);
             sParamsMapList.add(sCategoriesMap);
             sParamsMapList.add(sSearchMap);
             sParamsMapList.add(sSearchRelatedMap);
             sParamsMapList.add(sPlayItemMap);
+            sParamsMapList.add(sVideoList);
             //add common param
             for (HashMap<String, String> map : sParamsMapList) {
                 map.put(KEY, DEVELOPER_KEY);
                 map.put(PART, "snippet");
             }
+
+
+            sPlayItemMap.put("maxResults", "50");
 
             String country = Locale.getDefault().getCountry().toLowerCase();
             if ("cn".equals(country)) {
@@ -85,11 +91,12 @@ public class APIConstant {
             }
 
             sMostPopularVideos.put(CHART, "mostPopular");
-            sMostPopularVideos.put(REGION_CODE, country);
+//            sMostPopularVideos.put(REGION_CODE, country);
 
             sCategoriesMap.put(REGION_CODE, country);
 
             sSearchMap.put("safeSearch", "none");
+            sSearchMap.put("type", "videos,playlist");
 
             sSearchRelatedMap.put("type", "video");
             sSearchRelatedMap.put("maxResults", "20");
@@ -113,12 +120,7 @@ public class APIConstant {
         public static String PAGE = "page";
 
         static {
-            String country = Locale.getDefault().getCountry().toLowerCase();
-            if ("cn".equals(country)) {
-                country = "en";
-            }
             sWatchVideosMap.put("list", "what-to-watch");
-            //sWatchVideosMap.put("languages", country);
             sWatchVideosMap.put("sort", "visited");
             sWatchVideosMap.put("fields", "title,channel,channel.id,description,duration,id,thumbnail_url,updated_time");
             sWatchVideosMap.put("limit", "10");

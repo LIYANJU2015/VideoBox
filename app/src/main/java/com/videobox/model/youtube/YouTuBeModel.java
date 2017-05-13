@@ -151,4 +151,16 @@ public class YouTuBeModel extends BaseModel {
                 });
 
     }
+
+    public Observable<YTBVideoPageBean> getVideoInfoByVid(Map<String, String> options, String vid, boolean update) {
+        Observable<YTBVideoPageBean> videoObservable = mService.getVideoInfoByVid(options, vid);
+        return mCache.getVideoInfoByVid(videoObservable, new EvictProvider(update))
+                .flatMap(new Func1<Reply<YTBVideoPageBean>,
+                        Observable<YTBVideoPageBean>>() {
+                    @Override
+                    public Observable<YTBVideoPageBean> call(Reply<YTBVideoPageBean> ytbVideoPageBeanReply) {
+                        return Observable.just(ytbVideoPageBeanReply.getData());
+                    }
+                });
+    }
 }

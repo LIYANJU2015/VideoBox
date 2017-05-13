@@ -6,12 +6,15 @@ import com.videobox.model.youtube.entity.YTBVideoPageBean;
 import com.videobox.model.youtube.entity.YTbRegionsBean;
 import com.videobox.model.youtube.entity.YTbRegionsListBean;
 
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import io.rx_cache.DynamicKey;
 import io.rx_cache.EvictProvider;
 import io.rx_cache.LifeCache;
 import io.rx_cache.Reply;
+import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 import rx.Observable;
 
 import static android.R.attr.y;
@@ -46,9 +49,12 @@ public interface YoutubeCache {
     @LifeCache(duration = 5, timeUnit = TimeUnit.MINUTES)
     Observable<Reply<YTBVideoPageBean>> getRelatedVideo(Observable<YTBVideoPageBean> videos, EvictProvider evictProvider);
 
-    @LifeCache(duration = 5, timeUnit = TimeUnit.MINUTES)
+    @LifeCache(duration = 30, timeUnit = TimeUnit.DAYS)
     Observable<Reply<YTBVideoPageBean>> getPlaylistItems(Observable<YTBVideoPageBean> videos, DynamicKey idLastUserQueried, EvictProvider evictProvider);
 
     @LifeCache(duration = 30, timeUnit = TimeUnit.DAYS)
     Observable<Reply<YTBVideoPageBean>> getCategoryVideos(Observable<YTBVideoPageBean> videos, DynamicKey idLastUserQueried, EvictProvider evictProvider);
+
+    @LifeCache(duration = 30, timeUnit = TimeUnit.DAYS)
+    Observable<Reply<YTBVideoPageBean>> getVideoInfoByVid(Observable<YTBVideoPageBean> videos, EvictProvider evictProvider);
  }

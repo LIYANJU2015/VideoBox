@@ -20,6 +20,7 @@ import com.commonlibs.util.LogUtils;
 import com.videobox.R;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.view.delegate.Contract;
+import com.videobox.view.widget.LoadingFrameLayout;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import rx.Emitter;
@@ -52,7 +53,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     private ArrayAdapter<String> mTextAdapter;
 
-    private AVLoadingIndicatorView mLoadView;
+    private LoadingFrameLayout mLoadFrameLayout;
 
     private boolean isClickSuggest;
 
@@ -93,22 +94,21 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
         mSearchHistroyListView.setVisibility(View.GONE);
 
-        mLoadView = (AVLoadingIndicatorView)findViewById(R.id.loading_view);
+        mLoadFrameLayout = (LoadingFrameLayout)findViewById(R.id.loading_frame);
 
     }
 
     @Override
     public void showLoading() {
-        if (mLoadView != null) {
-            mLoadView.setVisibility(View.VISIBLE);
-            mLoadView.show();
+        if (mLoadFrameLayout != null) {
+            mLoadFrameLayout.smoothToshow();
         }
     }
 
     @Override
     public void hideLoading() {
-        if (mLoadView != null && mLoadView.isShown()) {
-            mLoadView.hide();
+        if (mLoadFrameLayout != null ) {
+            mLoadFrameLayout.smoothToHide();
         }
     }
 

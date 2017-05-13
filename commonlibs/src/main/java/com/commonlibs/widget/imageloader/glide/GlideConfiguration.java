@@ -51,7 +51,7 @@ public class GlideConfiguration implements GlideModule {
     @Override
     public void registerComponents(Context context, Glide glide) {
         //Glide默认使用HttpURLConnection做网络请求,在这切换成okhttp请求
-        AppComponent appComponent = ((BaseApplication)context.getApplicationContext()).getAppComponent();
-        glide.register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(appComponent.okHttpClient()));
+//        AppComponent appComponent = ((BaseApplication)context.getApplicationContext()).getAppComponent();
+//        glide.register(GlideUrl.class, InputStream.class, new OkHttpUrlLoader.Factory(appComponent.okHttpClient()));
     }
 }

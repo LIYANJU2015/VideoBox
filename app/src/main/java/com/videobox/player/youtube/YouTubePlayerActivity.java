@@ -5,37 +5,35 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
-import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.paginate.Paginate;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
+import com.videobox.model.bean.PlayRecordBean;
+import com.videobox.model.bean.YouTubePlayerItem;
+import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
-import com.videobox.view.adapter.YouTubeListRecyclerAdapter;
+import com.videobox.view.adapter.YouTubePlayerRecyclerAdapter;
+import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
 
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
+import rx.Observable;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by liyanju on 2017/5/10.
  */
 
-public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implements Paginate.Callbacks{
+public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implements IPlayItemUpdate{
 
     private YouTubePlayerView mYouTubePlayerView;
-
-    private YouTubePlayer mPlayer;
 
     private static final String VIDEO_ID = "VIDEO_ID";
     private static final String PLAY_LIST = "play_list";
@@ -43,24 +41,21 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     private String mVideoID;
     private String mPlaylistID;
 
-    private RecyclerView mPlayerListRecyclerView;
+    private RecyclerView mPlayerRecyclerView;
 
     private Context mContext;
-
-    private ArrayList<YTBVideoPageBean.YouTubeVideo> mVideoList = new ArrayList<>();
-
-    private YouTubeListRecyclerAdapter mPlayListAdapter;
 
     private AppAplication mAppApplication;
 
     private YouTuBeModel mYouTuBeModel;
 
-    private String pageToken;
+    private YouTubePlayerManager mPlayerManager;
 
-    private boolean mIsLoadingMore;
-    private boolean isLoadedAll;
+    private ArrayList<YouTubePlayerItem> mPlayerItems = new ArrayList<>();
 
-    private Paginate mPaginate;
+    private YouTubePlayerRecyclerAdapter mPlayerAdapter;
+
+    private LoadingFrameLayout mLoadingFrameLayout;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -75,86 +70,21 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         mYouTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_view);
         mYouTubePlayerView.initialize(APIConstant.YouTube.DEVELOPER_KEY, this);
 
-        initPlayListView();
-
         parseIntent();
 
-        if (!StringUtils.isEmpty(mPlaylistID)) {
-            mPlayerListRecyclerView.setVisibility(View.VISIBLE);
-            requestPlaylistItem(mPlaylistID);
-        } else {
-            mPlayerListRecyclerView.setVisibility(View.GONE);
-        }
+        initView();
     }
 
-    @Override
-    public void onLoadMore() {
-        requestPlaylistItem(mPlaylistID);
-    }
+    private void initView() {
+        mPlayerRecyclerView = (RecyclerView)findViewById(R.id.player_recyclerview);
+        mPlayerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
+        mPlayerRecyclerView.setHasFixedSize(true);
 
-    @Override
-    public boolean isLoading() {
-        return mIsLoadingMore;
-    }
+        mPlayerAdapter = new YouTubePlayerRecyclerAdapter(this, mPlayerItems);
+        mPlayerRecyclerView.setAdapter(mPlayerAdapter);
 
-    @Override
-    public boolean hasLoadedAllItems() {
-        return false;
-    }
-
-    private void requestPlaylistItem(String playlistId) {
-        mYouTuBeModel.getPlaylistItems(APIConstant.YouTube.sPlayItemMap, playlistId, true, pageToken)
-                .subscribeOn(Schedulers.io())
-                .retryWhen(new RetryWithDelay(3, 2))
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        LogUtils.v("requestPlaylistItem doOnSubscribe call");
-                        mIsLoadingMore = true;
-                    }
-                }).subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        LogUtils.v("requestPlaylistItem", "doAfterTerminate ");
-                        mIsLoadingMore = false;
-                    }
-                })
-                .subscribe(new ErrorHandleSubscriber<YTBVideoPageBean>(mAppApplication.getAppComponent().rxErrorHandler()) {
-                    @Override
-                    public void onNext(YTBVideoPageBean dmVideosPageBean) {
-                        isLoadedAll = StringUtils.isEmpty(dmVideosPageBean.nextPageToken);
-                        LogUtils.v("requestPlaylistItem", "onNext " + isLoadedAll);
-                        if (!isLoadedAll) {
-                            pageToken = dmVideosPageBean.nextPageToken;
-                        }
-
-                        int preEndIndex = mVideoList.size();
-                        if (dmVideosPageBean.items != null) {
-                            mVideoList.addAll(dmVideosPageBean.items);
-                        }
-
-                        if (mVideoList.size() > 0 && mPaginate == null) {
-                            mPaginate = Paginate.with(mPlayerListRecyclerView, YouTubePlayerActivity.this)
-                                    .setLoadingTriggerThreshold(0).addLoadingListItem(true)
-                                    .setLoadingListItemCreator(new PlayListItemCreator())
-                                    .build();
-                            mPaginate.setHasMoreDataToLoad(false);
-                        }
-
-                        mPlayListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
-                    }
-                });
-    }
-
-    private void initPlayListView() {
-        mPlayerListRecyclerView = (RecyclerView)findViewById(R.id.playerlist_recyclerview);
-        mPlayerListRecyclerView.setLayoutManager(new LinearLayoutManager(mContext,
-                LinearLayoutManager.HORIZONTAL, false));
-        mPlayerListRecyclerView.setHasFixedSize(true);
-        mPlayListAdapter = new YouTubeListRecyclerAdapter(mVideoList, this, YouTubeListRecyclerAdapter.PLAYLIST_TYPE);
-        mPlayerListRecyclerView.setAdapter(mPlayListAdapter);
+        mLoadingFrameLayout = (LoadingFrameLayout)findViewById(R.id.loading_frame);
+        mLoadingFrameLayout.smoothToshow();
     }
 
     private void parseIntent() {
@@ -163,30 +93,96 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (mPaginate != null) {
-            mPaginate.unbind();
+    public void onUpdatePlayListItmes(int position) {
+        if (mPlayerAdapter != null && mPlayerAdapter.getYouTubePlayItemHodler() != null) {
+            mPlayerAdapter.getYouTubePlayItemHodler().notifyItemChanged(position);
+        }
+    }
+
+    private int updateCount = 0;
+
+    @Override
+    public void onUpateAll() {
+        if (mPlayerAdapter != null) {
+            mPlayerAdapter.notifyDataSetChanged();
+        }
+        mPlayerRecyclerView.scrollToPosition(0);
+
+        updateCount++;
+
+        if (updateCount == 2) {
+            mLoadingFrameLayout.smoothToHide();
         }
     }
 
     @Override
-    protected YouTubePlayer.Provider getYouTubePlayerProvider() {
-        return mYouTubePlayerView;
+    public void onUpdateItems(int postion) {
+        if (mPlayerAdapter != null && mPlayerAdapter.getItemCount() > postion) {
+            mPlayerAdapter.notifyItemChanged(postion);
+        }
     }
 
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                         YouTubePlayer youTubePlayer, boolean wasRestored) {
         LogUtils.v("onInitializationSuccess", "mPlaylistID " + mPlaylistID + " mVideoID " + mVideoID);
-        mPlayer = youTubePlayer;
         if (!wasRestored) {
+            YouTubePlayerItem introduceItem = new YouTubePlayerItem();
+            introduceItem.type = YouTubePlayerRecyclerAdapter.INTRODUCE_TYPE;
+            introduceItem.curPlayVideo = new YouTubePlayerItem.IntroduceVideo();
+
+            //add playlist item
+            PlayListHandler playListHandler = null;
             if (!StringUtils.isEmpty(mPlaylistID)) {
-                mPlayer.cuePlaylist(mPlaylistID);
-            }else if (!StringUtils.isEmpty(mVideoID)) {
-                mPlayer.cueVideo(mVideoID);
+                YouTubePlayerItem playerlistItem = new YouTubePlayerItem();
+                playerlistItem.type = YouTubePlayerRecyclerAdapter.PLAYLIST_ITEM_TYPE;
+                playListHandler = new PlayListHandler(mContext, mPlaylistID, mYouTuBeModel,
+                        playerlistItem.videoList, this, introduceItem.curPlayVideo);
+                playerlistItem.listener = playListHandler;
+                mPlayerItems.add(playerlistItem);
             }
+
+            mPlayerItems.add(introduceItem);
+
+            RelateVideoHandler relateVideoHandler = new RelateVideoHandler(mContext, mVideoID,
+                    mYouTuBeModel, mPlayerItems, this, introduceItem.curPlayVideo);
+            mPlayerAdapter.setOnItemClickRelateListener(relateVideoHandler);
+
+            mPlayerManager = new YouTubePlayerManager(youTubePlayer, playListHandler, relateVideoHandler, mVideoID);
         }
+    }
+
+    private void savePlayRecord() {
+        YTBVideoPageBean.YouTubeVideo video = mPlayerManager.getCurPlayVideo();
+        if (video != null) {
+            PlayRecordBean recordBean = new PlayRecordBean();
+            recordBean.vid = video.snippet.resourceId.videoId;
+            recordBean.totalTime = mPlayerManager.getDurationMillis();
+            recordBean.playTime = mPlayerManager.getCurrentTimeMillis();
+            recordBean.thumbnailUrl = video.getThumbnailsUrl();
+            recordBean.playlistId = mPlaylistID;
+            recordBean.type = PlayRecordBean.YOUTUBE_TYPE;
+            recordBean.title = video.snippet.title;
+            LogUtils.v("savePlayRecord", " title : " + recordBean.title,
+                    " playlistId" + recordBean.playlistId, " vid " + recordBean.vid);
+            VideoBoxContract.PlayRecord.addPlayRecord(mContext, recordBean);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Observable.just(0).observeOn(Schedulers.io()).subscribe(new Action1<Integer>() {
+            @Override
+            public void call(Integer integer) {
+                savePlayRecord();
+            }
+        });
+    }
+
+    @Override
+    protected YouTubePlayer.Provider getYouTubePlayerProvider() {
+        return mYouTubePlayerView;
     }
 
     public static void launchVideoID(Context context, String videoID) {

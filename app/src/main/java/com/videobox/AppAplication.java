@@ -42,6 +42,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+import static android.R.attr.country;
+import static com.videobox.model.APIConstant.DailyMontion.sWatchVideosMap;
+import static com.videobox.model.APIConstant.YouTube.REGION_CODE;
+import static com.videobox.model.APIConstant.YouTube.sMostPopularVideos;
+
 /**
  * Created by liyanju on 2017/4/23.
  */
@@ -55,6 +60,8 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
 
     public static SPUtils spUtils;
 
+    public static RxErrorHandler sRxErrorHandler;
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -63,6 +70,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         initTypeface();
         initYouTubeRegions();
         initYouTubeLanguages();
+        sRxErrorHandler = getAppComponent().rxErrorHandler();
     }
 
     private void initYouTubeRegions() {
@@ -70,6 +78,12 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         youTuBeModel.getYouTubeRegions(true)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        sMostPopularVideos.put(REGION_CODE, getCurrentRegions());
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ErrorHandleSubscriber<YTbRegionsListBean>(getAppComponent().rxErrorHandler()) {
                     @Override
@@ -85,6 +99,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
                                 }
                             }
                         }
+                        sMostPopularVideos.put(REGION_CODE, getCurrentRegions());
                     }
                 });
     }
@@ -94,6 +109,12 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         youTuBeModel.getYouTubeLanguages(true)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))
+                .doOnSubscribe(new Action0() {
+                    @Override
+                    public void call() {
+                        sWatchVideosMap.put("languages", getCurrentLanguage());
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new ErrorHandleSubscriber<YTBLanguagesBean>(getAppComponent().rxErrorHandler()) {
                     @Override
@@ -107,6 +128,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
                                 }
                             }
                         }
+                        sWatchVideosMap.put("languages", getCurrentLanguage());
                     }
                 });
     }

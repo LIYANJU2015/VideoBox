@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.net.Uri;
 
 import com.commonlibs.provider.TableInfo;
+import com.commonlibs.util.StringUtils;
 import com.videobox.model.bean.PlayRecordBean;
 import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
@@ -376,8 +377,14 @@ public class VideoBoxContract {
         public static void addPlayRecord(Context context, PlayRecordBean recordBean) {
             Cursor cursor = null;
             try {
-                String selection = PLAY_TYPE + " = " + recordBean.type + " and " + VIDEO_ID + "= '" + recordBean.vid + "'";
-                cursor = context.getContentResolver().query(CONTENT_URI, null, selection, null, null);
+                String selection;
+                if (!StringUtils.isEmpty(recordBean.playlistId)) {
+                    selection = PLAY_TYPE + " = " + recordBean.type + " and " + PLAYLISTID + " = '" + recordBean.playlistId+"'";
+                    cursor = context.getContentResolver().query(CONTENT_URI, null, selection, null, null);
+                } else {
+                    selection = PLAY_TYPE + " = " + recordBean.type + " and " + VIDEO_ID + " = '" + recordBean.vid + "'";
+                    cursor = context.getContentResolver().query(CONTENT_URI, null, selection, null, null);
+                }
                 if (cursor != null && cursor.getCount() > 0) {
                     context.getContentResolver().update(CONTENT_URI, PlayRecordBean.toContentValues(recordBean), selection, null);
                 } else {
@@ -393,7 +400,7 @@ public class VideoBoxContract {
         public static long getPlayRecordTimeByVid(Context context, String vid, int type) {
             Cursor cursor = null;
             try {
-                String selection = PLAY_TYPE + " = " + type + " and " + VIDEO_ID + "= '" + vid + "'";
+                String selection = PLAY_TYPE + " = " + type + " and " + VIDEO_ID + " = '" + vid + "'";
                 cursor = context.getContentResolver().query(CONTENT_URI, null, selection, null, null);
                 if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
@@ -412,7 +419,7 @@ public class VideoBoxContract {
             try {
                 String selection = PLAY_TYPE + " = " + type + " and " + PLAYLISTID + "= '" + playlistId + "'";
                 cursor = context.getContentResolver().query(CONTENT_URI, null, selection, null, null);
-                if (cursor != null) {
+                if (cursor != null && cursor.getCount() > 0) {
                     cursor.moveToFirst();
                     return PlayRecordBean.cursorToPlayRecord(cursor);
                 }

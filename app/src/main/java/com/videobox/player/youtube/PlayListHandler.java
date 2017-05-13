@@ -1,18 +1,18 @@
 package com.videobox.player.youtube;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
-import com.commonlibs.base.AppComponent;
+import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
 import com.google.android.youtube.player.YouTubePlayer;
-import com.paginate.Paginate;
 import com.videobox.AppAplication;
 import com.videobox.model.APIConstant;
 import com.videobox.model.bean.PlayRecordBean;
+import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
@@ -23,13 +23,12 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
-import static android.media.CamcorderProfile.get;
-
 /**
  * Created by liyanju on 2017/5/11.
  */
 
-public class PlayListHandler implements YouTubePlayer.PlaylistEventListener, Paginate.Callbacks{
+public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
+        BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<YTBVideoPageBean.YouTubeVideo> {
 
     private String mPlaylistId;
 
@@ -40,28 +39,35 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener, Pag
     private boolean mIsLoadingMore;
     private boolean isLoadedAll;
 
-    private Paginate mPaginate;
-
     private Context mContext;
 
-    private AppComponent mAppComponent;
+    private ArrayList<YTBVideoPageBean.YouTubeVideo> mVideoList;
 
-    private ArrayList<YTBVideoPageBean.YouTubeVideo> mVideoList = new ArrayList<>();
-
-    private RecyclerView mRecyclerView;
-
-    private String mCurPlayVid;
+    private String mPlayRecordVid;
     private long mCurPlayTime;
     private int mCurIndex;
 
     private IPlayCallBack mIPlayCallBack;
 
-    public PlayListHandler(Context context, String playlistId, YouTuBeModel youTuBeModel, RecyclerView recyclerView) {
+    private IPlayItemUpdate mItemUpdate;
+
+    private YouTubePlayerItem.IntroduceVideo mCurPlayVideo;
+
+    public PlayListHandler(Context context, String playlistId, YouTuBeModel youTuBeModel,
+                           ArrayList<YTBVideoPageBean.YouTubeVideo> videolist, IPlayItemUpdate itemUpdate,
+                           YouTubePlayerItem.IntroduceVideo curPlayVideo) {
         mContext = context;
-        mAppComponent = ((AppAplication)context.getApplicationContext()).getAppComponent();
         mPlaylistId = playlistId;
         mYouTuBeModel = youTuBeModel;
-        mRecyclerView = recyclerView;
+        mVideoList = videolist;
+        mItemUpdate = itemUpdate;
+        mCurPlayVideo = curPlayVideo;
+    }
+
+    public void starFirstPlay() {
+        mCurIndex = 0;
+        mIPlayCallBack.onCanPlayList(mPlaylistId, 0, 0);
+        updateListPlayStatus();
     }
 
     public void start(IPlayCallBack iPlayCallBack) {
@@ -73,10 +79,17 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener, Pag
             requestPlaylistItem(mPlaylistId, false);
             iPlayCallBack.onCanPlayList(mPlaylistId, 0, 0);
         } else {
-            mCurPlayVid = playRecordBean.vid;
+            mPlayRecordVid = playRecordBean.vid;
             mCurPlayTime = playRecordBean.playTime;
             requestPlaylistItem(mPlaylistId, true);
         }
+    }
+
+    public YTBVideoPageBean.YouTubeVideo getCurPlayVideo() {
+        if (mVideoList.size() > mCurIndex) {
+            return mVideoList.get(mCurIndex);
+        }
+        return null;
     }
 
     private void requestPlaylistItem(final String playlistId, final boolean isPlayItem) {
@@ -98,7 +111,7 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener, Pag
                         mIsLoadingMore = false;
                     }
                 })
-                .subscribe(new ErrorHandleSubscriber<YTBVideoPageBean>(mAppComponent.rxErrorHandler()) {
+                .subscribe(new ErrorHandleSubscriber<YTBVideoPageBean>(AppAplication.sRxErrorHandler) {
                     @Override
                     public void onNext(YTBVideoPageBean dmVideosPageBean) {
                         isLoadedAll = StringUtils.isEmpty(dmVideosPageBean.nextPageToken);
@@ -107,57 +120,67 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener, Pag
                             pageToken = dmVideosPageBean.nextPageToken;
                         }
 
-                        int preEndIndex = mVideoList.size();
                         if (dmVideosPageBean.items != null) {
                             mVideoList.addAll(dmVideosPageBean.items);
                         }
 
-                        if (mVideoList.size() > 0 && mPaginate == null) {
-                            mPaginate = Paginate.with(mRecyclerView, PlayListHandler.this)
-                                    .setLoadingTriggerThreshold(0).addLoadingListItem(true)
-                                    .setLoadingListItemCreator(new PlayListItemCreator())
-                                    .build();
-                            mPaginate.setHasMoreDataToLoad(false);
-                        }
-
-                        mRecyclerView.getAdapter().notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
-
                         if (isPlayItem) {
-                            for (int i = 0; i < mVideoList.size(); i++) {
-                                YTBVideoPageBean.YouTubeVideo video = mVideoList.get(i);
-                                if (mCurPlayVid.equals(video.snippet.resourceId.videoId)) {
+                            for (int i = 0; i < dmVideosPageBean.items.size(); i++) {
+                                YTBVideoPageBean.YouTubeVideo video = dmVideosPageBean.items.get(i);
+                                if (mPlayRecordVid.equals(video.snippet.resourceId.videoId)) {
                                     mCurIndex = i;
                                     mIPlayCallBack.onCanPlayList(mPlaylistId, mCurIndex, (int) mCurPlayTime);
-                                    break;
+                                    video.isPlaying = true;
+                                    mCurPlayVideo.title = video.snippet.title;
+                                    mCurPlayVideo.description = video.snippet.description;
+                                } else {
+                                    video.isPlaying = false;
                                 }
                             }
+                        } else {
+                            if (mVideoList.size() > mCurIndex && mCurIndex >= 0) {
+                                mVideoList.get(mCurIndex).isPlaying = true;
+                                mCurPlayVideo.title = mVideoList.get(mCurIndex).snippet.title;
+                                mCurPlayVideo.description = mVideoList.get(mCurIndex).snippet.description;
+                            }
                         }
+
+                        if (!isLoadedAll) {
+                            requestPlaylistItem(mPlaylistId, isPlayItem);
+                        } else {
+                            mItemUpdate.onUpateAll();
+                        }
+
                     }
                 });
     }
 
     private void updateListPlayStatus() {
         LogUtils.v("updateListPlayStatus", " mCurIndex " + mCurIndex, " mVideoList size "+ mVideoList.size());
-        if (mVideoList.size() > mCurIndex && mCurIndex >= 0) {
-            YTBVideoPageBean.YouTubeVideo video = mVideoList.get(mCurIndex);
-            video.isPlaying = true;
-            mRecyclerView.getAdapter().notifyDataSetChanged();
+        for (int i = 0; i < mVideoList.size(); i++) {
+            YTBVideoPageBean.YouTubeVideo video = mVideoList.get(i);
+            if (mCurIndex == i) {
+                video.isPlaying = true;
+                mCurPlayVideo.title = video.snippet.title;
+                mCurPlayVideo.description = video.snippet.description;
+                mItemUpdate.onUpdateItems(1);
+                mItemUpdate.onUpdatePlayListItmes(mCurIndex);
+            } else if (video.isPlaying){
+                video.isPlaying = false;
+                mItemUpdate.onUpdatePlayListItmes(i);
+            }
         }
     }
 
-    @Override
-    public void onLoadMore() {
-        requestPlaylistItem(mPlaylistId, false);
-    }
-
-    @Override
-    public boolean isLoading() {
-        return mIsLoadingMore;
-    }
-
-    @Override
-    public boolean hasLoadedAllItems() {
-        return isLoadedAll;
+    public void cancelPlayingStatus() {
+        for (int i = 0; i < mVideoList.size(); i++) {
+            YTBVideoPageBean.YouTubeVideo video = mVideoList.get(i);
+            if (i == mCurIndex) {
+                video.isPlaying = false;
+            }
+        }
+        mItemUpdate.onUpdatePlayListItmes(mCurIndex);
+        mCurIndex = 0;
     }
 
     @Override
@@ -169,11 +192,22 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener, Pag
     @Override
     public void onNext() {
         mCurIndex++;
-        updateListPlayStatus();
+        if (mCurIndex < mVideoList.size()) {
+            updateListPlayStatus();
+        } else {
+            mIPlayCallBack.onPlaylistEnded();
+        }
     }
 
     @Override
     public void onPlaylistEnded() {
+    }
 
+
+    @Override
+    public void onItemClick(View view, int viewType, YTBVideoPageBean.YouTubeVideo data, int position) {
+        mCurIndex = position;
+        updateListPlayStatus();
+        mIPlayCallBack.onCanPlayList(mPlaylistId, position, 0);
     }
 }

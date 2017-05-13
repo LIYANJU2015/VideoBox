@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/bg_linear"
     >
 
     <ImageView
+        android:padding="1dp"
         android:id="@+id/dm_poster"
         android:scaleType="centerCrop"
         android:src="@drawable/dm_item_img_default"

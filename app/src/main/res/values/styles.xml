@@ -17,7 +17,6 @@
     <style name="TabTextAppearence" parent="TextAppearance.Design.Tab">
         <item name="android:textAllCaps">false</item>
         <item name="android:textSize">18sp</item>
-        <item name="android:fontFamily">sans-serif</item>
     </style>
 
     <style name="Toolbar">
@@ -32,6 +31,14 @@
         <item name="android:layout_height">20dp</item>
         <item name="android:layout_width">22dp</item>
         <item name="android:layout_marginBottom">@dimen/abc_action_bar_overflow_padding_start_material</item>
+    </style>
+
+    <style name="custom_AVLoadingIndicatorView">
+        <item name="minWidth">48dip</item>
+        <item name="maxWidth">48dip</item>
+        <item name="minHeight">48dip</item>
+        <item name="maxHeight">48dip</item>
+        <item name="indicatorName">BallSpinFadeLoaderIndicator</item>
     </style>
 
 </resources>

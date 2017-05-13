@@ -26,6 +26,7 @@ import java.util.Map;
 
 import static android.R.attr.thumbnail;
 import static android.R.attr.type;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by liyanju on 2017/5/7.
@@ -51,6 +52,7 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
 
     @Override
     public BaseHolder<YTBVideoPageBean.YouTubeVideo> getHolder(View v, int viewType) {
+        LogUtils.v("YouTubeListRecyclerAdapter getHolder");
         if (mType == PLAYLIST_TYPE) {
             return new YouTubePlayItemHodler(v, mActivity);
         } else {
@@ -87,6 +89,13 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
             Glide.with(mActivity).load(data.getThumbnailsUrl())
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(thumbnail);
+
+            if (data.isPlaying) {
+                LogUtils.v(" YouTubeItemHolder isPlaying");
+                thumbnail.setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.playing_bg));
+            } else {
+                thumbnail.setBackgroundDrawable(null);
+            }
         }
 
     }
@@ -112,11 +121,7 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
             nameTV.setText(data.snippet.title);
-            if (data.isPlaying) {
-                bgLinear.setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.playing_bg));
-            } else {
-                bgLinear.setBackgroundDrawable(null);
-            }
+
         }
     }
 }

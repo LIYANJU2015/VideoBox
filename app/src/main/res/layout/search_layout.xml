@@ -1,36 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <android.support.v7.widget.SearchView
         android:id="@+id/search_view"
-        android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" />
 
     <android.support.design.widget.TabLayout
-        android:layout_marginTop="20dp"
-        android:layout_below="@id/search_view"
         android:id="@+id/search_tabLayout"
         style="@style/TabLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        />
-    <android.support.v4.view.ViewPager
-        android:layout_below="@id/search_tabLayout"
-        android:id="@+id/search_viewPager"
+        android:layout_below="@id/search_view"
+        android:layout_marginTop="20dp" />
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/search_viewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <include layout="@layout/loading_layout" />
+
+    </FrameLayout>
 
     <ListView
-        android:divider="@color/material_grey600"
-        android:dividerHeight="1px"
-        android:layout_below="@+id/search_view"
         android:id="@+id/search_history_listview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_below="@+id/search_view"
+        android:divider="@color/material_grey600"
+        android:dividerHeight="1px" />
 
-    <include layout="@layout/loading_layout"/>
-
-</RelativeLayout>
+</LinearLayout>
