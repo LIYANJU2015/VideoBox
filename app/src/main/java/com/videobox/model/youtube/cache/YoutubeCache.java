@@ -55,6 +55,4 @@ public interface YoutubeCache {
     @LifeCache(duration = 30, timeUnit = TimeUnit.DAYS)
     Observable<Reply<YTBVideoPageBean>> getCategoryVideos(Observable<YTBVideoPageBean> videos, DynamicKey idLastUserQueried, EvictProvider evictProvider);
 
-    @LifeCache(duration = 30, timeUnit = TimeUnit.DAYS)
-    Observable<Reply<YTBVideoPageBean>> getVideoInfoByVid(Observable<YTBVideoPageBean> videos, EvictProvider evictProvider);
  }

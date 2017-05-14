@@ -19,6 +19,8 @@ public class YouTubePlayerManager implements IPlayCallBack {
 
     private RelateVideoHandler mRelateVideoHandler;
 
+    private boolean isRelateRequest;
+
     public YouTubePlayerManager(YouTubePlayer youTubePlayer,
                                 PlayListHandler playListHandler,
                                 RelateVideoHandler relateVideoHandler, String vid) {
@@ -48,7 +50,7 @@ public class YouTubePlayerManager implements IPlayCallBack {
     }
 
     public YTBVideoPageBean.YouTubeVideo getCurPlayVideo() {
-        if (mPlayerListHander != null){
+        if (mPlayerListHander != null) {
             return mPlayerListHander.getCurPlayVideo();
         }
         return null;
@@ -57,9 +59,15 @@ public class YouTubePlayerManager implements IPlayCallBack {
     private boolean isPlayinglist;
 
     @Override
-    public void onCanPlayList(String playlistId, int startIndex, int timeMillis) {
-        mPlayer.loadPlaylist(playlistId, startIndex, timeMillis);
+    public void onCanPlayList(String playlistId, int startIndex, int timeMillis, String vid) {
+        try {
+            mPlayer.loadPlaylist(playlistId, startIndex, timeMillis);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
         isPlayinglist = true;
+
+        mRelateVideoHandler.requestRelatedVideo(vid);
 
         if (mRelateVideoHandler != null) {
             mRelateVideoHandler.cancelPlayingStatus();
@@ -69,7 +77,11 @@ public class YouTubePlayerManager implements IPlayCallBack {
     @Override
     public void onCanPlayVideo(String videoId, int timeMills) {
         isPlayinglist = false;
-        mPlayer.loadVideo(videoId, timeMills);
+        try {
+            mPlayer.loadVideo(videoId, timeMills);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+        }
 
         if (mPlayerListHander != null) {
             mPlayerListHander.cancelPlayingStatus();
@@ -107,7 +119,7 @@ public class YouTubePlayerManager implements IPlayCallBack {
         LogUtils.v("playNextRelateVideo", "vid " + vid);
         if (!StringUtils.isEmpty(vid)) {
             long time = VideoBoxContract.PlayRecord.getPlayRecordTimeByVid(AppAplication.getContext(), vid, PlayRecordBean.YOUTUBE_TYPE);
-            mPlayer.loadVideo(vid, (int)time);
+            mPlayer.loadVideo(vid, (int) time);
         }
     }
 

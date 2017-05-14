@@ -179,6 +179,7 @@ public final class TimeUtils {
      * 注意：SimpleDateFormat不是线程安全的，线程安全需用{@code ThreadLocal<SimpleDateFormat>}
      */
     private static final String DEFAULT_PATTERN = "yyyy-MM-dd HH:mm:ss";
+    public static final String H_M_S_PATTERN = "HH:mm:ss";
 
     private TimeUtils() {
         throw new UnsupportedOperationException("u can't instantiate me...");

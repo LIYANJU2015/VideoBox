@@ -11,6 +11,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
+import com.commonlibs.util.TimeUtils;
+import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
@@ -87,15 +89,25 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
 
         private ImageView posterIV;
         private TextView titleTV;
+        private TextView timeTV;
 
         public YouTubeRelatedVideoHodler(View itemView) {
             super(itemView);
             posterIV = (ImageView) itemView.findViewById(R.id.dm_poster);
             titleTV = (TextView) itemView.findViewById(R.id.name);
+            timeTV = (TextView)itemView.findViewById(R.id.time);
         }
 
         @Override
         public void setData(YouTubePlayerItem data, int position) {
+
+            if (data.relateVideo.contentDetails != null) {
+                timeTV.setVisibility(View.VISIBLE);
+                timeTV.setText(YouTubeUtil.convertDuration(data.relateVideo.contentDetails.duration));
+            } else {
+                timeTV.setVisibility(View.GONE);
+            }
+
             if (data.relateVideo.isPlaying) {
                 posterIV.setBackgroundDrawable(ContextCompat.getDrawable(mActivity, R.drawable.playing_bg));
             } else {
@@ -156,19 +168,19 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
                 playListAdapter.notifyDataSetChanged();
             }
 
-            boolean scrollTo = false;
+            postion = -1;
             for(int i = 0; i < data.videoList.size(); i++) {
                 YTBVideoPageBean.YouTubeVideo video = data.videoList.get(i);
                 if (video.isPlaying) {
                     postion = i;
                     recyclerView.scrollToPosition(i);
-                    scrollTo = true;
                     break;
                 }
             }
-            if (!scrollTo) {
+            if (postion != -1) {
                 recyclerView.scrollToPosition(postion);
             }
+
         }
     }
 }

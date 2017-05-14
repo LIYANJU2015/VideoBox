@@ -10,11 +10,15 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
+import com.commonlibs.commonloader.AsyncComDataLoader;
+import com.commonlibs.commonloader.IComDataLoader;
+import com.commonlibs.commonloader.IComDataLoaderListener;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubeThumbnailLoader;
 import com.google.android.youtube.player.YouTubeThumbnailView;
+import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
@@ -39,6 +43,8 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
     private int mType = COMMON_TYPE;
     public static final int COMMON_TYPE = 1;
     public static final int PLAYLIST_TYPE = 2;
+
+    private ContentDetailsLoaderListener loaderListener = new ContentDetailsLoaderListener();
 
     public YouTubeListRecyclerAdapter(List<YTBVideoPageBean.YouTubeVideo> infos, Activity activity, int type) {
         this(infos, activity);
@@ -75,12 +81,15 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
 
         private TextView mTitleIV;
         private ImageView thumbnail;
+        private TextView mTimeTV;
 
         public YouTubePlayItemHodler(View itemView, Activity activity) {
             super(itemView);
             mActivity = activity;
             thumbnail = (ImageView) itemView.findViewById(R.id.item_poseter);
             mTitleIV = (TextView)itemView.findViewById(R.id.title);
+            mTimeTV = (TextView)itemView.findViewById(R.id.time);
+
         }
 
         @Override
@@ -96,8 +105,36 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
             } else {
                 thumbnail.setBackgroundDrawable(null);
             }
+
+            LogUtils.v("YouTubePlayItemHodler", " contentDetails :" + data.contentDetails);
+            if (data.contentDetails != null ) {
+                mTimeTV.setVisibility(View.VISIBLE);
+                mTimeTV.setText(data.contentDetails.duration);
+            } else {
+                if (!data.status.isPrivacy()) {
+                    AsyncComDataLoader.getInstance().display(loaderListener, data, mTimeTV);
+                }
+                mTimeTV.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public class ContentDetailsLoaderListener implements IComDataLoaderListener<String> {
+        @Override
+        public void onLoadingComplete(IComDataLoader<String> infoLoader, View... views) {
+            views[0].setVisibility(View.VISIBLE);
+            ((TextView)views[0]).setText(infoLoader.getLoadDataObj());
         }
 
+        @Override
+        public void onCancelLoading(View... views) {
+
+        }
+
+        @Override
+        public void onStartLoading(View... views) {
+
+        }
     }
 
     public static class YouTubeItemHolder extends BaseHolder<YTBVideoPageBean.YouTubeVideo> {

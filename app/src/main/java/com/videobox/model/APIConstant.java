@@ -67,7 +67,9 @@ public class APIConstant {
 
         public static HashMap<String, String> sPlayItemMap = new HashMap<>(8);
 
-        public static HashMap<String, String> sVideoList = new HashMap<>(8);
+        public static HashMap<String, String> sVideoList = new HashMap<>(5);
+
+        public static HashMap<String, String> sVideoContentDetails = new HashMap<>(5);
 
         static {
             sParamsMapList.add(sMostPopularVideos);
@@ -82,8 +84,11 @@ public class APIConstant {
                 map.put(PART, "snippet");
             }
 
+            sVideoContentDetails.put(KEY, DEVELOPER_KEY);
+            sVideoContentDetails.put(PART, "contentDetails");
 
             sPlayItemMap.put("maxResults", "50");
+            sPlayItemMap.put(PART, "snippet,status");
 
             String country = Locale.getDefault().getCountry().toLowerCase();
             if ("cn".equals(country)) {
@@ -97,9 +102,10 @@ public class APIConstant {
 
             sSearchMap.put("safeSearch", "none");
             sSearchMap.put("type", "videos,playlist");
+            sSearchMap.put("maxResults", "25");
 
             sSearchRelatedMap.put("type", "video");
-            sSearchRelatedMap.put("maxResults", "20");
+            sSearchRelatedMap.put("maxResults", "25");
         }
     }
 

@@ -4,16 +4,30 @@
     android:layout_height="wrap_content"
     >
 
+    <FrameLayout
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
     <ImageView
         android:padding="1dp"
         android:id="@+id/dm_poster"
         android:scaleType="centerCrop"
         android:src="@drawable/dm_item_img_default"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_width="160dp"
         android:layout_height="90dp" />
+
+        <TextView
+            android:visibility="gone"
+            android:padding="2dp"
+            android:textColor="@color/material_white"
+            android:background="@color/material_black"
+            android:id="@+id/time"
+            android:layout_gravity="bottom|right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 
     <LinearLayout
         android:layout_margin="10dp"

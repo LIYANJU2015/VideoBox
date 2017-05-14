@@ -112,13 +112,12 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
             long time = VideoBoxContract.PlayRecord.getPlayRecordTimeByVid(AppAplication.getContext(),
                     videoId, PlayRecordBean.YOUTUBE_TYPE);
             iPlayCallBack.onCanPlayVideo(videoId, (int)time);
+            requestRelatedVideo(videoId);
         }
-
-        requestRelatedVideo();
     }
 
     private void requestVideoInfo() {
-        youTuBeModel.getVideoInfoByVid(APIConstant.YouTube.sVideoList, videoId, true)
+        youTuBeModel.getVideoInfoByVid(APIConstant.YouTube.sVideoList, videoId)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -134,7 +133,10 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
                 });
     }
 
-    private void requestRelatedVideo() {
+    private ArrayList<YouTubePlayerItem> relateItemsTemp = new ArrayList<>();
+
+    public void requestRelatedVideo(String videoId) {
+        LogUtils.v("requestRelatedVideo", "videoId " + videoId);
         youTuBeModel.getRelatedVideo(APIConstant.YouTube.sSearchRelatedMap, videoId, true)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))
@@ -143,14 +145,49 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
                     @Override
                     public void onNext(YTBVideoPageBean dmVideosPageBean) {
                         if (dmVideosPageBean.items.size() > 0) {
+                            items.removeAll(relateItemsTemp);
+                            relateItemsTemp.clear();
+
+                            requestVideoContentDetails(dmVideosPageBean.items);
+
                             int index = 0;
                             for (YTBVideoPageBean.YouTubeVideo video : dmVideosPageBean.items) {
                                 YouTubePlayerItem playerItem = new YouTubePlayerItem();
                                 playerItem.type = RELATED_VIDEO;
                                 playerItem.relateVideo = video;
                                 playerItem.position = index;
-                                items.add(playerItem);
+                                relateItemsTemp.add(playerItem);
                                 index++;
+                            }
+
+                            items.addAll(relateItemsTemp);
+
+                            itemUpdate.onUpateAll();
+                        }
+                    }
+                });
+    }
+
+    private void requestVideoContentDetails(final ArrayList<YTBVideoPageBean.YouTubeVideo> videos) {
+        StringBuilder vidsBuilder = new StringBuilder();
+        for (YTBVideoPageBean.YouTubeVideo video : videos) {
+            vidsBuilder.append(video.getVideoID()).append(",");
+        }
+        youTuBeModel.getVideoInfoByVid(APIConstant.YouTube.sVideoContentDetails, vidsBuilder.toString())
+                .subscribeOn(Schedulers.io())
+                .retryWhen(new RetryWithDelay(3, 2))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new ErrorHandleSubscriber<YTBVideoPageBean>(AppAplication.sRxErrorHandler) {
+                    @Override
+                    public void onNext(YTBVideoPageBean dmVideosPageBean) {
+                        if (dmVideosPageBean.items.size() > 0) {
+                            for (YTBVideoPageBean.YouTubeVideo newVideo : dmVideosPageBean.items) {
+                                String vid = newVideo.getVideoID();
+                                for (YTBVideoPageBean.YouTubeVideo oldVideo : videos) {
+                                    if (oldVideo.getVideoID().equals(vid)) {
+                                        oldVideo.contentDetails = newVideo.contentDetails;
+                                    }
+                                }
                             }
                             itemUpdate.onUpateAll();
                         }

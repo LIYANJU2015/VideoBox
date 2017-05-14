@@ -62,6 +62,14 @@ public interface YouTubeService {
     @GET("videos")
     public Observable<YTBVideoPageBean> getVideoInfoByVid(@QueryMap Map<String, String> options, @Query("id") String vid);
 
+    @GET("videos")
+    public Call<YTBVideoPageBean> getVideoInfoByVid2(@QueryMap Map<String, String> options, @Query("id") String vid);
+
+    @GET("playlists")
+    public Observable<YTBVideoPageBean> getPlaylistsInfoById(@QueryMap Map<String, String> options, @Query("id") String id);
+
+
+
 
 
 }

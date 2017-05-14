@@ -8,6 +8,8 @@ public interface IPlayItemUpdate {
 
     void onUpdatePlayListItmes(int index);
 
+    void onUpdatePlayListItmes();
+
     void onUpdateItems(int postion);
 
     void onUpateAll();

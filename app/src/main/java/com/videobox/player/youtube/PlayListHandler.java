@@ -19,9 +19,12 @@ import com.videobox.model.youtube.entity.YTBVideoPageBean;
 
 import java.util.ArrayList;
 
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
+
+import static android.content.ContentValues.TAG;
 
 /**
  * Created by liyanju on 2017/5/11.
@@ -66,7 +69,7 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
 
     public void starFirstPlay() {
         mCurIndex = 0;
-        mIPlayCallBack.onCanPlayList(mPlaylistId, 0, 0);
+        mIPlayCallBack.onCanPlayList(mPlaylistId, 0, 0, mVideoList.get(0).snippet.resourceId.videoId);
         updateListPlayStatus();
     }
 
@@ -77,7 +80,7 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
                 .getPlayRecordTimeByPlaylistId(mContext, mPlaylistId, PlayRecordBean.YOUTUBE_TYPE);
         if (playRecordBean == null) {
             requestPlaylistItem(mPlaylistId, false);
-            iPlayCallBack.onCanPlayList(mPlaylistId, 0, 0);
+            iPlayCallBack.onCanPlayList(mPlaylistId, 0, 0, mVideoList.get(0).snippet.resourceId.videoId);
         } else {
             mPlayRecordVid = playRecordBean.vid;
             mCurPlayTime = playRecordBean.playTime;
@@ -96,21 +99,7 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
         mYouTuBeModel.getPlaylistItems(APIConstant.YouTube.sPlayItemMap, playlistId, true, pageToken)
                 .subscribeOn(Schedulers.io())
                 .retryWhen(new RetryWithDelay(3, 2))
-                .doOnSubscribe(new Action0() {
-                    @Override
-                    public void call() {
-                        LogUtils.v("requestPlaylistItem doOnSubscribe call");
-                        mIsLoadingMore = true;
-                    }
-                }).subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doAfterTerminate(new Action0() {
-                    @Override
-                    public void call() {
-                        LogUtils.v("requestPlaylistItem", "doAfterTerminate ");
-                        mIsLoadingMore = false;
-                    }
-                })
                 .subscribe(new ErrorHandleSubscriber<YTBVideoPageBean>(AppAplication.sRxErrorHandler) {
                     @Override
                     public void onNext(YTBVideoPageBean dmVideosPageBean) {
@@ -129,7 +118,8 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
                                 YTBVideoPageBean.YouTubeVideo video = dmVideosPageBean.items.get(i);
                                 if (mPlayRecordVid.equals(video.snippet.resourceId.videoId)) {
                                     mCurIndex = i;
-                                    mIPlayCallBack.onCanPlayList(mPlaylistId, mCurIndex, (int) mCurPlayTime);
+                                    mIPlayCallBack.onCanPlayList(mPlaylistId, mCurIndex, (int) mCurPlayTime,
+                                            video.snippet.resourceId.videoId);
                                     video.isPlaying = true;
                                     mCurPlayVideo.title = video.snippet.title;
                                     mCurPlayVideo.description = video.snippet.description;
@@ -208,6 +198,7 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
     public void onItemClick(View view, int viewType, YTBVideoPageBean.YouTubeVideo data, int position) {
         mCurIndex = position;
         updateListPlayStatus();
-        mIPlayCallBack.onCanPlayList(mPlaylistId, position, 0);
+        mIPlayCallBack.onCanPlayList(mPlaylistId, position, 0,
+                mVideoList.get(position).snippet.resourceId.videoId);
     }
 }

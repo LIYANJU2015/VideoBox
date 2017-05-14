@@ -6,7 +6,7 @@ package com.videobox.player.youtube;
 
 public interface IPlayCallBack {
 
-    void onCanPlayList(String playlistId, int startIndex, int timeMillis);
+    void onCanPlayList(String playlistId, int startIndex, int timeMillis, String vid);
 
     /**
      * 播放列表视频播放完毕

@@ -99,6 +99,13 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         }
     }
 
+    @Override
+    public void onUpdatePlayListItmes() {
+        if (mPlayerAdapter != null) {
+            mPlayerAdapter.notifyItemChanged(0);
+        }
+    }
+
     private int updateCount = 0;
 
     @Override
