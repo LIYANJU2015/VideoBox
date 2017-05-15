@@ -11,7 +11,7 @@ import com.videobox.model.youtube.entity.YTBVideoPageBean;
 /**
  * Created by liyanju on 2017/5/12.
  */
-public class YouTubePlayerManager implements IPlayCallBack {
+public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.PlayerStateChangeListener {
 
     private YouTubePlayer mPlayer;
 
@@ -19,11 +19,9 @@ public class YouTubePlayerManager implements IPlayCallBack {
 
     private RelateVideoHandler mRelateVideoHandler;
 
-    private boolean isRelateRequest;
-
     public YouTubePlayerManager(YouTubePlayer youTubePlayer,
                                 PlayListHandler playListHandler,
-                                RelateVideoHandler relateVideoHandler, String vid) {
+                                RelateVideoHandler relateVideoHandler) {
         mPlayer = youTubePlayer;
         mPlayerListHander = playListHandler;
         mRelateVideoHandler = relateVideoHandler;
@@ -34,7 +32,7 @@ public class YouTubePlayerManager implements IPlayCallBack {
         } else {
             mRelateVideoHandler.start(this, false);
         }
-        mPlayer.setPlayerStateChangeListener(mRelateVideoHandler);
+        mPlayer.setPlayerStateChangeListener(this);
     }
 
     public boolean isCurInPlaylist() {
@@ -123,4 +121,42 @@ public class YouTubePlayerManager implements IPlayCallBack {
         }
     }
 
+    @Override
+    public void onLoading() {
+    }
+
+    @Override
+    public void onLoaded(String s) {
+
+    }
+
+    @Override
+    public void onAdStarted() {
+
+    }
+
+    @Override
+    public void onVideoStarted() {
+
+    }
+
+    @Override
+    public void onVideoEnded() {
+        LogUtils.v("onVideoEnded", "isPlayinglist " + isPlayinglist);
+        if (!isPlayinglist) {
+            String vid = mRelateVideoHandler.getNextVideoId();
+            LogUtils.v("onVideoEnded", " vid " + vid);
+            if (!StringUtils.isEmpty(vid)) {
+                long time = VideoBoxContract.PlayRecord.getPlayRecordTimeByVid(AppAplication.getContext(), vid, PlayRecordBean.YOUTUBE_TYPE);
+                onCanPlayVideo(vid, (int) time);
+            } else {
+                onPlayRelateVideoEnd();
+            }
+        }
+    }
+
+    @Override
+    public void onError(YouTubePlayer.ErrorReason errorReason) {
+
+    }
 }

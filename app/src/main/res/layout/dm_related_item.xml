@@ -19,8 +19,9 @@
         android:layout_height="90dp" />
 
         <TextView
+            android:layout_margin="1dp"
+            style="@style/list_time"
             android:visibility="gone"
-            android:padding="2dp"
             android:textColor="@color/material_white"
             android:background="@color/material_black"
             android:id="@+id/time"
@@ -36,6 +37,7 @@
         android:layout_height="90dp">
 
         <TextView
+            style="@style/list_title"
             android:id="@+id/name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

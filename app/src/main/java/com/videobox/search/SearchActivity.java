@@ -29,6 +29,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static com.videobox.R.id.tabLayout;
 import static rx.Emitter.BackpressureMode.NONE;
 
 /**
@@ -69,6 +70,8 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         mSearchViewPager.setAdapter(mAdapter);
 
         mSearchTabLayout = (TabLayout) findViewById(R.id.search_tabLayout);
+        mSearchTabLayout.setTabMode(TabLayout.MODE_FIXED);
+        mSearchTabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
         mSearchTabLayout.setupWithViewPager(mSearchViewPager);
 
         mSearchView = (SearchView) findViewById(R.id.search_view);

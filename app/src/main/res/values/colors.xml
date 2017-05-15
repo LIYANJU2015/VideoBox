@@ -8,4 +8,8 @@
 
     <color name="guillotine_background">#444153</color>
 
+    <color name="color_575757">#575757</color>
+    <color name="color_373738">#373738</color>
+    <color name="color_0c0b0a">#0c0b0a</color>
+
 </resources>

@@ -33,7 +33,7 @@ import static rx.Emitter.BackpressureMode.NONE;
  * Created by liyanju on 2017/5/13.
  */
 
-public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<YouTubePlayerItem>, YouTubePlayer.PlayerStateChangeListener{
+public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<YouTubePlayerItem>{
 
     private ArrayList<YouTubePlayerItem> items;
     private Context context;
@@ -126,7 +126,7 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
                     public void onNext(YTBVideoPageBean dmVideosPageBean) {
                         if (dmVideosPageBean.items.size() > 0) {
                             curPlayVideo.title = dmVideosPageBean.items.get(0).snippet.title;
-                            curPlayVideo.title = dmVideosPageBean.items.get(0).snippet.description;
+                            curPlayVideo.description = dmVideosPageBean.items.get(0).snippet.description;
                         }
                         itemUpdate.onUpateAll();
                     }
@@ -171,7 +171,12 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
     private void requestVideoContentDetails(final ArrayList<YTBVideoPageBean.YouTubeVideo> videos) {
         StringBuilder vidsBuilder = new StringBuilder();
         for (YTBVideoPageBean.YouTubeVideo video : videos) {
-            vidsBuilder.append(video.getVideoID()).append(",");
+            if (video.contentDetails == null) {
+                vidsBuilder.append(video.getVideoID()).append(",");
+            }
+        }
+        if (StringUtils.isEmpty(vidsBuilder.toString())) {
+            return;
         }
         youTuBeModel.getVideoInfoByVid(APIConstant.YouTube.sVideoContentDetails, vidsBuilder.toString())
                 .subscribeOn(Schedulers.io())
@@ -240,45 +245,6 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
                         iPlayCallBack.onCanPlayVideo(data.relateVideo.getVideoID(), (int)time.longValue());
                     }
                 });
-
-    }
-
-    @Override
-    public void onLoading() {
-
-    }
-
-    @Override
-    public void onLoaded(String s) {
-
-    }
-
-    @Override
-    public void onAdStarted() {
-
-    }
-
-    @Override
-    public void onVideoStarted() {
-
-    }
-
-    @Override
-    public void onVideoEnded() {
-        String vid = getNextVideoId();
-        LogUtils.v("onVideoEnded", " vid " + vid);
-        if (!StringUtils.isEmpty(vid)) {
-            long time = VideoBoxContract.PlayRecord.getPlayRecordTimeByVid(AppAplication.getContext(), vid, PlayRecordBean.YOUTUBE_TYPE);
-            iPlayCallBack.onCanPlayVideo(vid, (int)time);
-        } else {
-            iPlayCallBack.onPlayRelateVideoEnd();
-        }
-    }
-
-
-
-    @Override
-    public void onError(YouTubePlayer.ErrorReason errorReason) {
 
     }
 }

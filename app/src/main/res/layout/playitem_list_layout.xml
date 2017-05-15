@@ -22,15 +22,18 @@
         <TextView
             android:visibility="gone"
             android:id="@+id/time"
+            style="@style/list_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right"
-            android:padding="2dp"
-            android:textColor="@color/material_white" />
+            android:layout_margin="1dp"
+             />
     </FrameLayout>
 
     <TextView
+        android:gravity="center"
         android:id="@+id/title"
+        style="@style/list_title"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"

@@ -79,6 +79,12 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         mPlayerRecyclerView = (RecyclerView)findViewById(R.id.player_recyclerview);
         mPlayerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mPlayerRecyclerView.setHasFixedSize(true);
+        mPlayerRecyclerView.getRecycledViewPool()
+                .setMaxRecycledViews(YouTubePlayerRecyclerAdapter.INTRODUCE_TYPE, 1);
+        mPlayerRecyclerView.getRecycledViewPool()
+                .setMaxRecycledViews(YouTubePlayerRecyclerAdapter.RELATED_VIDEO, 6);
+        mPlayerRecyclerView.getRecycledViewPool()
+                .setMaxRecycledViews(YouTubePlayerRecyclerAdapter.PLAYLIST_ITEM_TYPE, 1);
 
         mPlayerAdapter = new YouTubePlayerRecyclerAdapter(this, mPlayerItems);
         mPlayerRecyclerView.setAdapter(mPlayerAdapter);
@@ -155,7 +161,7 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
                     mYouTuBeModel, mPlayerItems, this, introduceItem.curPlayVideo);
             mPlayerAdapter.setOnItemClickRelateListener(relateVideoHandler);
 
-            mPlayerManager = new YouTubePlayerManager(youTubePlayer, playListHandler, relateVideoHandler, mVideoID);
+            mPlayerManager = new YouTubePlayerManager(youTubePlayer, playListHandler, relateVideoHandler);
         }
     }
 

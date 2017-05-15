@@ -30,7 +30,9 @@
     <style name="ImageView.Hamburger" parent="Widget.AppCompat.ActionButton">
         <item name="android:layout_height">20dp</item>
         <item name="android:layout_width">22dp</item>
-        <item name="android:layout_marginBottom">@dimen/abc_action_bar_overflow_padding_start_material</item>
+        <item name="android:layout_marginBottom">
+            @dimen/abc_action_bar_overflow_padding_start_material
+        </item>
     </style>
 
     <style name="custom_AVLoadingIndicatorView">
@@ -39,6 +41,39 @@
         <item name="minHeight">48dip</item>
         <item name="maxHeight">48dip</item>
         <item name="indicatorName">BallSpinFadeLoaderIndicator</item>
+    </style>
+
+    <style name="list_title">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/material_black</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="content_title">
+        <item name="android:textSize">16sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:textColor">@color/color_373738</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+    </style>
+
+    <style name="content_descrip">
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">sans-serif-light</item>
+        <item name="android:textColor">@color/color_575757</item>
+    </style>
+
+    <style name="list_time">
+        <item name="android:textColor">@color/material_white</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:background">@color/color_0c0b0a</item>
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:paddingRight">4dp</item>
+        <item name="android:paddingTop">2dp</item>
+        <item name="android:paddingBottom">2dp</item>
     </style>
 
 </resources>

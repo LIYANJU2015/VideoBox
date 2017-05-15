@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,13 +12,18 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
+import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.TimeUtils;
+import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 
 import java.util.List;
+
+import static android.R.attr.x;
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by liyanju on 2017/5/13.
@@ -35,9 +41,12 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
 
     private YouTubePlayItemHodler playItemHodler;
 
+    private final SparseBooleanArray mCollapsedStatus;
+
     public YouTubePlayerRecyclerAdapter(Activity activity, List<YouTubePlayerItem> infos) {
         super(infos);
         mActivity = activity;
+        mCollapsedStatus = new SparseBooleanArray();
 
         super.setOnItemClickListener(new OnRecyclerViewItemClickListener<YouTubePlayerItem>() {
             @Override
@@ -64,6 +73,7 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
 
     @Override
     public BaseHolder<YouTubePlayerItem> getHolder(View v, int viewType) {
+        LogUtils.v("getHolder", "viewType " + viewType);
         if (viewType == PLAYLIST_ITEM_TYPE) {
             playItemHodler = new YouTubePlayItemHodler(v);
             return playItemHodler;
@@ -123,18 +133,18 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
     public class YouTubeIntroduceHodler extends BaseHolder<YouTubePlayerItem> {
 
         private TextView titleTV;
-        private TextView introduceTV;
+        private ExpandableTextView introduceTV;
 
         public YouTubeIntroduceHodler(View itemView) {
             super(itemView);
             titleTV = (TextView) itemView.findViewById(R.id.title_tv);
-            introduceTV = (TextView) itemView.findViewById(R.id.introduce_tv);
+            introduceTV = (ExpandableTextView) itemView.findViewById(R.id.expand_text_view);
         }
 
         @Override
         public void setData(YouTubePlayerItem data, int position) {
             titleTV.setText(data.curPlayVideo.title);
-            introduceTV.setText(data.curPlayVideo.description);
+            introduceTV.setText(data.curPlayVideo.description, mCollapsedStatus, position);
         }
     }
 
