@@ -1,6 +1,5 @@
 package com.dailymotion.websdk;
 
-import android.R;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -10,6 +9,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +21,11 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.VideoView;
 
+import com.commonlibs.util.LogUtils;
+import com.videobox.player.dailymotion.DMWebViewEvent;
+
+import static com.commonlibs.util.LogUtils.v;
+
 // import com.dailymotion.sdk.util.DMLog;
 
 public class DMWebVideoView extends WebView {
@@ -29,6 +34,46 @@ public class DMWebVideoView extends WebView {
 
         public void onEvent(String event);
 
+    }
+
+    private DMWebViewEvent mDMEvent;
+
+    public void setDMEventListener(DMWebViewEvent event) {
+        this.mDMEvent = event;
+        setEventListener(new DMWebVideoView.Listener() {
+            @Override
+            public void onEvent(String event) {
+                switch (event)
+                {
+                    case "apiready": v("apiready"); break;
+                    case "start":  mDMEvent.onStartVideo(); LogUtils.v("start"); break;
+                    case "loadedmetadata": mDMEvent.onLoadedmetadata(); LogUtils.v("loadedmetadata"); break;
+                    case "progress": mDMEvent.onProgress(bufferedTime); LogUtils.v(event + " (bufferedTime: " + bufferedTime + ")"); break;
+                    case "durationchange": mDMEvent.onDurationchange(duration); LogUtils.v(event + " (duration: " + duration + ")"); break;
+                    case "timeupdate":
+                    case "ad_timeupdate":
+                    case "seeking":
+                    case "seeked": LogUtils.v(event + " (currentTime: " + currentTime + ")"); break;
+                    case "video_start":
+                    case "ad_start":
+                    case "ad_play":
+                    case "playing":
+                    case "end": mDMEvent.onEnd(ended);LogUtils.v(event + " (ended: " + ended + ")"); break;
+                    case "ad_pause":
+                    case "ad_end":
+                    case "video_end":
+                    case "play":
+                    case "fullscreenchange": mDMEvent.onFullscreenchange(fullscreen); LogUtils.v(event + " (fullscreen: " + fullscreen + ")"); break;
+                    case "pause": mDMEvent.onPause(paused); LogUtils.v(event + " (paused: " + paused + ")"); break;
+                    case "error": mDMEvent.onError(error.toString()); LogUtils.v(event + " (error: " + error.toString() + ")"); break;
+                    case "rebuffer": mDMEvent.onRebuffer(rebuffering); LogUtils.v(event + " (rebuffering: " + rebuffering + ")"); break;
+                    case "qualitiesavailable": mDMEvent.qualitiesavailable(); LogUtils.v(event + " (qualities: " + qualities + ")"); break;
+                    case "qualitychange": LogUtils.v(event + " (quality: " + quality + ")"); break;
+                    case "subtitlesavailable": LogUtils.v(event + " (subtitles: " + subtitles + ")"); break;
+                    case "subtitlechange": LogUtils.v(event + " (subtitle: " + subtitle + ")"); break;
+                }
+            }
+        });
     }
 
     public class Error {
@@ -110,6 +155,7 @@ public class DMWebVideoView extends WebView {
         mWebSettings.setJavaScriptEnabled(true);
         mWebSettings.setPluginState(WebSettings.PluginState.ON);
         mWebSettings.setUserAgentString(mWebSettings.getUserAgentString() + mExtraUA);
+        addJavascriptInterface(new InJavaScriptLocalObj(), "js_method");
         if (Build.VERSION.SDK_INT >= 17) {
             mWebSettings.setMediaPlaybackRequiresUserGesture(false);
         }
@@ -183,7 +229,15 @@ public class DMWebVideoView extends WebView {
 
         setWebChromeClient(mChromeClient);
         setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                Log.v("xx", "onPageFinished");
+                view.loadUrl("javascript:window.js_method.showSource(document.getElementsByTagName('video')[0].src);");
+                super.onPageFinished(view, url);
+            }
+
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.v("xx", "shouldOverrideUrlLoading " + url);
                 Uri uri = Uri.parse(url);
                 if (uri.getScheme().equals("dmevent")) {
                     String event = uri.getQueryParameter("event");
@@ -217,7 +271,7 @@ public class DMWebVideoView extends WebView {
                         case "video_end":
                         case "pause": paused = true; break;
                         case "error":
-                            error = new Error(uri.getQueryParameter("code"), uri.getQueryParameter("title"), uri.getQueryParameter("message"));
+                            error = new DMWebVideoView.Error(uri.getQueryParameter("code"), uri.getQueryParameter("title"), uri.getQueryParameter("message"));
                             break;
                         case "rebuffer": rebuffering = parseBooleanFromAPI(uri.getQueryParameter("rebuffering")); break;
                         case "qualitiesavailable": qualities = uri.getQueryParameter("qualities"); break;
@@ -268,7 +322,7 @@ public class DMWebVideoView extends WebView {
             url += "&" + mExtraParameters;
         }
 
-        // DMLog.d(DMLog.STUFF, "loading " + url);
+        Log.d("dm", "loading " + url);
 
         mStartNanos = System.nanoTime();
         loadUrl(url);
@@ -308,7 +362,7 @@ public class DMWebVideoView extends WebView {
             }
         };
 
-        mVideoLayout.setBackgroundResource(R.color.black);
+        mVideoLayout.setBackgroundResource(android.R.color.black);
         mVideoLayout.addView(video);
         ViewGroup.LayoutParams lp = new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         mRootLayout.addView(mVideoLayout, lp);
@@ -370,5 +424,18 @@ public class DMWebVideoView extends WebView {
 
     public void setRootViewGroup(ViewGroup rootView) {
         mRootLayout = rootView;
+    }
+
+
+    private boolean GETHTML5_COMPLETE = true;
+
+
+    class InJavaScriptLocalObj {
+        public void showSource(String html5url) {
+            if (html5url != null && !GETHTML5_COMPLETE) {
+                GETHTML5_COMPLETE = true;
+            }
+            Log.i("conowen", "html5url=" + html5url);
+        }
     }
 }

@@ -14,13 +14,14 @@ import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.TimeUtils;
-import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 
 import java.util.List;
+
+import jaydenxiao.com.expandabletextview.ExpandableTextView;
 
 import static android.R.attr.x;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
@@ -144,7 +145,7 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
         @Override
         public void setData(YouTubePlayerItem data, int position) {
             titleTV.setText(data.curPlayVideo.title);
-            introduceTV.setText(data.curPlayVideo.description, mCollapsedStatus, position);
+            introduceTV.setText(data.curPlayVideo.description, position);
         }
     }
 

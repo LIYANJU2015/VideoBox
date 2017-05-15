@@ -11,13 +11,13 @@ import com.videobox.model.youtube.entity.YTBVideoPageBean;
 /**
  * Created by liyanju on 2017/5/12.
  */
-public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.PlayerStateChangeListener {
+public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.PlayerStateChangeListener{
 
     private YouTubePlayer mPlayer;
 
     private PlayListHandler mPlayerListHander;
 
-    private RelateVideoHandler mRelateVideoHandler;
+    protected RelateVideoHandler mRelateVideoHandler;
 
     public YouTubePlayerManager(YouTubePlayer youTubePlayer,
                                 PlayListHandler playListHandler,
@@ -32,7 +32,7 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
         } else {
             mRelateVideoHandler.start(this, false);
         }
-        mPlayer.setPlayerStateChangeListener(this);
+        mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
     }
 
     public boolean isCurInPlaylist() {
@@ -65,7 +65,9 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
         }
         isPlayinglist = true;
 
-        mRelateVideoHandler.requestRelatedVideo(vid);
+        if (!StringUtils.isEmpty(vid)) {
+            mRelateVideoHandler.requestRelatedVideo(vid);
+        }
 
         if (mRelateVideoHandler != null) {
             mRelateVideoHandler.cancelPlayingStatus();
@@ -157,6 +159,9 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
 
     @Override
     public void onError(YouTubePlayer.ErrorReason errorReason) {
-
+        if (errorReason == YouTubePlayer.ErrorReason.UNEXPECTED_SERVICE_DISCONNECTION) {
+            // When this error occurs the player is released and can no longer be used.
+            mPlayer = null;
+        }
     }
 }

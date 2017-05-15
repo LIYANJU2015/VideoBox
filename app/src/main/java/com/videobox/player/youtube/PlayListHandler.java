@@ -80,7 +80,7 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
                 .getPlayRecordTimeByPlaylistId(mContext, mPlaylistId, PlayRecordBean.YOUTUBE_TYPE);
         if (playRecordBean == null) {
             requestPlaylistItem(mPlaylistId, false);
-            iPlayCallBack.onCanPlayList(mPlaylistId, 0, 0, mVideoList.get(0).snippet.resourceId.videoId);
+            iPlayCallBack.onCanPlayList(mPlaylistId, 0, 0, null);
         } else {
             mPlayRecordVid = playRecordBean.vid;
             mCurPlayTime = playRecordBean.playTime;
@@ -109,11 +109,7 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
                             pageToken = dmVideosPageBean.nextPageToken;
                         }
 
-                        if (dmVideosPageBean.items != null) {
-                            mVideoList.addAll(dmVideosPageBean.items);
-                        }
-
-                        if (isPlayItem) {
+                        if (isPlayItem && mCurIndex == 0) {
                             for (int i = 0; i < dmVideosPageBean.items.size(); i++) {
                                 YTBVideoPageBean.YouTubeVideo video = dmVideosPageBean.items.get(i);
                                 if (mPlayRecordVid.equals(video.snippet.resourceId.videoId)) {
@@ -128,11 +124,18 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
                                 }
                             }
                         } else {
-                            if (mVideoList.size() > mCurIndex && mCurIndex >= 0) {
-                                mVideoList.get(mCurIndex).isPlaying = true;
-                                mCurPlayVideo.title = mVideoList.get(mCurIndex).snippet.title;
-                                mCurPlayVideo.description = mVideoList.get(mCurIndex).snippet.description;
+                            if (mVideoList.size() == 0) {
+                                YTBVideoPageBean.YouTubeVideo video = dmVideosPageBean.items.get(0);
+                                video.isPlaying = true;
+                                mCurPlayVideo.title = video.snippet.title;
+                                mCurPlayVideo.description = video.snippet.description;
+                                ((YouTubePlayerManager) mIPlayCallBack)
+                                        .mRelateVideoHandler.requestRelatedVideo(video.snippet.resourceId.videoId);
                             }
+                        }
+
+                        if (dmVideosPageBean.items != null) {
+                            mVideoList.addAll(dmVideosPageBean.items);
                         }
 
                         if (!isLoadedAll) {
@@ -140,13 +143,12 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
                         } else {
                             mItemUpdate.onUpateAll();
                         }
-
                     }
                 });
     }
 
     private void updateListPlayStatus() {
-        LogUtils.v("updateListPlayStatus", " mCurIndex " + mCurIndex, " mVideoList size "+ mVideoList.size());
+        LogUtils.v("updateListPlayStatus", " mCurIndex " + mCurIndex, " mVideoList size " + mVideoList.size());
         for (int i = 0; i < mVideoList.size(); i++) {
             YTBVideoPageBean.YouTubeVideo video = mVideoList.get(i);
             if (mCurIndex == i) {
@@ -155,7 +157,7 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
                 mCurPlayVideo.description = video.snippet.description;
                 mItemUpdate.onUpdateItems(1);
                 mItemUpdate.onUpdatePlayListItmes(mCurIndex);
-            } else if (video.isPlaying){
+            } else if (video.isPlaying) {
                 video.isPlaying = false;
                 mItemUpdate.onUpdatePlayListItmes(i);
             }

@@ -2,9 +2,17 @@ package com.videobox.player.youtube;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.LinearLayout;
 
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
@@ -27,11 +35,16 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
 /**
  * Created by liyanju on 2017/5/10.
  */
 
-public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implements IPlayItemUpdate{
+public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implements IPlayItemUpdate,
+        YouTubePlayer.OnFullscreenListener{
 
     private YouTubePlayerView mYouTubePlayerView;
 
@@ -57,6 +70,12 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
 
     private LoadingFrameLayout mLoadingFrameLayout;
 
+    private boolean fullscreen;
+
+    private LinearLayout baseLayout;
+
+    private YouTubePlayer youTubePlayer;
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -76,16 +95,11 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     }
 
     private void initView() {
+        baseLayout = (LinearLayout)findViewById(R.id.base_layout);
+
         mPlayerRecyclerView = (RecyclerView)findViewById(R.id.player_recyclerview);
         mPlayerRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
         mPlayerRecyclerView.setHasFixedSize(true);
-        mPlayerRecyclerView.getRecycledViewPool()
-                .setMaxRecycledViews(YouTubePlayerRecyclerAdapter.INTRODUCE_TYPE, 1);
-        mPlayerRecyclerView.getRecycledViewPool()
-                .setMaxRecycledViews(YouTubePlayerRecyclerAdapter.RELATED_VIDEO, 6);
-        mPlayerRecyclerView.getRecycledViewPool()
-                .setMaxRecycledViews(YouTubePlayerRecyclerAdapter.PLAYLIST_ITEM_TYPE, 1);
-
         mPlayerAdapter = new YouTubePlayerRecyclerAdapter(this, mPlayerItems);
         mPlayerRecyclerView.setAdapter(mPlayerAdapter);
 
@@ -112,6 +126,53 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         }
     }
 
+    @Override
+    public void onFullscreen(boolean isFullscreen) {
+        fullscreen = isFullscreen;
+        doLayout();
+    }
+
+    private int defaultUiVisibility = -1;
+
+    private void doLayout() {
+        LinearLayout.LayoutParams playerParams =
+                (LinearLayout.LayoutParams) mYouTubePlayerView.getLayoutParams();
+        if (fullscreen) {
+            playerParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            playerParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
+            mPlayerRecyclerView.setVisibility(View.GONE);
+
+            defaultUiVisibility = getWindow().getDecorView().getSystemUiVisibility();
+
+            setSystemUiVisibilityImmerse();
+
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            mPlayerRecyclerView.setVisibility(View.VISIBLE);
+            playerParams.width = LinearLayout.LayoutParams.MATCH_PARENT;
+            playerParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+
+            getWindow().getDecorView().setSystemUiVisibility(defaultUiVisibility);
+
+            final WindowManager.LayoutParams attrs = getWindow().getAttributes();
+            attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+            getWindow().setAttributes(attrs);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+    }
+
+    private void setSystemUiVisibilityImmerse() {
+        if (Build.VERSION.SDK_INT >= 19) {
+            View decorView = getWindow().getDecorView();
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+    }
+
     private int updateCount = 0;
 
     @Override
@@ -122,8 +183,8 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         mPlayerRecyclerView.scrollToPosition(0);
 
         updateCount++;
-
-        if (updateCount == 2) {
+        LogUtils.v("onUpateAll", "updateCount " + updateCount);
+        if (updateCount >= 2) {
             mLoadingFrameLayout.smoothToHide();
         }
     }
@@ -139,6 +200,7 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     public void onInitializationSuccess(YouTubePlayer.Provider provider,
                                         YouTubePlayer youTubePlayer, boolean wasRestored) {
         LogUtils.v("onInitializationSuccess", "mPlaylistID " + mPlaylistID + " mVideoID " + mVideoID);
+        this.youTubePlayer = youTubePlayer;
         if (!wasRestored) {
             YouTubePlayerItem introduceItem = new YouTubePlayerItem();
             introduceItem.type = YouTubePlayerRecyclerAdapter.INTRODUCE_TYPE;
@@ -162,6 +224,8 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
             mPlayerAdapter.setOnItemClickRelateListener(relateVideoHandler);
 
             mPlayerManager = new YouTubePlayerManager(youTubePlayer, playListHandler, relateVideoHandler);
+
+            youTubePlayer.setOnFullscreenListener(this);
         }
     }
 
@@ -184,14 +248,21 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Observable.just(0).observeOn(Schedulers.io()).subscribe(new Action1<Integer>() {
-            @Override
-            public void call(Integer integer) {
-                savePlayRecord();
+            if (fullscreen) {
+                if (youTubePlayer != null) {
+                    youTubePlayer.setFullscreen(false);
+                }
+            } else {
+                super.onBackPressed();
+                Observable.just(0).observeOn(Schedulers.io()).subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        savePlayRecord();
+                    }
+                });
             }
-        });
     }
+
 
     @Override
     protected YouTubePlayer.Provider getYouTubePlayerProvider() {

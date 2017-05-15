@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:expandableTextView="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -13,28 +13,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.ms.square.android.expandabletextview.ExpandableTextView
+
+    <jaydenxiao.com.expandabletextview.ExpandableTextView
         android:id="@+id/expand_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        expandableTextView:animAlphaStart="1"
-      
-        expandableTextView:maxCollapsedLines="4">
-
-        <TextView
-            android:layout_marginTop="10dp"
-            style="@style/content_descrip"
-            android:id="@id/expandable_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <ImageButton
-            android:id="@id/expand_collapse"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
-            android:background="@android:color/transparent"
-            android:padding="16dp" />
-    </com.ms.square.android.expandabletextview.ExpandableTextView>
+        app:animDuration="200"
+        android:padding="8dp"
+        app:collapseDrawable="@drawable/ic_expand_more"
+        app:collapseExpandGrarity="right"
+        app:collapseExpandTextColor="@color/color_0c0b0a"
+        app:contentTextColor="@color/color_575757"
+        app:contentTextSize="14sp"
+        app:expandDrawable="@drawable/ic_expand_less"
+        app:maxCollapsedLines="5"
+        app:textCollapse="@string/collapse"
+        app:textExpand="@string/expand" />
 
 </LinearLayout>

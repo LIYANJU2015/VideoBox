@@ -30,6 +30,6 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile project(':commonlibs')
     compile files('libs/YouTubeAndroidPlayerApi.jar')
-    compile 'com.ms-square:expandableTextView:0.1.4'
+    compile 'com.jaydenxiao:ExpandableTextView:1.0.0'
 
 }
