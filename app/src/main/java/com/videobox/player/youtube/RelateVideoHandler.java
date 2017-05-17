@@ -165,6 +165,12 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
                             itemUpdate.onUpateAll();
                         }
                     }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        itemUpdate.onUpdateError();
+                    }
                 });
     }
 

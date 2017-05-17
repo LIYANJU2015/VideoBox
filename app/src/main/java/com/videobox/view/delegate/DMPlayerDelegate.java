@@ -5,11 +5,17 @@ import android.support.v4.view.ViewPager;
 
 import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.themvp.view.AppDelegate;
+import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.ScreenUtils;
 import com.dailymotion.websdk.DMWebVideoView;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
+
+import me.zhanghai.android.materialprogressbar.IndeterminateHorizontalProgressDrawable;
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
+
+import static android.R.attr.max;
 
 /**
  * Created by liyanju on 2017/5/1.
@@ -22,6 +28,8 @@ public class DMPlayerDelegate extends AppDelegate{
                 AppAplication.getContext().getString(R.string.player_related)};
 
     private DaiyMotionPlayerActivity playerActivity;
+
+    private MaterialProgressBar playProgressBar;
 
 
     @Override
@@ -42,5 +50,19 @@ public class DMPlayerDelegate extends AppDelegate{
 
         DMWebVideoView dmWebVideoView = get(R.id.dmWebVideoView);
         dmWebVideoView.getLayoutParams().height = (int)(ScreenUtils.getScreenWidth()*(9.0f/16.0f));
+
+        playProgressBar = get(R.id.play_progress);
+        playProgressBar.setIndeterminateDrawable(new IndeterminateHorizontalProgressDrawable(mContext));
+    }
+
+    public void setMaxProgress(int max) {
+        LogUtils.v("setMaxProgress", "max" + max);
+        playProgressBar.setMax(max);
+        playProgressBar.setProgress(0);
+    }
+
+    public void setProgress(int progress) {
+        LogUtils.v("setProgress", "progress" + progress);
+        playProgressBar.setProgress(progress);
     }
 }

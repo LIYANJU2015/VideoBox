@@ -24,7 +24,7 @@
 
         <activity
             android:name=".player.dailymotion.DaiyMotionPlayerActivity"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
             android:launchMode="singleTask" />
 

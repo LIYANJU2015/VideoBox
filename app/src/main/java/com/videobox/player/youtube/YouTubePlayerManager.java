@@ -33,6 +33,7 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
             mRelateVideoHandler.start(this, false);
         }
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
+        mPlayer.setPlayerStateChangeListener(this);
     }
 
     public boolean isCurInPlaylist() {

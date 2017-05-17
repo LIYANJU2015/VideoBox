@@ -22,6 +22,7 @@ import com.videobox.model.dailymotion.entity.DMVideosPageBean;
 import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
+import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
 
@@ -48,6 +49,8 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
     private String mSearchStr;
 
     private RecyclerView searchRecyclerView;
+
+    private LoadingFrameLayout loadingFrameLayout;
 
     @Override
     public void onLoadMore() {
@@ -76,6 +79,8 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
         mRecyclerAdapter.setOnItemClickListener(this);
         searchRecyclerView.setAdapter(mRecyclerAdapter);
 
+        loadingFrameLayout = (LoadingFrameLayout)view.findViewById(R.id.loading_frame);
+
         mDaiyMotionModel = new DaiyMotionModel(getAppComponent().repositoryManager());
         return view;
     }
@@ -95,6 +100,8 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
             mPaginate.unbind();
             mPaginate = null;
         }
+
+        loadingFrameLayout.smoothToshow();
         searchDMVideo(true);
     }
 
@@ -127,6 +134,7 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
                         if (isFirst) {
                             mHost.hideLoading();
                         }
+                        loadingFrameLayout.smoothToHide();
                     }
                 })
                 .subscribe(new ErrorHandleSubscriber<DMVideosPageBean>(getAppComponent().rxErrorHandler()) {
@@ -151,6 +159,12 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
                                     .build();
                             mPaginate.setHasMoreDataToLoad(false);
                         }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        loadingFrameLayout.showError();
                     }
                 });
     }

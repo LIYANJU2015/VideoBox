@@ -27,6 +27,8 @@ public interface DMWebViewEvent {
      */
     void onDurationchange(double duration);
 
+    void onSeeking(double currentTime);
+
     /**
      * rebuffer
      */

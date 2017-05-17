@@ -52,6 +52,7 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     private static final String PLAY_LIST = "play_list";
 
     private String mVideoID;
+
     private String mPlaylistID;
 
     private RecyclerView mPlayerRecyclerView;
@@ -187,6 +188,11 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         if (updateCount >= 2) {
             mLoadingFrameLayout.smoothToHide();
         }
+    }
+
+    @Override
+    public void onUpdateError() {
+        mLoadingFrameLayout.showError();
     }
 
     @Override

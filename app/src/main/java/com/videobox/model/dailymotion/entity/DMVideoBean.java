@@ -19,7 +19,7 @@ public class DMVideoBean implements Parcelable{
 
     public String description;
 
-    public String duration;
+    public int duration;
 
     public String id;
 
@@ -28,23 +28,24 @@ public class DMVideoBean implements Parcelable{
     @SerializedName(value = "title", alternate={"name"})
     public String title;
 
-    public String updated_time;
+    public long updated_time;
 
     @Override
     public int describeContents() {
         return 0;
     }
 
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.channel);
         dest.writeString(this.channelID);
         dest.writeString(this.description);
-        dest.writeString(this.duration);
+        dest.writeInt(this.duration);
         dest.writeString(this.id);
         dest.writeString(this.thumbnail_url);
         dest.writeString(this.title);
-        dest.writeString(this.updated_time);
+        dest.writeLong(this.updated_time);
     }
 
     public DMVideoBean() {
@@ -54,11 +55,11 @@ public class DMVideoBean implements Parcelable{
         this.channel = in.readString();
         this.channelID = in.readString();
         this.description = in.readString();
-        this.duration = in.readString();
+        this.duration = in.readInt();
         this.id = in.readString();
         this.thumbnail_url = in.readString();
         this.title = in.readString();
-        this.updated_time = in.readString();
+        this.updated_time = in.readLong();
     }
 
     public static final Creator<DMVideoBean> CREATOR = new Creator<DMVideoBean>() {

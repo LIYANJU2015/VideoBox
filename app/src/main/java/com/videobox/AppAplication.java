@@ -179,11 +179,15 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
 
     @Override
     public void handleResponseError(Context context, Exception e) {
-            LogUtils.v("handleResponseError", e.getMessage());
+        LogUtils.v("handleResponseError", e.getMessage());
+        showShortSnackbar(getString(R.string.netwokr_error));
+    }
+
+    public void showShortSnackbar(String error) {
         try {
             View view = getAppComponent().appManager().getCurrentActivity()
                     .getWindow().getDecorView().findViewById(android.R.id.content);
-            SnackbarUtils.showShortSnackbar(view, getString(R.string.netwokr_error),
+            SnackbarUtils.showShortSnackbar(view, error,
                     ContextCompat.getColor(this, R.color.material_white),
                     ContextCompat.getColor(this, R.color.md_indigo500));
         } catch (Exception e2) {

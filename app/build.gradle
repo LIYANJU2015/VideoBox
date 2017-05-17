@@ -31,5 +31,6 @@ dependencies {
     compile project(':commonlibs')
     compile files('libs/YouTubeAndroidPlayerApi.jar')
     compile 'com.jaydenxiao:ExpandableTextView:1.0.0'
+    compile 'me.zhanghai.android.materialprogressbar:library:1.4.1'
 
 }

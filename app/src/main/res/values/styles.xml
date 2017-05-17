@@ -48,15 +48,15 @@
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/material_black</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
+        <item name="android:maxLines">2</item>
     </style>
 
     <style name="content_title">
-        <item name="android:textSize">16sp</item>
+        <item name="android:textSize">18sp</item>
         <item name="android:fontFamily">sans-serif</item>
         <item name="android:textColor">@color/color_373738</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:maxLines">1</item>
+        <item name="android:maxLines">2</item>
     </style>
 
     <style name="content_descrip">

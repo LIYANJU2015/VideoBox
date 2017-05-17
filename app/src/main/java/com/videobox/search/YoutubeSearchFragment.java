@@ -1,5 +1,6 @@
 package com.videobox.search;
 
+import android.content.pm.ProviderInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +25,7 @@ import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 import com.videobox.view.adapter.YouTubeListRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
+import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
 
@@ -60,6 +62,8 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
 
     private String searchStr;
 
+    private LoadingFrameLayout loadingFrameLayout;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -70,6 +74,8 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
         mRecyclerAdapter = new YouTubeListRecyclerAdapter(mVideoList, mActivity);
         mRecyclerAdapter.setOnItemClickListener(this);
         searchRecyclerView.setAdapter(mRecyclerAdapter);
+
+        loadingFrameLayout =(LoadingFrameLayout)view.findViewById(R.id.loading_frame);
 
         mYoutubeModel = new YouTuBeModel(getAppComponent().repositoryManager());
         return view;
@@ -108,6 +114,8 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
         mIsLoadingMore = false;
         pageToken = "";
 
+        loadingFrameLayout.smoothToshow();
+
         searchVideo();
     }
 
@@ -138,6 +146,7 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
                         } else {
                             mIsLoadingMore = false;
                         }
+                        loadingFrameLayout.smoothToHide();
                     }
                 })
                 .subscribe(new ErrorHandleSubscriber<YTBVideoPageBean>(getAppComponent().rxErrorHandler()) {
@@ -164,6 +173,12 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
                                     .build();
                             mPaginate.setHasMoreDataToLoad(false);
                         }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        loadingFrameLayout.showError();
                     }
                 });
     }

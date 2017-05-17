@@ -14,4 +14,6 @@ public interface IPlayItemUpdate {
 
     void onUpateAll();
 
+    void onUpdateError();
+
 }

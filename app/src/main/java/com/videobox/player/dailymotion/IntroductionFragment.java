@@ -12,6 +12,8 @@ import com.commonlibs.base.BaseFragment;
 import com.videobox.R;
 import com.videobox.view.delegate.Contract;
 
+import jaydenxiao.com.expandabletextview.ExpandableTextView;
+
 /**
  * Created by liyanju on 2017/5/5.
  */
@@ -34,7 +36,7 @@ public class IntroductionFragment extends BaseFragment<Contract.DMPlayerHost> {
         TextView titleTV = (TextView)view.findViewById(R.id.title);
         titleTV.setText(mHost.getCurrentVideoBean().title);
 
-        TextView describeTV = (TextView)view.findViewById(R.id.describe);
+        ExpandableTextView describeTV = (ExpandableTextView)view.findViewById(R.id.describe);
         describeTV.setText(mHost.getCurrentVideoBean().description);
         return view;
     }

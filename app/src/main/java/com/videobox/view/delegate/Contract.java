@@ -18,6 +18,8 @@ public class Contract {
 
         DMVideoBean getCurrentVideoBean();
 
+        void setCurrentVideoBean(DMVideoBean dmVideoBean);
+
         String getCurrentVid();
 
         DMWebVideoView getCurrentPlayer();

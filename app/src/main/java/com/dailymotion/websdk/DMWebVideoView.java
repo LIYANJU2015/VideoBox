@@ -52,7 +52,7 @@ public class DMWebVideoView extends WebView {
                     case "durationchange": mDMEvent.onDurationchange(duration); LogUtils.v(event + " (duration: " + duration + ")"); break;
                     case "timeupdate":
                     case "ad_timeupdate":
-                    case "seeking":
+                    case "seeking": mDMEvent.onSeeking(currentTime);break;
                     case "seeked": LogUtils.v(event + " (currentTime: " + currentTime + ")"); break;
                     case "video_start":
                     case "ad_start":

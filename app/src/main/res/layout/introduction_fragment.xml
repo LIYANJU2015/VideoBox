@@ -1,20 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:padding="20dp"
-    >
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <TextView
-        android:textSize="22sp"
-        android:id="@+id/title"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TextView
-        android:layout_marginTop="12dp"
-        android:textSize="18sp"
-        android:id="@+id/describe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-</LinearLayout>
+        <TextView
+            android:id="@+id/title"
+            style="@style/content_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+             />
+
+        <jaydenxiao.com.expandabletextview.ExpandableTextView
+            android:id="@+id/describe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp"
+            app:animDuration="200"
+            app:collapseDrawable="@drawable/ic_expand_more"
+            app:collapseExpandGrarity="right"
+            app:collapseExpandTextColor="@color/color_0c0b0a"
+            app:contentTextColor="@color/color_575757"
+            app:contentTextSize="14sp"
+            app:expandDrawable="@drawable/ic_expand_less"
+            app:maxCollapsedLines="5"
+            app:textCollapse="@string/collapse"
+            app:textExpand="@string/expand" />
+    </LinearLayout>
+</ScrollView>
