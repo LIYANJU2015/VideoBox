@@ -40,6 +40,13 @@ public class LoadingFrameLayout extends FrameLayout{
 
     public void showError() {
         errorIV.setVisibility(View.VISIBLE);
+        errorIV.setImageResource(R.drawable.oops_pacman_ghost);
+        loadView.setVisibility(View.INVISIBLE);
+    }
+
+    public void showDataNull() {
+        errorIV.setVisibility(View.VISIBLE);
+        errorIV.setImageResource(R.drawable.data_null);
         loadView.setVisibility(View.INVISIBLE);
     }
 

@@ -28,6 +28,13 @@
             android:layout_gravity="bottom|right"
             android:layout_margin="1dp"
              />
+
+        <ImageView
+            android:id="@+id/play_iv"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_play"
+            android:layout_width="30dp"
+            android:layout_height="30dp" />
     </FrameLayout>
 
     <TextView

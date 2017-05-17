@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
+import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.TimeUtils;
 import com.util.DaiymotionUtil;
 import com.videobox.R;
@@ -17,6 +18,7 @@ import com.videobox.model.dailymotion.entity.DMVideoBean;
 
 import java.util.List;
 
+import static android.R.attr.thumbnail;
 import static com.commonlibs.util.LogUtils.D;
 import static com.commonlibs.util.TimeUtils.millis2String;
 
@@ -54,6 +56,8 @@ public class DMListRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoBean> 
 
         private TextView updateTimeTV;
 
+        private ImageView playIV;
+
         public DailyMotionItemHolder(View itemView, Activity activity){
             super(itemView);
             mActivity = activity;
@@ -61,6 +65,7 @@ public class DMListRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoBean> 
             nameTV = (TextView)itemView.findViewById(R.id.name);
             timeTV = (TextView)itemView.findViewById(R.id.time);
             updateTimeTV = (TextView)itemView.findViewById(R.id.update_time_tv);
+            playIV = (ImageView)itemView.findViewById(R.id.play_iv);
         }
         @Override
         public void setData(DMVideoBean data, int position) {
@@ -70,13 +75,21 @@ public class DMListRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoBean> 
 
             nameTV.setText(data.title);
 
-            updateTimeTV.setText(DaiymotionUtil.formatTime(data.updated_time));
+            updateTimeTV.setText(DaiymotionUtil.getRelativeTimeString(data.updated_time));
 
             if (data.duration != 0) {
                 timeTV.setVisibility(View.VISIBLE);
                 timeTV.setText(TimeUtils.stringForTime((int)data.duration*1000));
             } else {
                 timeTV.setVisibility(View.GONE);
+            }
+
+            if (data.isPlaying) {
+                playIV.setVisibility(View.VISIBLE);
+                videoPoster.setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.playing_bg));
+            } else {
+                playIV.setVisibility(View.GONE);
+                videoPoster.setBackgroundDrawable(null);
             }
         }
     }

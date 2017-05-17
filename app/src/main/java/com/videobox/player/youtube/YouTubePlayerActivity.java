@@ -1,5 +1,6 @@
 package com.videobox.player.youtube;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -39,6 +40,7 @@ import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static android.R.attr.data;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -102,12 +104,19 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
 
         initView();
 
+        checkYouTube();
+    }
+
+    private void checkYouTube() {
         YouTubeInitializationResult result = YouTubeApiServiceUtil
                 .isYouTubeApiServiceAvailable(mContext);
         LogUtils.v("onCreate", "YouTubeInitializationResult "+
-                 result + " isUserRecoverableError " + result.isUserRecoverableError());
+                result + " isUserRecoverableError " + result.isUserRecoverableError());
         if (result != YouTubeInitializationResult.SUCCESS && result.isUserRecoverableError()){
-            result.getErrorDialog(this, 1);
+            Dialog dialog = result.getErrorDialog(this, 1);
+            if(dialog != null) {
+                dialog.show();
+            }
         }
     }
 

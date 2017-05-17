@@ -29,6 +29,9 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+import static android.media.CamcorderProfile.get;
+import static com.commonlibs.util.LogUtils.D;
+
 /**
  * Created by liyanju on 2017/5/5.
  */
@@ -81,8 +84,24 @@ public class RelatedFragment extends BaseFragment<Contract.DMPlayerHost> impleme
         initData();
     }
 
+    private void updatePlayingStatus(int newposition) {
+        for (int i = 0; i < mVideoList.size(); i++) {
+            DMVideoBean dmVideoBean = mVideoList.get(i);
+            if (i != newposition && dmVideoBean.isPlaying) {
+                dmVideoBean.isPlaying = false;
+                mRecyclerAdapter.notifyItemChanged(i);
+            }
+        }
+    }
+
     @Override
     public void onItemClick(View view, int viewType, DMVideoBean data, int position) {
+        updatePlayingStatus(position);
+
+        data.isPlaying = true;
+
+        mRecyclerAdapter.notifyItemChanged(position);
+
         mHost.getCurrentPlayer().setVideoId(data.id);
         mHost.setCurrentVideoBean(data);
         mHost.getCurrentPlayer().load();

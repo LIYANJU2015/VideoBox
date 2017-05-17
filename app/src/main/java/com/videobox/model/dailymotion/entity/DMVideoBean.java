@@ -4,6 +4,7 @@ package com.videobox.model.dailymotion.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -11,6 +12,9 @@ import com.google.gson.annotations.SerializedName;
  */
 
 public class DMVideoBean implements Parcelable{
+
+    @Expose
+    public boolean isPlaying;
 
     public String channel;
 

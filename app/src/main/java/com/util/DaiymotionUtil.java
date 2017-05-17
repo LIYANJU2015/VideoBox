@@ -1,6 +1,7 @@
 package com.util;
 
 import android.content.Context;
+import android.content.res.Resources;
 
 import com.videobox.AppAplication;
 import com.videobox.R;
@@ -13,41 +14,52 @@ import java.text.SimpleDateFormat;
 
 public class DaiymotionUtil {
 
-    static SimpleDateFormat sdfyyyyMMddHHmmss = new SimpleDateFormat("yyyy-MM-dd");
+    public static String getRelativeTimeString(long secondsSinceEpoch) {
+        return getRelativeTimeString(secondsSinceEpoch, 0);
+    }
 
-    public static String formatTime(long startDate) {
-        if (startDate == 0) {
-            return null;
+    public static String getRelativeTimeString(long secondsSinceEpoch, int startIndex) {
+        Resources res = AppAplication.getContext().getResources();
+        String timeString = null;
+        long delta = (1000 * secondsSinceEpoch) - System.currentTimeMillis();
+        long[] jArr = new long[6];
+        jArr = new long[]{31536000000L, 2592000000L, 604800000, 86400000, 3600000, 60000};
+        int[] iArr = new int[6];
+        iArr = new int[]{R.string.relativeTimeInYearOne, R.string.relativeTimeInMonthOne, R.string.relativeTimeInWeekOne, R.string.relativeTimeInDayOne, R.string.relativeTimeInHourOne, R.string.relativeTimeInMinuteOne};
+        int[] iArr2 = new int[6];
+        iArr2 = new int[]{R.string.relativeTimeInYearOther, R.string.relativeTimeInMonthOther, R.string.relativeTimeInWeekOther, R.string.relativeTimeInDayOther, R.string.relativeTimeInHourOther, R.string.relativeTimeInMinuteOther};
+        int[] iArr3 = new int[6];
+        iArr3 = new int[]{R.string.relativeTimeFutureYearOne, R.string.relativeTimeFutureMonthOne, R.string.relativeTimeFutureWeekOne, R.string.relativeTimeFutureDayOne, R.string.relativeTimeFutureHourOne, R.string.relativeTimeFutureMinuteOne};
+        int[] iArr4 = new int[6];
+        iArr4 = new int[]{R.string.relativeTimeFutureYearOther, R.string.relativeTimeFutureMonthOther, R.string.relativeTimeFutureWeekOther, R.string.relativeTimeFutureDayOther, R.string.relativeTimeFutureHourOther, R.string.relativeTimeFutureMinuteOther};
+        int i = startIndex;
+        while (i < jArr.length && delta > (-jArr[i])) {
+            i++;
         }
-        Context context = AppAplication.getContext();
-        long timeLong = startDate;
-
-        if (timeLong < 60 * 1000) {
-            timeLong = timeLong / 1000;
-            return timeLong == 1 ? String.format(context.getString(R.string.second), timeLong) : String.format(
-                    context.getString(R.string.seconds), timeLong);
-        } else if (timeLong < 60 * 60 * 1000) {
-            timeLong = timeLong / 1000 / 60;
-            return timeLong == 1 ? String.format(context.getString(R.string.minute), timeLong) : String.format(
-                    context.getString(R.string.minutes), timeLong);
-        } else if (timeLong < 60 * 60 * 24 * 1000) {
-            timeLong = timeLong / 60 / 60 / 1000;
-            return timeLong == 1 ? String.format(context.getString(R.string.hour), timeLong) : String.format(
-                    context.getString(R.string.hours), timeLong);
-        } else if (timeLong < 60 * 60 * 24 * 1000 * 7) {
-            timeLong = timeLong / 1000 / 60 / 60 / 24;
-            return timeLong == 1 ? String.format(context.getString(R.string.day), timeLong) : String.format(
-                    context.getString(R.string.days), timeLong);
-        } else if (timeLong < 60 * 60 * 24 * 1000 * 7 * 4) {
-            timeLong = timeLong / 1000 / 60 / 60 / 24 / 7;
-            return timeLong == 1 ? String.format(context.getString(R.string.week), timeLong) : String.format(
-                    context.getString(R.string.weeks), timeLong);
-        }  else if (timeLong < 60 * 60 * 24 * 1000 * 7 * 4 * 12) {
-            timeLong = timeLong / 1000 / 60 / 60 / 24 / 7/12;
-            return timeLong == 1 ? String.format(context.getString(R.string.month), timeLong) : String.format(
-                    context.getString(R.string.weeks), timeLong);
-        }else {
-            return sdfyyyyMMddHHmmss.format(startDate);
+        if (i != jArr.length) {
+            if ((-delta) / jArr[i] > 1) {
+                timeString = res.getString(iArr2[i], new Object[]{Long.valueOf(Math.abs(delta)/jArr[i])});
+            } else {
+                timeString = res.getString(iArr[i], new Object[]{Long.valueOf(Math.abs(delta)/jArr[i])});
+            }
         }
+        i = startIndex;
+        while (i < jArr.length && delta < jArr[i]) {
+            i++;
+        }
+        if (i != jArr.length) {
+            if (delta / jArr[i] > 1) {
+                timeString = res.getString(iArr4[i], new Object[]{Long.valueOf(delta)/jArr[i]});
+            } else {
+                timeString = res.getString(iArr3[i], new Object[]{Long.valueOf(delta)/jArr[i]});
+            }
+        }
+        if (timeString != null) {
+            return timeString;
+        }
+        if (delta < 0) {
+            return res.getString(R.string.relativeTimeJustNow);
+        }
+        return res.getString(R.string.relativeTimeInAFewSeconds);
     }
 }

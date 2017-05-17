@@ -83,12 +83,15 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
         private ImageView thumbnail;
         private TextView mTimeTV;
 
+        private ImageView playIV;
+
         public YouTubePlayItemHodler(View itemView, Activity activity) {
             super(itemView);
             mActivity = activity;
             thumbnail = (ImageView) itemView.findViewById(R.id.item_poseter);
             mTitleIV = (TextView)itemView.findViewById(R.id.title);
             mTimeTV = (TextView)itemView.findViewById(R.id.time);
+            playIV = (ImageView)itemView.findViewById(R.id.play_iv);
 
         }
 
@@ -101,8 +104,10 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
 
             if (data.isPlaying) {
                 LogUtils.v(" YouTubeItemHolder isPlaying");
+                playIV.setVisibility(View.VISIBLE);
                 thumbnail.setBackgroundDrawable(mActivity.getResources().getDrawable(R.drawable.playing_bg));
             } else {
+                playIV.setVisibility(View.GONE);
                 thumbnail.setBackgroundDrawable(null);
             }
 
@@ -158,7 +163,6 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
             nameTV.setText(data.snippet.title);
-
         }
     }
 }

@@ -19,7 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:animDuration="200"
-        android:padding="8dp"
         app:collapseDrawable="@drawable/ic_expand_more"
         app:collapseExpandGrarity="right"
         app:collapseExpandTextColor="@color/color_0c0b0a"

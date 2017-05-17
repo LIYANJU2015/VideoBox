@@ -1,6 +1,7 @@
 package com.videobox.view.adapter;
 
 import android.app.Activity;
+import android.media.Image;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -101,12 +102,14 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
         private ImageView posterIV;
         private TextView titleTV;
         private TextView timeTV;
+        private ImageView playIV;
 
         public YouTubeRelatedVideoHodler(View itemView) {
             super(itemView);
             posterIV = (ImageView) itemView.findViewById(R.id.dm_poster);
             titleTV = (TextView) itemView.findViewById(R.id.name);
             timeTV = (TextView)itemView.findViewById(R.id.time);
+            playIV = (ImageView)itemView.findViewById(R.id.play_iv);
         }
 
         @Override
@@ -120,11 +123,15 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
             }
 
             if (data.relateVideo.isPlaying) {
+                playIV.setVisibility(View.VISIBLE);
                 posterIV.setBackgroundDrawable(ContextCompat.getDrawable(mActivity, R.drawable.playing_bg));
             } else {
+                playIV.setVisibility(View.GONE);
                 posterIV.setBackgroundDrawable(null);
             }
+
             titleTV.setText(data.relateVideo.snippet.title);
+
             Glide.with(mActivity).load(data.relateVideo.getThumbnailsUrl())
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(posterIV);
