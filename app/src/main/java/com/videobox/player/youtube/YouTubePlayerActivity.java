@@ -16,8 +16,11 @@ import android.widget.LinearLayout;
 
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
+import com.google.android.youtube.player.YouTubeApiServiceUtil;
+import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
+import com.util.YouTubeUtil;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
@@ -31,6 +34,7 @@ import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
 
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -38,6 +42,8 @@ import rx.schedulers.Schedulers;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+import static com.commonlibs.util.LogUtils.I;
+import static com.google.android.youtube.player.YouTubeApiServiceUtil.isYouTubeApiServiceAvailable;
 
 /**
  * Created by liyanju on 2017/5/10.
@@ -77,6 +83,8 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
 
     private YouTubePlayer youTubePlayer;
 
+    private MaterialProgressBar playProgressBar;
+
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
@@ -93,6 +101,28 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         parseIntent();
 
         initView();
+
+        YouTubeInitializationResult result = YouTubeApiServiceUtil
+                .isYouTubeApiServiceAvailable(mContext);
+        LogUtils.v("onCreate", "YouTubeInitializationResult "+
+                 result + " isUserRecoverableError " + result.isUserRecoverableError());
+        if (result != YouTubeInitializationResult.SUCCESS && result.isUserRecoverableError()){
+            result.getErrorDialog(this, 1);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        LogUtils.v("onActivityResult", " requestCode " + requestCode + " resultCode " + resultCode);
+        if (requestCode == 1 && resultCode == RESULT_OK) {
+            finish();
+            if (!StringUtils.isEmpty(mPlaylistID)) {
+                YouTubePlayerActivity.launchVideoID(mContext, mPlaylistID);
+            } else {
+                YouTubePlayerActivity.launchVideoID(mContext, mVideoID);
+            }
+        }
     }
 
     private void initView() {
@@ -106,6 +136,8 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
 
         mLoadingFrameLayout = (LoadingFrameLayout)findViewById(R.id.loading_frame);
         mLoadingFrameLayout.smoothToshow();
+
+        playProgressBar = (MaterialProgressBar)findViewById(R.id.play_progress);
     }
 
     private void parseIntent() {
@@ -229,13 +261,17 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
                     mYouTuBeModel, mPlayerItems, this, introduceItem.curPlayVideo);
             mPlayerAdapter.setOnItemClickRelateListener(relateVideoHandler);
 
-            mPlayerManager = new YouTubePlayerManager(youTubePlayer, playListHandler, relateVideoHandler);
+            mPlayerManager = new YouTubePlayerManager(youTubePlayer, playListHandler,
+                    relateVideoHandler, playProgressBar);
 
             youTubePlayer.setOnFullscreenListener(this);
         }
     }
 
     private void savePlayRecord() {
+        if (youTubePlayer == null){
+            return;
+        }
         YTBVideoPageBean.YouTubeVideo video = mPlayerManager.getCurPlayVideo();
         if (video != null) {
             PlayRecordBean recordBean = new PlayRecordBean();
@@ -250,6 +286,12 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
                     " playlistId" + recordBean.playlistId, " vid " + recordBean.vid);
             VideoBoxContract.PlayRecord.addPlayRecord(mContext, recordBean);
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPlayerManager.onDestory();
     }
 
     @Override

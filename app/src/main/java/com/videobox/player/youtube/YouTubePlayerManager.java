@@ -1,5 +1,8 @@
 package com.videobox.player.youtube;
 
+import android.os.Message;
+
+import com.commonlibs.util.HandlerUtils;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -8,10 +11,14 @@ import com.videobox.model.bean.PlayRecordBean;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
+
 /**
  * Created by liyanju on 2017/5/12.
  */
-public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.PlayerStateChangeListener{
+public class YouTubePlayerManager implements IPlayCallBack,
+        YouTubePlayer.PlayerStateChangeListener, YouTubePlayer.PlaybackEventListener,
+        HandlerUtils.OnReceiveMessageListener{
 
     private YouTubePlayer mPlayer;
 
@@ -19,12 +26,17 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
 
     protected RelateVideoHandler mRelateVideoHandler;
 
+    private MaterialProgressBar mPlayProgressBar;
+
+    private HandlerUtils.HandlerHolder mMainHandler;
+
     public YouTubePlayerManager(YouTubePlayer youTubePlayer,
                                 PlayListHandler playListHandler,
-                                RelateVideoHandler relateVideoHandler) {
+                                RelateVideoHandler relateVideoHandler, MaterialProgressBar playProgressBar) {
         mPlayer = youTubePlayer;
         mPlayerListHander = playListHandler;
         mRelateVideoHandler = relateVideoHandler;
+        mPlayProgressBar = playProgressBar;
         if (playListHandler != null) {
             mPlayer.setPlaylistEventListener(playListHandler);
             playListHandler.start(this);
@@ -34,6 +46,9 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
         }
         mPlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CUSTOM_LAYOUT);
         mPlayer.setPlayerStateChangeListener(this);
+        mPlayer.setPlaybackEventListener(this);
+
+        mMainHandler = new HandlerUtils.HandlerHolder(this);
     }
 
     public boolean isCurInPlaylist() {
@@ -130,7 +145,8 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
 
     @Override
     public void onLoaded(String s) {
-
+        LogUtils.v("PlayState", " onLoaded getDurationMillis " + mPlayer.getDurationMillis());
+        mPlayProgressBar.setMax(mPlayer.getDurationMillis());
     }
 
     @Override
@@ -139,13 +155,40 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
     }
 
     @Override
-    public void onVideoStarted() {
+    public void onPlaying() {
+        LogUtils.v("PlayState", "onPlaying " + mPlayer.getCurrentTimeMillis());
+        mPlayProgressBar.setProgress(mPlayer.getCurrentTimeMillis());
+    }
+
+    @Override
+    public void onPaused() {
 
     }
 
     @Override
+    public void onStopped() {
+        LogUtils.v("PlayState", "onStopped " + mPlayer.getCurrentTimeMillis());
+    }
+
+    @Override
+    public void onBuffering(boolean b) {
+
+    }
+
+    @Override
+    public void onSeekTo(int i) {
+
+    }
+
+    @Override
+    public void onVideoStarted() {
+        LogUtils.v("PlayState", " onVideoStarted ");
+        startUpdateProgress();
+    }
+
+    @Override
     public void onVideoEnded() {
-        LogUtils.v("onVideoEnded", "isPlayinglist " + isPlayinglist);
+        LogUtils.v("PlayState", " onVideoEnded isPlayinglist " + isPlayinglist);
         if (!isPlayinglist) {
             String vid = mRelateVideoHandler.getNextVideoId();
             LogUtils.v("onVideoEnded", " vid " + vid);
@@ -156,6 +199,12 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
                 onPlayRelateVideoEnd();
             }
         }
+
+        stopUpdateProgress();
+
+        mPlayProgressBar.setMax(0);
+        mPlayProgressBar.setProgress(0);
+        LogUtils.v("PlayState", " onVideoEnded getDurationMillis " + mPlayer.getDurationMillis() + "getCurrentTimeMillis " + mPlayer.getCurrentTimeMillis());
     }
 
     @Override
@@ -164,5 +213,30 @@ public class YouTubePlayerManager implements IPlayCallBack, YouTubePlayer.Player
             // When this error occurs the player is released and can no longer be used.
             mPlayer = null;
         }
+    }
+
+    @Override
+    public void handlerMessage(Message msg) {
+        LogUtils.v("handlerMessage", "getCurrentTimeMillis "+mPlayer.getCurrentTimeMillis());
+        mPlayProgressBar.setProgress(mPlayer.getCurrentTimeMillis());
+        if (!isStopUpdate) {
+            mMainHandler.sendEmptyMessageDelayed(0, 500);
+        }
+    }
+
+    private boolean isStopUpdate = false;
+
+    public void onDestory() {
+        stopUpdateProgress();
+    }
+
+    public void startUpdateProgress() {
+        isStopUpdate = false;
+        mMainHandler.sendEmptyMessageDelayed(0, 500);
+    }
+
+    public void stopUpdateProgress() {
+        isStopUpdate = true;
+        mMainHandler.removeCallbacksAndMessages(null);
     }
 }
