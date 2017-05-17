@@ -159,6 +159,10 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
                                     .build();
                             mPaginate.setHasMoreDataToLoad(false);
                         }
+
+                        if (isFirst && mVideoList.size() == 0) {
+                            loadingFrameLayout.showDataNull();
+                        }
                     }
 
                     @Override

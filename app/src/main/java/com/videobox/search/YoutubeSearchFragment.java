@@ -173,6 +173,10 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
                                     .build();
                             mPaginate.setHasMoreDataToLoad(false);
                         }
+
+                        if (startSearch && mVideoList.size() == 0) {
+                            loadingFrameLayout.showDataNull();
+                        }
                     }
 
                     @Override
