@@ -1,14 +1,17 @@
 package com.commonlibs.util;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 
 
 import com.commonlibs.constant.TimeConstants;
+import com.example.commonlibs.R;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Formatter;
 import java.util.Locale;
 
 /**
@@ -206,6 +209,25 @@ public final class TimeUtils {
      */
     public static String millis2String(long millis, String pattern) {
         return new SimpleDateFormat(pattern, Locale.getDefault()).format(new Date(millis));
+    }
+
+    public static String stringForTime(int timeMs) {
+        StringBuilder mFormatBuilder = new StringBuilder();
+        Formatter mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
+
+        int totalSeconds = timeMs / 1000;
+        int seconds = totalSeconds % 60;
+
+        int minutes = (totalSeconds / 60) % 60;
+
+        int hours = totalSeconds / 3600;
+
+        mFormatBuilder.setLength(0);
+        if (hours > 0) {
+            return mFormatter.format("%d:%02d:%02d", hours, minutes, seconds).toString();
+        } else {
+            return mFormatter.format("%02d:%02d", minutes, seconds).toString();
+        }
     }
 
     /**

@@ -56,9 +56,14 @@ public class DMPlayerDelegate extends AppDelegate{
     }
 
     public void setMaxProgress(int max) {
-        LogUtils.v("setMaxProgress", "max" + max);
+        LogUtils.v("setProgress", "setMaxProgress max" + max);
         playProgressBar.setMax(max);
         playProgressBar.setProgress(0);
+    }
+
+    public void setProgressEnd() {
+        LogUtils.v("setProgress", "setProgressEnd ");
+        playProgressBar.setProgress(playProgressBar.getMax());
     }
 
     public void setProgress(int progress) {

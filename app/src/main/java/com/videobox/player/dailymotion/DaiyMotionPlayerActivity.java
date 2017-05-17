@@ -55,7 +55,7 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
         mVideoView.load();
         mVideoView.setDMEventListener(this);
 
-        viewDelegate.setMaxProgress(mDMVideoBean.duration);
+        viewDelegate.setMaxProgress(mDMVideoBean.duration-1);
         viewDelegate.setProgress(0);
     }
 
@@ -104,7 +104,7 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
 
     @Override
     public void onSeeking(double currentTime) {
-        viewDelegate.setProgress((int)currentTime);
+        //viewDelegate.setProgress((int)currentTime);
     }
 
     @Override
@@ -130,6 +130,9 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
 
     @Override
     public void onEnd(boolean end) {
+        if (end) {
+            viewDelegate.setProgressEnd();
+        }
     }
 
     public DMVideoBean getCurrentVideoBean() {

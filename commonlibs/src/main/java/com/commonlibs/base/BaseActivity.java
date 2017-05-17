@@ -31,8 +31,6 @@ public abstract class BaseActivity extends RxAppCompatActivity {
         return mAppComponent;
     }
 
-
-
     public void fullScreencall() {
         if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
             View v = this.getWindow().getDecorView();
