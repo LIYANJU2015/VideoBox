@@ -96,6 +96,7 @@ public class APIConstant {
             }
 
             sMostPopularVideos.put(CHART, "mostPopular");
+            sMostPopularVideos.put(PART, "snippet,contentDetails");
 //            sMostPopularVideos.put(REGION_CODE, country);
 
             sCategoriesMap.put(REGION_CODE, country);

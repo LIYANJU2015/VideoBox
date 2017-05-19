@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.OvershootInterpolator;
 
 import com.commonlibs.base.BaseFragment;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
@@ -25,6 +26,7 @@ import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
 
+import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
@@ -62,7 +64,11 @@ public class RelatedFragment extends BaseFragment<Contract.DMPlayerHost> impleme
         mRecyclerAdapter = new DMListRecyclerAdapter(mVideoList, getActivity());
         mRelatedRecyclerView.setHasFixedSize(true);
         mRelatedRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
-        mRelatedRecyclerView.setAdapter(mRecyclerAdapter);
+        SlideInBottomAnimationAdapter animationAdapter = new SlideInBottomAnimationAdapter(mRecyclerAdapter);
+        animationAdapter.setFirstOnly(true);
+        animationAdapter.setDuration(800);
+        animationAdapter.setInterpolator(new OvershootInterpolator(.5f));
+        mRelatedRecyclerView.setAdapter(animationAdapter);
         mRecyclerAdapter.setOnItemClickListener(this);
 
         loadingFrameLayout = (LoadingFrameLayout)view.findViewById(R.id.loading_frame);

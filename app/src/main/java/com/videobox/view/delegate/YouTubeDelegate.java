@@ -3,11 +3,14 @@ package com.videobox.view.delegate;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.animation.OvershootInterpolator;
 
 import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.videobox.R;
 import com.videobox.main.YouTubeFragment;
+
+import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 
 /**
  * Created by liyanju on 2017/5/1.
@@ -37,7 +40,11 @@ public class YouTubeDelegate extends AppDelegate{
     }
 
     public void setAdapter(BaseRecyclerViewAdapter adapter) {
-        mRecyclerView.setAdapter(adapter);
+        SlideInBottomAnimationAdapter animationAdapter = new SlideInBottomAnimationAdapter(adapter);
+        animationAdapter.setFirstOnly(true);
+        animationAdapter.setDuration(800);
+        animationAdapter.setInterpolator(new OvershootInterpolator(.5f));
+        mRecyclerView.setAdapter(animationAdapter);
     }
 
     public void showLoading() {

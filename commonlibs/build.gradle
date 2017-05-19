@@ -57,4 +57,5 @@ dependencies {
     compile 'com.afollestad.material-dialogs:core:0.9.4.5'
     compile 'com.afollestad.material-dialogs:commons:0.9.4.5'
     compile 'me.zhanghai.android.materialprogressbar:library:1.4.1'
+    compile 'jp.wasabeef:recyclerview-animators:2.2.6'
 }

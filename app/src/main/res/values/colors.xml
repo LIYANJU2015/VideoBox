@@ -19,4 +19,9 @@
 
     <color name="color_ef534e">#ef534e</color>
 
+    <color name="youtube_color">#f11b19</color>
+    <color name="dailymotion_color">#2f66db</color>
+    <color name="colorOffWhite">#F3F3F3</color>
+    <color name="colorDeepGray">#9B9B9B</color>
+
 </resources>

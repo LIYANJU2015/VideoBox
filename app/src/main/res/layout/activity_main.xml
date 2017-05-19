@@ -29,56 +29,59 @@
         android:layout_gravity="start"
         android:orientation="vertical">
 
-        <com.videobox.view.widget.CanaroTextView
+        <com.videobox.view.widget.ProximaTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="15dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
             android:gravity="center|left"
             android:text="@string/home_text"
             android:textColor="@color/material_white"
             android:id="@+id/menu_home"
-            android:textSize="20sp" />
+            android:textSize="17sp" />
 
         <View
             android:layout_marginLeft="10dp"
-            android:background="@color/material_grey600"
+            android:background="#424448"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
-        <com.videobox.view.widget.CanaroTextView
+        <com.videobox.view.widget.ProximaTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:layout_marginLeft="15dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
             android:gravity="center|left"
             android:text="@string/search"
             android:textColor="@color/material_white"
             android:id="@+id/search"
-            android:textSize="20sp" />
+            android:textSize="17sp" />
 
         <View
             android:layout_marginLeft="10dp"
-            android:background="@color/material_grey600"
+            android:background="#424448"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
         <com.videobox.view.widget.CanaroTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="10dp"
             android:gravity="center|left"
             android:text="@string/category_text"
-            android:textColor="@color/material_white"
-            android:textSize="20sp" />
+            android:textColor="#b4b4b5"
+            android:textSize="17sp" />
 
         <View
             android:layout_marginLeft="10dp"
-            android:background="@color/material_grey600"
+            android:background="#424448"
             android:layout_width="match_parent"
             android:layout_height="1dp"/>
 
@@ -94,7 +97,7 @@
                 android:layout_height="match_parent"
                 android:choiceMode="singleChoice"
                 android:paddingLeft="10dp"
-                android:divider="@color/material_grey600"
+                android:divider="#424448"
                 android:dividerHeight="1dp"
                 android:drawSelectorOnTop="false" />
         </android.support.v4.widget.SwipeRefreshLayout>

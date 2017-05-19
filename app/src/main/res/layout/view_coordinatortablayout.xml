@@ -41,6 +41,7 @@
                 >
 
                 <ImageView
+                    android:padding="5dp"
                     android:layout_gravity="center|left|top"
                     android:id="@+id/navigation_left"
                     style="@style/ImageView.Hamburger"

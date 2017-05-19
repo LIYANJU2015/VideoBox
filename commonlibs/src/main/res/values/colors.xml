@@ -551,4 +551,6 @@
 
     <color name="material_black">#ff000000</color>
     <color name="material_white">#ffffffff</color>
+    <color name="rippelColor">#f3f3f3</color>
+
 </resources>

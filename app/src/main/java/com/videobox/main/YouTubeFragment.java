@@ -13,6 +13,7 @@ import com.commonlibs.themvp.presenter.FragmentPresenter;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
 import com.paginate.Paginate;
+import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.YouTuBeModel;
@@ -78,7 +79,7 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
     private void getVideoData(final boolean pullToRefresh) {
         boolean isEvictCache = true; //不使用缓存
         if (pullToRefresh && mIsFirst) {
-            mIsFirst = true;
+            mIsFirst = false;
             isEvictCache = false;
         }
 
@@ -159,6 +160,7 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
         }
 
         if (!StringUtils.isEmpty(id)) {
+            mInHome = false;
             if (mMainAdapter != null) {
                 mMainAdapter.clearAdapter();
                 mMainAdapter = null;

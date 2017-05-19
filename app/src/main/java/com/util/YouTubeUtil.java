@@ -1,12 +1,23 @@
 package com.util;
 
-import com.commonlibs.util.LogUtils;
+import android.support.v7.widget.RecyclerView;
+import android.view.animation.OvershootInterpolator;
+
+import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 
 /**
  * Created by liyanju on 2017/5/14.
  */
 
 public class YouTubeUtil {
+
+    public static RecyclerView.Adapter slideInBottomAnimationAdapter(RecyclerView.Adapter adapter) {
+        SlideInBottomAnimationAdapter animationAdapter = new SlideInBottomAnimationAdapter(adapter);
+        animationAdapter.setFirstOnly(true);
+        animationAdapter.setDuration(800);
+        animationAdapter.setInterpolator(new OvershootInterpolator(.5f));
+        return animationAdapter;
+    }
 
     public static String convertDuration(String duration) {
         duration = duration.substring(2);  // del. PT-symbols

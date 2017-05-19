@@ -1,60 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    >
+    android:background="@drawable/list_item_bg"
+    android:orientation="horizontal">
 
     <FrameLayout
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    <ImageView
-        android:padding="1dp"
-        android:id="@+id/dm_poster"
-        android:scaleType="centerCrop"
-        android:src="@drawable/dm_item_img_default"
-        android:layout_width="160dp"
-        android:layout_height="90dp" />
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp">
+
+        <ImageView
+            android:id="@+id/dm_poster"
+            android:layout_width="160dp"
+            android:layout_height="90dp"
+            android:padding="1dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/dm_item_img_default" />
 
         <TextView
-            android:layout_margin="1dp"
-            style="@style/list_time"
-            android:visibility="gone"
-            android:textColor="@color/material_white"
-            android:background="@color/material_black"
             android:id="@+id/time"
-            android:layout_gravity="bottom|right"
+            style="@style/list_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="1dp"
+            android:background="@color/material_black"
+            android:textColor="@color/material_white"
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/play_iv"
-            android:visibility="gone"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center"
             android:src="@drawable/ic_play"
-            android:layout_width="30dp"
-            android:layout_height="30dp" />
+            android:visibility="gone" />
     </FrameLayout>
 
     <LinearLayout
-        android:layout_margin="10dp"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="90dp">
+        android:layout_height="90dp"
+        android:layout_margin="10dp"
+        android:orientation="vertical">
 
         <TextView
-            style="@style/list_title"
             android:id="@+id/name"
+            style="@style/list_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
+
         <TextView
-            android:layout_marginTop="12dp"
             android:id="@+id/update_time_tv"
             style="@style/content_descrip"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
 
     </LinearLayout>
 

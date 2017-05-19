@@ -3,6 +3,7 @@ package com.videobox.view.delegate;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.design.widget.TabLayout;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -19,6 +20,7 @@ import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.StatusBarColorCompat;
 import com.videobox.R;
 import com.videobox.main.DailyMotionFragment;
 import com.videobox.main.MainActivity;
@@ -160,9 +162,11 @@ public class MainViewDelegate extends AppDelegate {
                                     @Override
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         imageView.setImageBitmap(resource);
-                                        changeToolbarColor(resource);
+                                        mCoordinatorTabLayout.setContentScrimColor(ContextCompat.getColor(mContext, R.color.dailymotion_color));
                                     }
                                 });
+                                StatusBarColorCompat.setColorNoTranslucent(mMainActivity,
+                                        ContextCompat.getColor(mContext, R.color.dailymotion_color));
                                 break;
                             case 1:
                                 mMainActivity.setVideoListFragment(mYouTubeFragment);
@@ -170,9 +174,11 @@ public class MainViewDelegate extends AppDelegate {
                                     @Override
                                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                                         imageView.setImageBitmap(resource);
-                                        changeToolbarColor(resource);
+                                        mCoordinatorTabLayout.setContentScrimColor(ContextCompat.getColor(mContext, R.color.youtube_color));
                                     }
                                 });
+                                StatusBarColorCompat.setColorNoTranslucent(mMainActivity,
+                                        ContextCompat.getColor(mContext, R.color.youtube_color));
                                 break;
 
                         }

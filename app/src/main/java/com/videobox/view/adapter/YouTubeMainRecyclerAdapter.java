@@ -3,10 +3,12 @@ package com.videobox.view.adapter;
 import android.app.Activity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.BaseRecyclerViewAdapter;
+import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 
@@ -41,10 +43,16 @@ public class YouTubeMainRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
 
         private Activity mActivity;
 
+        private TextView titleTV;
+
+        private TextView timeTV;
+
         public YouTubeItemHolder(View itemView, Activity activity) {
             super(itemView);
             mActivity = activity;
             videoPoster = (ImageView) itemView.findViewById(R.id.video_poster);
+            titleTV = (TextView)itemView.findViewById(R.id.title);
+            timeTV = (TextView)itemView.findViewById(R.id.time);
         }
 
         @Override
@@ -52,6 +60,16 @@ public class YouTubeMainRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
             Glide.with(mActivity).load(data.getThumbnailsUrl())
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
+
+            titleTV.setText(data.snippet.title);
+
+            if (data.contentDetails != null) {
+                timeTV.setVisibility(View.VISIBLE);
+                timeTV.setText(YouTubeUtil.convertDuration(data.contentDetails.duration));
+            } else {
+                timeTV.setVisibility(View.GONE);
+            }
+
         }
     }
 }

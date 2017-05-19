@@ -194,7 +194,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
     private void getVideoData(final boolean pullToRefresh) {
         boolean isEvictCache = true; //不使用缓存
         if (pullToRefresh && mIsFirst) {
-            mIsFirst = true;
+            mIsFirst = false;
             isEvictCache = false;
         }
 
