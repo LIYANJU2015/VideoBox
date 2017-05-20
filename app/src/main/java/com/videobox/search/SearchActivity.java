@@ -111,7 +111,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     private void initSearchViewAdapter() {
         mSearchAdapter = new SearchAdapter(this, suggestionsList);
-        mSearchAdapter.setSuggestionsList(suggestionsList);
         mSearchAdapter.addOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
@@ -161,28 +160,10 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     }
 
     private void initSearchSuggestions() {
-        new AsyncTask<Void,Void, String[]>() {
-            @Override
-            protected String[] doInBackground(Void... params) {
-                return VideoBoxContract.SearchHistory.getAllSearchHistory(mContext);
-            }
-
-            @Override
-            protected void onPostExecute(String[] strings) {
-                super.onPostExecute(strings);
-                if (strings == null) {
-                    return;
-                }
-                for (String suggestions : strings) {
-                    suggestionsList.add(new SearchItem(R.drawable.ic_history_black_24dp,
-                            suggestions));
-                }
-                if (mSearchAdapter == null) {
-                    initSearchViewAdapter();
-                    mSearchView.open(true);
-                }
-            }
-        }.execute();
+        if (mSearchAdapter == null) {
+            initSearchViewAdapter();
+            mSearchView.open(true);
+        }
 
 //        Observable.create(new Action1<Emitter<String[]>>() {
 //            @Override
@@ -237,7 +218,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                                 VideoBoxContract.SearchHistory.createContentValue(query));
                     }
                 });
-        initSearchSuggestions();
     }
 
     public static void launch(Context context) {

@@ -30,6 +30,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+import static android.R.attr.data;
+
 /**
  * Created by liyanju on 2017/5/6.
  */
@@ -81,7 +83,9 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
 
         loadingFrameLayout = (LoadingFrameLayout)view.findViewById(R.id.loading_frame);
 
-        mDaiyMotionModel = new DaiyMotionModel(getAppComponent().repositoryManager());
+        if (getAppComponent() != null) {
+            mDaiyMotionModel = new DaiyMotionModel(getAppComponent().repositoryManager());
+        }
         return view;
     }
 

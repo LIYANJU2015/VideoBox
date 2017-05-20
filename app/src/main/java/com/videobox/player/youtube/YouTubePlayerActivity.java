@@ -114,7 +114,7 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
                 result + " isUserRecoverableError " + result.isUserRecoverableError());
         if (result != YouTubeInitializationResult.SUCCESS && result.isUserRecoverableError()){
             Dialog dialog = result.getErrorDialog(this, 1);
-            if(dialog != null) {
+            if (dialog != null) {
                 dialog.show();
             }
         }
@@ -300,7 +300,9 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mPlayerManager.onDestory();
+        if (mPlayerManager != null) {
+            mPlayerManager.onDestory();
+        }
     }
 
     @Override

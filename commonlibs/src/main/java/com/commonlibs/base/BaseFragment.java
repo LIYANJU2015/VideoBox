@@ -39,7 +39,6 @@ public abstract class BaseFragment<T> extends RxFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        this.mActivity = null;
         this.mRootView = null;
     }
 
