@@ -65,6 +65,28 @@ public class UIThreadHelper {
         });
     }
 
+    public void runViewUIThread(View view, final Runnable runnable, final int delay) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                if (mHandler != null) {
+                    mHandler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                if (runnable != null) {
+                                    runnable.run();
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }, delay);
+                }
+            }
+        });
+    }
+
     public Handler getHandler() {
         return mHandler;
     }

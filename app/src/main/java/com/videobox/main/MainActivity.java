@@ -2,6 +2,7 @@ package com.videobox.main;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.view.Window;
@@ -13,6 +14,7 @@ import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.UIThreadHelper;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
@@ -71,6 +73,15 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
     }
 
     @Override
+    public void onBackPressed() {
+        if (viewDelegate.mDrawerLayout != null && viewDelegate.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+            viewDelegate.mDrawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed(); // finish
+        }
+    }
+
+    @Override
     protected void initAndBindEven() {
         mDaiyMotionModel = new DaiyMotionModel(getAppComponent().repositoryManager());
         mYoutuBeModel = new YouTuBeModel(getAppComponent().repositoryManager());
@@ -108,7 +119,12 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
             @Override
             public void onClick(View v) {
                 SearchActivity.launch(mContext);
-                viewDelegate.drawerToggle();
+                UIThreadHelper.getInstance().getHandler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        viewDelegate.drawerToggle();
+                    }
+                }, 300);
             }
         }, R.id.search);
 

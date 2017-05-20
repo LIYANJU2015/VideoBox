@@ -7,6 +7,7 @@ import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.ScreenUtils;
+import com.commonlibs.util.SizeUtils;
 import com.dailymotion.websdk.DMWebVideoView;
 import com.videobox.AppAplication;
 import com.videobox.R;
@@ -47,6 +48,7 @@ public class DMPlayerDelegate extends AppDelegate{
         viewPager.setAdapter(adapterViewPager);
         TabLayout tabLayout = get(R.id.dm_tabLayout);
         tabLayout.setupWithViewPager(viewPager);
+        tabLayout.setSelectedTabIndicatorHeight(SizeUtils.dp2px(3));
 
         DMWebVideoView dmWebVideoView = get(R.id.dmWebVideoView);
         dmWebVideoView.getLayoutParams().height = (int)(ScreenUtils.getScreenWidth()*(9.0f/16.0f));

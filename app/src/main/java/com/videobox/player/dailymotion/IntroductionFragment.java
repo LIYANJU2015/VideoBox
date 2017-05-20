@@ -3,6 +3,7 @@ package com.videobox.player.dailymotion;
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class IntroductionFragment extends BaseFragment<Contract.DMPlayerHost> {
         titleTV.setText(mHost.getCurrentVideoBean().title);
 
         ExpandableTextView describeTV = (ExpandableTextView)view.findViewById(R.id.describe);
-        describeTV.setText(mHost.getCurrentVideoBean().description);
+        describeTV.setText(Html.fromHtml(mHost.getCurrentVideoBean().description));
         return view;
     }
 }

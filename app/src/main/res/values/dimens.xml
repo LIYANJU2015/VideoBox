@@ -10,4 +10,7 @@
     <dimen name="ldrawer_thickness">2dp</dimen>
     <dimen name="ldrawer_gapBetweenBars">3dp</dimen>
     <dimen name="ldrawer_middleBarArrowSize">16dp</dimen>
+
+    <dimen name="toolbar_height">56dp</dimen>
+    <dimen name="toolbar_height2">64dp</dimen>
 </resources>

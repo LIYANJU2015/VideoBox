@@ -14,6 +14,7 @@ import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.FragmentPresenter;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
+import com.commonlibs.util.UIThreadHelper;
 import com.commonlibs.widget.imageloader.ImageLoader;
 import com.paginate.Paginate;
 import com.videobox.R;
@@ -92,7 +93,12 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     @Override
     protected void initAndBindEvent() {
-        getVideoData(true);
+        UIThreadHelper.getInstance().runViewUIThread(getView(), new Runnable() {
+            @Override
+            public void run() {
+                getVideoData(true);
+            }
+        });
     }
 
     @Override

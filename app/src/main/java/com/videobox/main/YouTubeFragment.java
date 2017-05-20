@@ -12,6 +12,7 @@ import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.FragmentPresenter;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
+import com.commonlibs.util.UIThreadHelper;
 import com.paginate.Paginate;
 import com.util.YouTubeUtil;
 import com.videobox.R;
@@ -73,7 +74,12 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
 
     @Override
     protected void initAndBindEvent() {
-        getVideoData(true);
+        UIThreadHelper.getInstance().runViewUIThread(getView(), new Runnable() {
+            @Override
+            public void run() {
+                getVideoData(true);
+            }
+        });
     }
 
     private void getVideoData(final boolean pullToRefresh) {

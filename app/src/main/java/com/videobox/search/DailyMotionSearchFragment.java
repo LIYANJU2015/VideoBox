@@ -34,7 +34,7 @@ import rx.schedulers.Schedulers;
  * Created by liyanju on 2017/5/6.
  */
 
-public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost> implements Paginate.Callbacks,
+public class DailyMotionSearchFragment extends BaseFragment implements Paginate.Callbacks,
         BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<DMVideoBean> {
 
     private ArrayList<DMVideoBean> mVideoList = new ArrayList<>();
@@ -121,7 +121,7 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
                         if (!isFirst) {
                             mIsLoadingMore = true;
                         } else {
-                            mHost.showLoading();
+                            loadingFrameLayout.smoothToshow();
                         }
                     }
                 }).subscribeOn(AndroidSchedulers.mainThread())
@@ -132,7 +132,7 @@ public class DailyMotionSearchFragment extends BaseFragment<Contract.CommonHost>
                         LogUtils.v("searchDMVideo", "doAfterTerminate ");
                         mIsLoadingMore = false;
                         if (isFirst) {
-                            mHost.hideLoading();
+                            loadingFrameLayout.smoothToHide();
                         }
                         loadingFrameLayout.smoothToHide();
                     }

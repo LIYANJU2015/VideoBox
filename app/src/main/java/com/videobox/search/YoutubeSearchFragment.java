@@ -39,7 +39,7 @@ import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
  * Created by liyanju on 2017/5/6.
  */
 
-public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> implements Paginate.Callbacks,
+public class YoutubeSearchFragment extends BaseFragment implements Paginate.Callbacks,
         BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<YTBVideoPageBean.YouTubeVideo> {
 
     private YouTuBeModel mYoutubeModel;
@@ -129,7 +129,7 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
                     public void call() {
                         LogUtils.v("searchVideo doOnSubscribe call " + startSearch);
                         if (startSearch) {
-                            mHost.showLoading();
+                            loadingFrameLayout.smoothToshow();
                         } else {
                             mIsLoadingMore = true;
                         }
@@ -142,7 +142,7 @@ public class YoutubeSearchFragment extends BaseFragment<Contract.CommonHost> imp
                         LogUtils.v("searchVideo", "doAfterTerminate startSearch " + startSearch);
                         if (startSearch) {
                             startSearch = false;
-                            mHost.hideLoading();
+                            loadingFrameLayout.smoothToHide();
                         } else {
                             mIsLoadingMore = false;
                         }

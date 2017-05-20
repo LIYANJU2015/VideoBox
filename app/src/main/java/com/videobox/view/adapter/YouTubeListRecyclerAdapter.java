@@ -112,9 +112,9 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
             }
 
             LogUtils.v("YouTubePlayItemHodler", " contentDetails :" + data.contentDetails);
-            if (data.contentDetails != null ) {
+            if (data.contentDetails != null && !StringUtils.isEmpty(data.contentDetails.duration)) {
                 mTimeTV.setVisibility(View.VISIBLE);
-                mTimeTV.setText(data.contentDetails.duration);
+                mTimeTV.setText(YouTubeUtil.convertDuration(data.contentDetails.duration));
             } else {
                 if (!data.status.isPrivacy()) {
                     AsyncComDataLoader.getInstance().display(loaderListener, data, mTimeTV);
@@ -124,11 +124,14 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
         }
     }
 
-    public class ContentDetailsLoaderListener implements IComDataLoaderListener<String> {
+    public class ContentDetailsLoaderListener implements IComDataLoaderListener<YTBVideoPageBean.ContentDetails> {
         @Override
-        public void onLoadingComplete(IComDataLoader<String> infoLoader, View... views) {
-            views[0].setVisibility(View.VISIBLE);
-            ((TextView)views[0]).setText(infoLoader.getLoadDataObj());
+        public void onLoadingComplete(IComDataLoader<YTBVideoPageBean.ContentDetails> infoLoader, View... views) {
+            if (!StringUtils.isEmpty(infoLoader.getLoadDataObj().duration)) {
+                views[0].setVisibility(View.VISIBLE);
+                ((TextView) views[0]).setText(YouTubeUtil
+                        .convertDuration(infoLoader.getLoadDataObj().duration));
+            }
         }
 
         @Override
@@ -142,7 +145,7 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
         }
     }
 
-    public static class YouTubeItemHolder extends BaseHolder<YTBVideoPageBean.YouTubeVideo> {
+    public class YouTubeItemHolder extends BaseHolder<YTBVideoPageBean.YouTubeVideo> {
 
         private ImageView videoPoster;
         private TextView nameTV;
@@ -150,12 +153,15 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
 
         private Activity mActivity;
 
+        private TextView mTimeTV;
+
         public YouTubeItemHolder(View itemView, Activity activity){
             super(itemView);
             mActivity = activity;
             videoPoster = (ImageView) itemView.findViewById(R.id.dm_poster);
             nameTV = (TextView)itemView.findViewById(R.id.name);
             bgLinear = (LinearLayout)itemView.findViewById(R.id.bg_linear);
+            mTimeTV = (TextView)itemView.findViewById(R.id.time);
         }
         @Override
         public void setData(YTBVideoPageBean.YouTubeVideo data, int position) {
@@ -163,6 +169,15 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
             nameTV.setText(data.snippet.title);
+
+            if (data.contentDetails != null && !StringUtils.isEmpty(data.contentDetails.duration)) {
+                mTimeTV.setVisibility(View.VISIBLE);
+                mTimeTV.setText(YouTubeUtil.convertDuration(data.contentDetails.duration));
+            } else {
+                AsyncComDataLoader.getInstance().display(loaderListener, data, mTimeTV);
+
+                mTimeTV.setVisibility(View.GONE);
+            }
         }
     }
 }

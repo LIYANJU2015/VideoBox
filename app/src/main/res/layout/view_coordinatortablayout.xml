@@ -60,9 +60,9 @@
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/tabLayout"
-                style="@style/TabLayoutStyle"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
+                style="@style/TabLayoutStyle"
                 android:layout_gravity="bottom" />
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>

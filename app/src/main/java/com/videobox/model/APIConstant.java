@@ -102,7 +102,7 @@ public class APIConstant {
             sCategoriesMap.put(REGION_CODE, country);
 
             sSearchMap.put("safeSearch", "none");
-            sSearchMap.put("type", "videos,playlist");
+            sSearchMap.put("type", "video,playlist");
             sSearchMap.put("maxResults", "25");
 
             sSearchRelatedMap.put("type", "video");

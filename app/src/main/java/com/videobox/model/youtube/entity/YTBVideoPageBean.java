@@ -23,7 +23,10 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 import static android.R.attr.data;
+import static android.R.attr.duration;
+import static android.R.attr.title;
 import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+import static com.commonlibs.util.LogUtils.I;
 
 /**
  * Created by liyanju on 2017/4/14.
@@ -70,7 +73,7 @@ public class YTBVideoPageBean {
         }
     }
 
-    public static class YouTubeVideo implements IComDataLoader<String>{
+    public static class YouTubeVideo implements IComDataLoader<ContentDetails>{
         @Override
         public void setLoadSuccess() {
 
@@ -83,37 +86,68 @@ public class YTBVideoPageBean {
 
         @Override
         public String getId() {
-            return snippet.resourceId.videoId;
+            if (snippet.resourceId != null && !StringUtils.isEmpty(snippet.resourceId.videoId)) {
+                return snippet.resourceId.videoId;
+            }
+            if (!StringUtils.isEmpty(getVideoID())) {
+                return getVideoID();
+            }
+
+            if (!StringUtils.isEmpty(getPlaylistID())) {
+                return getPlaylistID();
+            }
+            return snippet.title;
         }
 
         @Override
-        public String onHandleSelfData(ComDataLoadTask.AsyncHandleListener listener) {
-            LogUtils.v("onHandleSelfData", "vid "+snippet.resourceId.videoId);
-                     YouTubeService service = ((AppAplication)AppAplication.getContext()).getAppComponent().repositoryManager()
-                             .obtainRetrofitService(YouTubeService.class);
-            Call<YTBVideoPageBean> call = service.getVideoInfoByVid2(APIConstant.YouTube.sVideoContentDetails, snippet.resourceId.videoId);
-            try {
-                YTBVideoPageBean pageBean = call.execute().body();
-                LogUtils.v("onHandleSelfData", "pageBean "+ pageBean);
-                if (pageBean.items.size() > 0 && pageBean.items.get(0).contentDetails != null) {
-                    String duration = pageBean.items.get(0).contentDetails.duration;
-                    return YouTubeUtil.convertDuration(duration);
+        public ContentDetails onHandleSelfData(ComDataLoadTask.AsyncHandleListener listener) {
+            String playlistID = getPlaylistID();
+            LogUtils.v("onHandleSelfData", " playlistID " + playlistID);
+            YouTubeService service = ((AppAplication) AppAplication.getContext()).getAppComponent().repositoryManager()
+                    .obtainRetrofitService(YouTubeService.class);
+
+            if (!StringUtils.isEmpty(playlistID)) {
+                Call<YTBVideoPageBean> call = service.getPlaylistsInfoById(APIConstant.YouTube.sVideoContentDetails, playlistID);
+                try {
+                    YTBVideoPageBean pageBean = call.execute().body();
+                    if (pageBean.items.size() > 0 && pageBean.items.get(0).contentDetails != null) {
+                        contentDetails = pageBean.items.get(0).contentDetails;
+                        return contentDetails;
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
+            } else {
+                String vid = "";
+                if (snippet.resourceId != null && !StringUtils.isEmpty(snippet.resourceId.videoId)){
+                    vid = snippet.resourceId.videoId;
+                } else {
+                    vid = getVideoID();
+                }
+
+                Call<YTBVideoPageBean> call = service.getVideoInfoByVid2(APIConstant.YouTube.sVideoContentDetails, vid);
+                try {
+                    YTBVideoPageBean pageBean = call.execute().body();
+                    LogUtils.v("onHandleSelfData", "pageBean " + pageBean);
+                    if (pageBean.items.size() > 0 && pageBean.items.get(0).contentDetails != null) {
+                        return pageBean.items.get(0).contentDetails;
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
              return null;
         }
 
         @Override
-        public void setLoadDataObj(String duration) {
-            contentDetails = new ContentDetails();
-            contentDetails.duration = duration;
+        public void setLoadDataObj(ContentDetails contentDetails) {
+            this.contentDetails = contentDetails;
         }
 
         @Override
-        public String getLoadDataObj() {
-            return contentDetails.duration;
+        public ContentDetails getLoadDataObj() {
+            return contentDetails;
         }
 
         @Expose

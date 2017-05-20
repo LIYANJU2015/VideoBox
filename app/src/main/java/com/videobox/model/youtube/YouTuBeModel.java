@@ -156,7 +156,4 @@ public class YouTuBeModel extends BaseModel {
         return mService.getVideoInfoByVid(options, vid);
     }
 
-    public Observable<YTBVideoPageBean> getPlaylistsInfoById(Map<String, String> options, String ids) {
-        return mService.getPlaylistsInfoById(options, ids);
-    }
 }

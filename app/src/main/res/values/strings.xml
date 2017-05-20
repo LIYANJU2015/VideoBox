@@ -14,7 +14,7 @@
     <string name="expand">expand</string>
 
     <string name="error_player">There was an error initializing the YouTubePlayer (%1$s)</string>
-
+    <string name="voice_tips">Now, please say</string>
 
     <string name="relativeTimeFutureDayOne">in %d day</string>
     <string name="relativeTimeFutureDayOther">in %d days</string>

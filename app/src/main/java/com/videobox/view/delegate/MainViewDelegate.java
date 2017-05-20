@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -20,6 +21,7 @@ import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.SizeUtils;
 import com.commonlibs.util.StatusBarColorCompat;
 import com.videobox.R;
 import com.videobox.main.DailyMotionFragment;
@@ -51,7 +53,7 @@ public class MainViewDelegate extends AppDelegate {
 
     private ImageView mNavigationLeft;
 
-    private DrawerLayout mDrawerLayout;
+    public DrawerLayout mDrawerLayout;
 
     private ListView mDrawerList;
 
@@ -102,9 +104,9 @@ public class MainViewDelegate extends AppDelegate {
 
     public void drawerToggle() {
         if (mDrawerLayout.isDrawerOpen(mLeftMenuLinear)) {
-            mDrawerLayout.closeDrawer(mLeftMenuLinear);
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            mDrawerLayout.openDrawer(mLeftMenuLinear);
+            mDrawerLayout.openDrawer(GravityCompat.START);
         }
     }
 
@@ -187,6 +189,7 @@ public class MainViewDelegate extends AppDelegate {
                 .setupWithViewPager(mMainViewPager);
 
         mCoordinatorTabLayout.getTabLayout().addOnTabSelectedListener(mMainActivity);
+        mCoordinatorTabLayout.getTabLayout().setSelectedTabIndicatorHeight(SizeUtils.dp2px(3));
     }
 
     private void changeToolbarColor(Bitmap bitmap) {
