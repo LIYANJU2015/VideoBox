@@ -18,6 +18,7 @@ import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.SPUtils;
 import com.commonlibs.util.SnackbarUtils;
 import com.commonlibs.util.Utils;
+import com.tencent.bugly.crashreport.CrashReport;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.cache.DailyMotionCache;
 import com.videobox.model.dailymotion.service.DailymotionService;
@@ -60,7 +61,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
     public void onCreate() {
         super.onCreate();
         Utils.init(getContext());
-        //CrashReport.initCrashReport(getApplicationContext());
+        CrashReport.initCrashReport(getApplicationContext());
         spUtils = new SPUtils("video_box");
         initTypeface();
         initYouTubeRegions();
