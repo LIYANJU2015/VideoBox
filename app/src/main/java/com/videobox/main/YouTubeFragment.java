@@ -14,7 +14,6 @@ import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
 import com.commonlibs.util.UIThreadHelper;
 import com.paginate.Paginate;
-import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.YouTuBeModel;
@@ -23,6 +22,7 @@ import com.videobox.view.adapter.YouTubeListRecyclerAdapter;
 import com.videobox.view.adapter.YouTubeMainRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.YouTubeDelegate;
+import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
 
@@ -59,6 +59,8 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
 
     private String mCurChannelID;
 
+    private LoadingFrameLayout loadingFrameLayout;
+
     @Override
     protected Class<YouTubeDelegate> getDelegateClass() {
         return YouTubeDelegate.class;
@@ -80,6 +82,7 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                 getVideoData(true);
             }
         });
+        loadingFrameLayout = viewDelegate.get(R.id.loading_frame);
     }
 
     private void getVideoData(final boolean pullToRefresh) {
@@ -92,7 +95,7 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
         mYoutuBeModel.getMostPopularVideos(APIConstant.YouTube.sMostPopularVideos, pageToken, isEvictCache)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<YTBVideoPageBean>bindToLifecycle())
-                .retryWhen(new RetryWithDelay(3, 2))
+                .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -146,10 +149,24 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                             mPaginate.setHasMoreDataToLoad(false);
                         }
 
+                        if (mVideoList.size() > 0) {
+                            loadingFrameLayout.showNormal();
+                        } else {
+                            loadingFrameLayout.showDataNull();
+                        }
+
                         if (pullToRefresh)
                             mMainAdapter.notifyDataSetChanged();
                         else
                             mMainAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        if (mVideoList.size() == 0) {
+                            loadingFrameLayout.showError();
+                        }
                     }
                 });
     }

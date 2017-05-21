@@ -1,18 +1,15 @@
 package com.videobox.main;
 
-import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
-import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
+import com.commonlibs.util.ErrorHandleSubscriber2;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.UIThreadHelper;
 import com.videobox.AppAplication;
@@ -32,8 +29,6 @@ import java.util.ArrayList;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-
-import static android.media.CamcorderProfile.get;
 
 
 /**
@@ -140,7 +135,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         mYoutuBeModel.getYouTubeCategories(AppAplication.getCurrentRegions(), APIConstant.YouTube.sCategoriesMap, update)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<YTBCategoriesBean>bindToLifecycle())
-                .retryWhen(new RetryWithDelay(3, 2))
+                .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -158,7 +153,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                         }
                     }
                 })
-                .subscribe(new ErrorHandleSubscriber<YTBCategoriesBean>(mRxErrorHandler) {
+                .subscribe(new ErrorHandleSubscriber2<YTBCategoriesBean>() {
                     @Override
                     public void onNext(YTBCategoriesBean dmChannelsBean) {
                         mYouTubeChannel.clear();
@@ -177,7 +172,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         mDaiyMotionModel.getChannels(APIConstant.DailyMontion.sChannelsMap, update, 1)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<DMChannelsBean>bindToLifecycle())
-                .retryWhen(new RetryWithDelay(3, 2))
+                .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -195,7 +190,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                         }
                     }
                 })
-                .subscribe(new ErrorHandleSubscriber<DMChannelsBean>(mRxErrorHandler) {
+                .subscribe(new ErrorHandleSubscriber2<DMChannelsBean>() {
                     @Override
                     public void onNext(DMChannelsBean dmChannelsBean) {
                         mDMChannel.clear();

@@ -2,7 +2,7 @@ package com.commonlibs.http;
 
 import android.support.annotation.Nullable;
 
-import com.commonlibs.util.CharactorHandler;
+
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.ZipUtils;
 
@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
-import java.util.concurrent.TimeUnit;
 
-import javax.inject.Inject;
-import javax.inject.Singleton;
 
 import okhttp3.Interceptor;
 import okhttp3.MediaType;
@@ -31,13 +28,12 @@ import okio.BufferedSource;
  * Created by jess on 7/1/16.
  * Contact with jess.yan.effort@gmail.com
  */
-@Singleton
 public class RequestInterceptor implements Interceptor {
 
     private static final String TAG = RequestInterceptor.class.getSimpleName();
     private GlobeHttpHandler mHandler;
 
-    @Inject
+
     public RequestInterceptor(GlobeHttpHandler handler) {
         this.mHandler = handler;
     }

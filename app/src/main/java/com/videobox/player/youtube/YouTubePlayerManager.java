@@ -76,7 +76,7 @@ public class YouTubePlayerManager implements IPlayCallBack,
     public void onCanPlayList(String playlistId, int startIndex, int timeMillis, String vid) {
         try {
             mPlayer.loadPlaylist(playlistId, startIndex, timeMillis);
-        } catch (IllegalStateException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
         isPlayinglist = true;
@@ -95,7 +95,7 @@ public class YouTubePlayerManager implements IPlayCallBack,
         isPlayinglist = false;
         try {
             mPlayer.loadVideo(videoId, timeMills);
-        } catch (IllegalStateException e) {
+        } catch (Throwable e) {
             e.printStackTrace();
         }
 

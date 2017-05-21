@@ -27,7 +27,7 @@ public abstract class BaseFragment<T> extends RxFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         mActivity = (BaseActivity) getActivity();
-        mAppComponent = mActivity.getAppComponent();
+        mAppComponent = ((BaseApplication)mActivity.getApplication()).getAppComponent();
         mHost = (T)getActivity();
         mContext = getContext();
     }

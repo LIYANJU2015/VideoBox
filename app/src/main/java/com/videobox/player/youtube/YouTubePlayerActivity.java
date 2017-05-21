@@ -3,15 +3,11 @@ package com.videobox.player.youtube;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
@@ -21,7 +17,6 @@ import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerView;
-import com.util.YouTubeUtil;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
@@ -39,13 +34,6 @@ import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 import rx.Observable;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
-
-import static android.R.attr.data;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.commonlibs.util.LogUtils.I;
-import static com.google.android.youtube.player.YouTubeApiServiceUtil.isYouTubeApiServiceAvailable;
 
 /**
  * Created by liyanju on 2017/5/10.
@@ -98,7 +86,11 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         mYouTuBeModel = new YouTuBeModel(mAppApplication.getAppComponent().repositoryManager());
 
         mYouTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_view);
-        mYouTubePlayerView.initialize(APIConstant.YouTube.DEVELOPER_KEY, this);
+        try {
+            mYouTubePlayerView.initialize(APIConstant.YouTube.DEVELOPER_KEY, this);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
 
         parseIntent();
 
@@ -281,6 +273,12 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         if (youTubePlayer == null){
             return;
         }
+        boolean isSave = mPlayerManager.getDurationMillis() - mPlayerManager.getCurrentTimeMillis()
+                >= 1000 * 60;
+        LogUtils.v("savePlayRecord", "isSave " + isSave);
+        if (!isSave) {
+            return;
+        }
         YTBVideoPageBean.YouTubeVideo video = mPlayerManager.getCurPlayVideo();
         if (video != null) {
             PlayRecordBean recordBean = new PlayRecordBean();
@@ -316,7 +314,11 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
                 Observable.just(0).observeOn(Schedulers.io()).subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        savePlayRecord();
+                        try {
+                            savePlayRecord();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }

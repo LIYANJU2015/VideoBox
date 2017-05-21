@@ -2,6 +2,7 @@ package com.videobox.model.youtube;
 
 import com.commonlibs.base.BaseModel;
 import com.commonlibs.integration.IRepositoryManager;
+import com.commonlibs.util.NetworkUtils;
 import com.commonlibs.util.StringUtils;
 import com.videobox.model.dailymotion.cache.DailyMotionCache;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
@@ -44,6 +45,9 @@ public class YouTuBeModel extends BaseModel {
     }
 
     public Observable<YTBVideoPageBean> getMostPopularVideos(Map<String, String> options, String pageToken, boolean isUpdate) {
+        if (!NetworkUtils.isConnected()) {
+            isUpdate = false;
+        }
         Observable<YTBVideoPageBean> videoObserable = mService.getMostPopularVideos(pageToken, options);
         if (StringUtils.isEmpty(pageToken)) {
             pageToken = "pageToken";
@@ -52,6 +56,7 @@ public class YouTuBeModel extends BaseModel {
                 .flatMap(new Func1<Reply<YTBVideoPageBean>, Observable<YTBVideoPageBean>>() {
                     @Override
                     public Observable<YTBVideoPageBean> call(Reply<YTBVideoPageBean> ytbVideoPageBeanReply) {
+                        ytbVideoPageBeanReply.getData().cacheSource = ytbVideoPageBeanReply.getSource().ordinal();
                         return Observable.just(ytbVideoPageBeanReply.getData());
                     }
                 });

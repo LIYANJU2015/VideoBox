@@ -32,5 +32,6 @@ dependencies {
     compile files('libs/YouTubeAndroidPlayerApi.jar')
     compile 'com.jaydenxiao:ExpandableTextView:1.0.0'
     compile 'com.lapism:searchview:4.0'
+    compile 'com.tencent.bugly:crashreport:latest.release'
 
 }

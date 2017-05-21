@@ -1,5 +1,7 @@
 package com.videobox.model.dailymotion.entity;
 
+import com.google.gson.annotations.Expose;
+
 import java.util.ArrayList;
 
 /**
@@ -19,5 +21,8 @@ public class DMVideosPageBean {
     public int total;// 视频总个数
 
     public ArrayList<DMVideoBean> list;
+
+    @Expose
+    public int cacheSource;
 
 }

@@ -2,6 +2,7 @@ package com.videobox.model.dailymotion;
 
 import com.commonlibs.base.BaseModel;
 import com.commonlibs.integration.IRepositoryManager;
+import com.commonlibs.util.NetworkUtils;
 import com.videobox.model.dailymotion.cache.DailyMotionCache;
 import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
@@ -12,8 +13,12 @@ import java.util.Map;
 import io.rx_cache.DynamicKey;
 import io.rx_cache.EvictDynamicKey;
 import io.rx_cache.Reply;
+import io.rx_cache.Source;
 import rx.Observable;
 import rx.functions.Func1;
+
+import static android.os.Build.VERSION_CODES.N;
+import static com.tencent.bugly.crashreport.crash.c.n;
 
 /**
  * Created by liyanju on 2017/4/23.
@@ -30,12 +35,16 @@ public class DaiyMotionModel extends BaseModel {
         mCache = mRepositoryManager.obtainCacheService(DailyMotionCache.class);
     }
 
-    public Observable<DMVideosPageBean> getVideos(Map<String, String> options, boolean update, int page) {
+    public Observable<DMVideosPageBean> getVideos(final Map<String, String> options, boolean update, final int page) {
+        if (!NetworkUtils.isConnected()) {
+            update = false;
+        }
         Observable<DMVideosPageBean> oVideoPage = mService.getVideos(page, options);
         return mCache.getVideos(oVideoPage, new DynamicKey(page), new EvictDynamicKey(update))
                 .flatMap(new Func1<Reply<DMVideosPageBean>, Observable<DMVideosPageBean>>() {
                     @Override
                     public Observable<DMVideosPageBean> call(Reply<DMVideosPageBean> dmVideosPageBeanReply) {
+                        dmVideosPageBeanReply.getData().cacheSource = dmVideosPageBeanReply.getSource().ordinal();
                         return Observable.just(dmVideosPageBeanReply.getData());
                     }
                 });

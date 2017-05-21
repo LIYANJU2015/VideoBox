@@ -42,6 +42,9 @@ public class YTBVideoPageBean {
 
     public ArrayList<YouTubeVideo> items;
 
+    @Expose
+    public int cacheSource;
+
     public static class PageInfo {
 
         public int totalResults;

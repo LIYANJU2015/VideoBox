@@ -12,37 +12,31 @@ import com.commonlibs.http.RequestInterceptor;
 import com.commonlibs.integration.IRepositoryManager;
 import com.commonlibs.integration.RepositoryManager;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
-import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
-import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.rxerrorhandler.handler.listener.ResponseErroListener;
 import com.commonlibs.util.FileUtils;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.SPUtils;
 import com.commonlibs.util.SnackbarUtils;
-import com.commonlibs.util.StringUtils;
 import com.commonlibs.util.Utils;
-import com.paginate.Paginate;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.cache.DailyMotionCache;
 import com.videobox.model.dailymotion.service.DailymotionService;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.cache.YoutubeCache;
 import com.videobox.model.youtube.entity.YTBLanguagesBean;
-import com.videobox.model.youtube.entity.YTBVideoPageBean;
 import com.videobox.model.youtube.entity.YTbRegionsBean;
 import com.videobox.model.youtube.entity.YTbRegionsListBean;
 import com.videobox.model.youtube.service.YouTubeService;
-import com.videobox.search.YoutubeSearchFragment;
 
 import java.util.Locale;
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
-import static android.R.attr.country;
 import static com.videobox.model.APIConstant.DailyMontion.sWatchVideosMap;
 import static com.videobox.model.APIConstant.YouTube.REGION_CODE;
 import static com.videobox.model.APIConstant.YouTube.sMostPopularVideos;
@@ -66,6 +60,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
     public void onCreate() {
         super.onCreate();
         Utils.init(getContext());
+        //CrashReport.initCrashReport(getApplicationContext());
         spUtils = new SPUtils("video_box");
         initTypeface();
         initYouTubeRegions();
@@ -77,7 +72,6 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         YouTuBeModel youTuBeModel = new YouTuBeModel(getAppComponent().repositoryManager());
         youTuBeModel.getYouTubeRegions(true)
                 .subscribeOn(Schedulers.io())
-                .retryWhen(new RetryWithDelay(3, 2))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -85,7 +79,17 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ErrorHandleSubscriber<YTbRegionsListBean>(getAppComponent().rxErrorHandler()) {
+                .subscribe(new Observer<YTbRegionsListBean>() {
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
                     @Override
                     public void onNext(YTbRegionsListBean regionsBean) {
                         String currentCountry = Locale.getDefault().getCountry().toLowerCase();
@@ -108,7 +112,6 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         YouTuBeModel youTuBeModel = new YouTuBeModel(getAppComponent().repositoryManager());
         youTuBeModel.getYouTubeLanguages(true)
                 .subscribeOn(Schedulers.io())
-                .retryWhen(new RetryWithDelay(3, 2))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -116,7 +119,17 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new ErrorHandleSubscriber<YTBLanguagesBean>(getAppComponent().rxErrorHandler()) {
+                .subscribe(new Observer<YTBLanguagesBean>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
                     @Override
                     public void onNext(YTBLanguagesBean regionsBean) {
                         String currentLanguage = Locale.getDefault().getLanguage();
@@ -159,10 +172,6 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         Retrofit dmRetrofit = new RepositoryManager.RetrofitBuilder().client(okHttpClient)
                 .baseUrl(APIConstant.DailyMontion.HOST_URL).build();
         repositoryManager.setRetrofitService(dmRetrofit, DailymotionService.class);
-
-        Retrofit ytbRetrofit = new RepositoryManager.RetrofitBuilder().client(okHttpClient)
-                .baseUrl(APIConstant.YouTube.HOST_URL).build();
-        repositoryManager.setRetrofitService(ytbRetrofit, YouTubeService.class);
 
         repositoryManager.setCacheService(DailyMotionCache.class);
         repositoryManager.setCacheService(YoutubeCache.class);

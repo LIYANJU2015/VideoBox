@@ -32,8 +32,8 @@ public class RepositoryManager implements IRepositoryManager {
 
     public RepositoryManager(Context context) {
         File cacheDirectory = new File(FileUtils.getCacheFile(context), "RxCache");
-        this.mRxCache = new RxCache.Builder().persistence(FileUtils.makeDirs(cacheDirectory),
-                new GsonSpeaker());
+        this.mRxCache = new RxCache.Builder().useExpiredDataIfLoaderNotAvailable(true)
+                .persistence(FileUtils.makeDirs(cacheDirectory), new GsonSpeaker());
     }
 
     public RepositoryManager(Context context, Retrofit retrofit) {

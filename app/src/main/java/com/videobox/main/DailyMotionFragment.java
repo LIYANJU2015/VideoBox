@@ -27,6 +27,7 @@ import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.adapter.DMMainRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.DailyMotionDelegate;
+import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
 
@@ -34,15 +35,13 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
-import static android.media.CamcorderProfile.get;
-
 
 /**
  * Created by liyanju on 2017/4/29.
  */
 
 public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> implements
-        SwipeRefreshLayout.OnRefreshListener, Paginate.Callbacks,Contract.IVideoListFragment,
+        SwipeRefreshLayout.OnRefreshListener, Paginate.Callbacks, Contract.IVideoListFragment,
         BaseRecyclerViewAdapter.OnRecyclerViewItemClickListener<DMVideoBean> {
 
     private static final String TAG = DailyMotionFragment.class.getSimpleName();
@@ -76,6 +75,8 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     private boolean mIsLoadedAll = false;
 
+    private LoadingFrameLayout loadingFrameLayout;
+
     @Override
     protected Class<DailyMotionDelegate> getDelegateClass() {
         return DailyMotionDelegate.class;
@@ -93,12 +94,10 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     @Override
     protected void initAndBindEvent() {
-        UIThreadHelper.getInstance().runViewUIThread(getView(), new Runnable() {
-            @Override
-            public void run() {
-                getVideoData(true);
-            }
-        });
+        loadingFrameLayout = viewDelegate.get(R.id.loading_frame);
+
+        getVideoData(true);
+
     }
 
     @Override
@@ -197,17 +196,20 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                 });
     }
 
+    private boolean isEvictCache = true;
+
     private void getVideoData(final boolean pullToRefresh) {
-        boolean isEvictCache = true; //不使用缓存
+        isEvictCache = true; //不使用缓存
         if (pullToRefresh && mIsFirst) {
             mIsFirst = false;
             isEvictCache = false;
         }
+        LogUtils.v("getVideoData", "isEvictCache " + isEvictCache);
 
         mDaiyMotionModel.getVideos(APIConstant.DailyMontion.sWatchVideosMap, isEvictCache, pagenum)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<DMVideosPageBean>bindToLifecycle())
-                .retryWhen(new RetryWithDelay(3, 2))
+                .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -225,48 +227,73 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                     public void call() {
                         LogUtils.v("getVideoData", "doAfterTerminate pullToRefresh " + pullToRefresh);
                         if (viewDelegate != null && pullToRefresh) {
-                            viewDelegate.hideLoading();
+                            if (!isEvictCache) {
+                                UIThreadHelper.getInstance().getHandler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (viewDelegate != null) {
+                                            viewDelegate.hideLoading();
+                                        }
+                                    }
+                                }, 1000);
+                            } else {
+                                viewDelegate.hideLoading();
+                            }
                         } else {
                             mIsLoadingMore = false;
                         }
                     }
-                })
-                .subscribe(new ErrorHandleSubscriber<DMVideosPageBean>(mRxErrorHandler) {
-                    @Override
-                    public void onNext(DMVideosPageBean dmVideosPageBean) {
-                        LogUtils.v("getVideoData", "onNext");
-                        if (pullToRefresh) {
-                            mDMVideoList.clear();
-                        }
-                        mIsLoadedAll = !dmVideosPageBean.has_more;
-                        if (dmVideosPageBean.has_more) {
-                            pagenum = dmVideosPageBean.page + 1;
-                        }
+                }).subscribe(new ErrorHandleSubscriber<DMVideosPageBean>(mRxErrorHandler) {
+            @Override
+            public void onNext(DMVideosPageBean dmVideosPageBean) {
+                LogUtils.v("getVideoData", "onNext");
+                if (pullToRefresh) {
+                    mDMVideoList.clear();
+                }
+                mIsLoadedAll = !dmVideosPageBean.has_more;
+                if (dmVideosPageBean.has_more) {
+                    pagenum = dmVideosPageBean.page + 1;
+                }
 
-                        int preEndIndex = mDMVideoList.size();
-                        if (dmVideosPageBean.list != null) {
-                            mDMVideoList.addAll(dmVideosPageBean.list);
-                        }
+                int preEndIndex = mDMVideoList.size();
+                if (dmVideosPageBean.list != null) {
+                    mDMVideoList.addAll(dmVideosPageBean.list);
+                }
 
-                        if (mAdapter == null) {
-                            mAdapter = new DMMainRecyclerAdapter(mDMVideoList, mActivity);
-                            mAdapter.setOnItemClickListener(DailyMotionFragment.this);
-                            viewDelegate.setAdapter(mAdapter);
-                        }
+                if (mAdapter == null) {
+                    mAdapter = new DMMainRecyclerAdapter(mDMVideoList, mActivity);
+                    mAdapter.setOnItemClickListener(DailyMotionFragment.this);
+                    viewDelegate.setAdapter(mAdapter);
+                }
 
-                        if (mPaginate == null && mDMVideoList.size() > 0) {
-                            mPaginate = Paginate.with(((RecyclerView) viewDelegate.get(R.id.dm_recyclerview)), DailyMotionFragment.this)
-                                    .setLoadingTriggerThreshold(0)
-                                    .build();
-                            mPaginate.setHasMoreDataToLoad(false);
-                        }
+                if (mPaginate == null && mDMVideoList.size() > 0) {
+                    mPaginate = Paginate.with(((RecyclerView) viewDelegate.get(R.id.dm_recyclerview)), DailyMotionFragment.this)
+                            .setLoadingTriggerThreshold(0)
+                            .build();
+                    mPaginate.setHasMoreDataToLoad(false);
+                }
 
-                        if (pullToRefresh)
-                            mAdapter.notifyDataSetChanged();
-                        else
-                            mAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
-                    }
-                });
+                if (mDMVideoList.size() > 0) {
+                    loadingFrameLayout.showNormal();
+                } else {
+                    loadingFrameLayout.showDataNull();
+                }
+
+                if (pullToRefresh)
+                    mAdapter.notifyDataSetChanged();
+                else
+                    mAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                LogUtils.v("getVideoData", "onErroronError");
+                if (mDMVideoList.size() == 0) {
+                    loadingFrameLayout.showError();
+                }
+            }
+        });
     }
 
     @Override
