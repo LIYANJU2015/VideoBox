@@ -257,10 +257,22 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                             mPaginate.setHasMoreDataToLoad(false);
                         }
 
+                        if (mVideoList.size() > 0) {
+                            loadingFrameLayout.showNormal();
+                        } else {
+                            loadingFrameLayout.showDataNull();
+                        }
+
                         if (pullToRefresh)
                             mListAdapter.notifyDataSetChanged();
                         else
                             mListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        super.onError(e);
+                        loadingFrameLayout.showError();
                     }
                 });
     }

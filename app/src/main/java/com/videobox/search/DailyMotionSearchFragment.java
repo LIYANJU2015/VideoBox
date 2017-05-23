@@ -1,5 +1,6 @@
 package com.videobox.search;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
@@ -13,6 +14,7 @@ import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.UIThreadHelper;
 import com.paginate.Paginate;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
@@ -53,6 +55,14 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
     private RecyclerView searchRecyclerView;
 
     private LoadingFrameLayout loadingFrameLayout;
+
+    private SearchActivity searchActivity;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        searchActivity = (SearchActivity)activity;
+    }
 
     @Override
     public void onLoadMore() {
@@ -167,12 +177,26 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
                         if (isFirst && mVideoList.size() == 0) {
                             loadingFrameLayout.showDataNull();
                         }
+
+                        setDailyMotionTabBadge(dmVideosPageBean.total);
+                    }
+
+                    private void setDailyMotionTabBadge(int num){
+                        if (isFirst && !searchActivity.isFinishing()) {
+                            searchActivity.setDailyMotionTabBadge(num);
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
                         loadingFrameLayout.showError();
+                        UIThreadHelper.getInstance().runOnUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setDailyMotionTabBadge(0);
+                            }
+                        });
                     }
                 });
     }

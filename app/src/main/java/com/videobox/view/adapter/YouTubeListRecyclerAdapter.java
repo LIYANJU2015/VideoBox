@@ -1,7 +1,6 @@
 package com.videobox.view.adapter;
 
 import android.app.Activity;
-import android.media.Image;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -15,22 +14,12 @@ import com.commonlibs.commonloader.IComDataLoader;
 import com.commonlibs.commonloader.IComDataLoaderListener;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
-import com.google.android.youtube.player.YouTubeInitializationResult;
-import com.google.android.youtube.player.YouTubeThumbnailLoader;
-import com.google.android.youtube.player.YouTubeThumbnailView;
 import com.util.YouTubeUtil;
+import com.videobox.AppAplication;
 import com.videobox.R;
-import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static android.R.attr.thumbnail;
-import static android.R.attr.type;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by liyanju on 2017/5/7.
@@ -45,6 +34,8 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
     public static final int PLAYLIST_TYPE = 2;
 
     private ContentDetailsLoaderListener loaderListener = new ContentDetailsLoaderListener();
+    private PlayListCountLoaderListener playlistListener = new PlayListCountLoaderListener();
+
 
     public YouTubeListRecyclerAdapter(List<YTBVideoPageBean.YouTubeVideo> infos, Activity activity, int type) {
         this(infos, activity);
@@ -89,9 +80,9 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
             super(itemView);
             mActivity = activity;
             thumbnail = (ImageView) itemView.findViewById(R.id.item_poseter);
-            mTitleIV = (TextView)itemView.findViewById(R.id.title);
-            mTimeTV = (TextView)itemView.findViewById(R.id.time);
-            playIV = (ImageView)itemView.findViewById(R.id.play_iv);
+            mTitleIV = (TextView) itemView.findViewById(R.id.title);
+            mTimeTV = (TextView) itemView.findViewById(R.id.time);
+            playIV = (ImageView) itemView.findViewById(R.id.play_iv);
 
         }
 
@@ -145,6 +136,27 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
         }
     }
 
+    public class PlayListCountLoaderListener implements IComDataLoaderListener<YTBVideoPageBean.ContentDetails> {
+        @Override
+        public void onLoadingComplete(IComDataLoader<YTBVideoPageBean.ContentDetails> infoLoader, View... views) {
+            if (infoLoader.getLoadDataObj().itemCount != 0) {
+                views[0].setVisibility(View.VISIBLE);
+                ((TextView) views[0]).setText(String.format(AppAplication.getContext().getString(R.string.video),
+                        String.valueOf(infoLoader.getLoadDataObj().itemCount)));
+            }
+        }
+
+        @Override
+        public void onCancelLoading(View... views) {
+
+        }
+
+        @Override
+        public void onStartLoading(View... views) {
+
+        }
+    }
+
     public class YouTubeItemHolder extends BaseHolder<YTBVideoPageBean.YouTubeVideo> {
 
         private ImageView videoPoster;
@@ -155,14 +167,18 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
 
         private TextView mTimeTV;
 
-        public YouTubeItemHolder(View itemView, Activity activity){
+        private TextView playlistCountTV;
+
+        public YouTubeItemHolder(View itemView, Activity activity) {
             super(itemView);
             mActivity = activity;
             videoPoster = (ImageView) itemView.findViewById(R.id.dm_poster);
-            nameTV = (TextView)itemView.findViewById(R.id.name);
-            bgLinear = (LinearLayout)itemView.findViewById(R.id.bg_linear);
-            mTimeTV = (TextView)itemView.findViewById(R.id.time);
+            nameTV = (TextView) itemView.findViewById(R.id.name);
+            bgLinear = (LinearLayout) itemView.findViewById(R.id.bg_linear);
+            mTimeTV = (TextView) itemView.findViewById(R.id.time);
+            playlistCountTV = (TextView) itemView.findViewById(R.id.update_time_tv);
         }
+
         @Override
         public void setData(YTBVideoPageBean.YouTubeVideo data, int position) {
             Glide.with(mActivity).load(data.getThumbnailsUrl())
@@ -170,12 +186,22 @@ public class YouTubeListRecyclerAdapter extends BaseRecyclerViewAdapter<YTBVideo
                     .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
             nameTV.setText(data.snippet.title);
 
-            if (data.contentDetails != null && !StringUtils.isEmpty(data.contentDetails.duration)) {
+            if (data.contentDetails != null && data.contentDetails.itemCount > 0) {
+                playlistCountTV.setVisibility(View.VISIBLE);
+                mTimeTV.setVisibility(View.GONE);
+                playlistCountTV.setText(String.format(AppAplication.getContext().getString(R.string.video),
+                        String.valueOf(data.contentDetails.itemCount)));
+            } else if (data.contentDetails != null && !StringUtils.isEmpty(data.contentDetails.duration)) {
                 mTimeTV.setVisibility(View.VISIBLE);
+                playlistCountTV.setVisibility(View.GONE);
                 mTimeTV.setText(YouTubeUtil.convertDuration(data.contentDetails.duration));
             } else {
-                AsyncComDataLoader.getInstance().display(loaderListener, data, mTimeTV);
-
+                if (StringUtils.isEmpty(data.getPlaylistID())) {
+                    AsyncComDataLoader.getInstance().display(loaderListener, data, mTimeTV);
+                } else {
+                    AsyncComDataLoader.getInstance().display(playlistListener, data, playlistCountTV);
+                }
+                playlistCountTV.setVisibility(View.GONE);
                 mTimeTV.setVisibility(View.GONE);
             }
         }

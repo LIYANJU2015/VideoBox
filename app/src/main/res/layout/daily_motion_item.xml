@@ -1,52 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.videobox.view.widget.RippleView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
     android:layout_margin="10dp"
-    >
-   <FrameLayout
-       android:id="@+id/framelayout"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content">
-    <com.videobox.view.widget.DailyMotionImageView
-        android:scaleType="centerCrop"
-        android:id="@+id/video_poster"
-        android:src="@drawable/dm_item_img_default"
-        android:textColor="@color/colorAccent"
-        android:textSize="19sp"
+    android:gravity="center"
+    android:orientation="vertical"
+    app:rv_zoomDuration="100"
+    app:rv_rippleDuration="200">
+
+    <FrameLayout
+        android:id="@+id/framelayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content">
 
-       <TextView
-           android:id="@+id/time"
-           android:layout_gravity="bottom|right"
-           style="@style/list_time"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content" />
+        <com.videobox.view.widget.DailyMotionImageView
+            android:id="@+id/video_poster"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:src="@drawable/dm_item_img_default"
+            android:textColor="@color/colorAccent"
+            android:textSize="19sp" />
 
-   </FrameLayout>
+        <TextView
+            android:id="@+id/time"
+            style="@style/list_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right" />
+
+    </FrameLayout>
 
     <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/framelayout"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_gravity="bottom"
         android:background="@color/material_white"
         android:gravity="center"
-        android:layout_gravity="bottom"
-        android:layout_width="match_parent"
+        android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:layout_height="wrap_content">
+        android:paddingTop="10dp">
+
         <TextView
             android:id="@+id/title"
-            android:layout_marginLeft="8dp"
-            android:layout_marginRight="8dp"
-            android:maxLines="2"
-            android:ellipsize="end"
             style="@style/content_title"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="8dp"
+            android:layout_marginRight="8dp"
+            android:ellipsize="end"
+            android:maxLines="2" />
 
     </LinearLayout>
 

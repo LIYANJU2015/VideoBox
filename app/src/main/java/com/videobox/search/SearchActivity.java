@@ -10,6 +10,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.commonlibs.base.AdapterViewPager;
@@ -29,6 +30,8 @@ import com.videobox.model.db.VideoBoxContract;
 import java.util.ArrayList;
 import java.util.List;
 
+import q.rorbin.badgeview.Badge;
+import q.rorbin.badgeview.QBadgeView;
 import rx.Emitter;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -71,7 +74,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.search_layout);
         mContext = getApplicationContext();
-        mHistoryDatabase = new SearchHistoryTable(this);
+        mHistoryDatabase = SearchHistoryTable.getSearchHistoryTable(mContext);
 
         mSearchAppBar = (AppBarLayout)findViewById(R.id.search_app_bar);
         mSearchAppBar.setBackgroundColor(ContextCompat.
@@ -107,20 +110,46 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         mSearchView.setHint(R.string.search);
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setVoiceText(getString(R.string.voice_tips));
+        mSearchView.setVersionMargins(SearchView.VERSION_MARGINS_TOOLBAR_SMALL);
+        mSearchView.setArrowOnly(true);
+        mSearchView.setOnMenuClickListener(new SearchView.OnMenuClickListener() {
+            @Override
+            public void onMenuClick() {
+                SearchActivity.this.finish();
+            }
+        });
     }
 
     private void initSearchViewAdapter() {
-        mSearchAdapter = new SearchAdapter(this, suggestionsList);
-        mSearchAdapter.addOnItemClickListener(new SearchAdapter.OnItemClickListener() {
+        new AsyncTask<Void, Void ,Void>(){
             @Override
-            public void onItemClick(View view, int position) {
-                TextView textView = (TextView) view.findViewById(R.id.textView_item_text);
-                String query = textView.getText().toString();
-                submitSearch(query);
-                mSearchView.setTextOnly(query);
+            protected Void doInBackground(Void... params) {
+                List<SearchItem> searchItems = mHistoryDatabase.getAllItems(null);
+                if (searchItems != null) {
+                    suggestionsList.addAll(searchItems);
+                }
+                return null;
             }
-        });
-        mSearchView.setAdapter(mSearchAdapter);
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                mSearchAdapter = new SearchAdapter(mContext);
+                mSearchAdapter.setSuggestionsList(suggestionsList);
+                mSearchAdapter.setOnSearchItemClickListener(new SearchAdapter.OnSearchItemClickListener() {
+
+                    @Override
+                    public void onSearchItemClick(View view, int i) {
+                        TextView textView = (TextView) view.findViewById(R.id.textView);
+                        String query = textView.getText().toString();
+                        mSearchView.setTextOnly(query);
+                        submitSearch(query);
+                    }
+                });
+                mSearchView.setAdapter(mSearchAdapter);
+                mSearchView.open(true);
+            }
+        }.execute();
     }
 
     private void initSearchTab() {
@@ -132,13 +161,14 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         mSearchTabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
-                switch (tab.getPosition()){
-                    case 0 : mSearchAppBar.setBackgroundColor(ContextCompat.
-                            getColor(mContext, R.color.dailymotion_color));
+                switch (tab.getPosition()) {
+                    case 0:
+                        mSearchAppBar.setBackgroundColor(ContextCompat.
+                                getColor(mContext, R.color.dailymotion_color));
                         StatusBarColorCompat.setColorNoTranslucent(SearchActivity.this,
                                 ContextCompat.getColor(mContext, R.color.dailymotion_color));
                         break;
-                    case 1 :
+                    case 1:
                         mSearchAppBar.setBackgroundColor(ContextCompat.
                                 getColor(mContext, R.color.youtube_color));
                         StatusBarColorCompat.setColorNoTranslucent(SearchActivity.this,
@@ -157,45 +187,60 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
             }
         });
+        UIThreadHelper.getInstance().runViewUIThread(mSearchTabLayout, new Runnable() {
+            @Override
+            public void run() {
+                setDailyMotionTabBadge(0);
+                setYouTubeTabBadge(0);
+            }
+        });
     }
 
     private void initSearchSuggestions() {
         if (mSearchAdapter == null) {
             initSearchViewAdapter();
-            mSearchView.open(true);
         }
-
-//        Observable.create(new Action1<Emitter<String[]>>() {
-//            @Override
-//            public void call(Emitter<String[]> emitter) {
-//                LogUtils.v("Action1 call ");
-//                String[] strings = VideoBoxContract.SearchHistory.getAllSearchHistory(mContext);
-//                emitter.onNext(strings);
-//            }
-//        }, NONE).compose(this.<String[]>bindToLifecycle())
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<String[]>() {
-//                    @Override
-//                    public void call(String[] strings) {
-//                        LogUtils.v("call strings", strings.length);
-//                        for (String suggestions : strings) {
-//                            suggestionsList.add(new SearchItem(R.drawable.ic_history_black_24dp,
-//                                    suggestions));
-//                        }
-//                        if (mSearchAdapter == null) {
-//                            initSearchViewAdapter();
-//                            mSearchAdapter.setSuggestionsList(suggestionsList);
-//                            mSearchView.showSuggestions();
-//                        }
-//                    }
-//                });
     }
 
     @Override
     public boolean onQueryTextSubmit(final String query) {
         submitSearch(query);
         return true;
+    }
+
+    Badge dailyMotionBadge;
+    Badge youtubeBadge;
+
+    public void setDailyMotionTabBadge(int num) {
+        if (dailyMotionBadge == null) {
+            View dialyMotionView = ((ViewGroup) mSearchTabLayout.getChildAt(0)).getChildAt(0);
+            QBadgeView qBadgeView = new QBadgeView(mContext);
+            dailyMotionBadge = qBadgeView.bindTarget(dialyMotionView);
+            dailyMotionBadge.setExactMode(true);
+            dailyMotionBadge.hide(true);
+        }
+        if (num > 0) {
+            dailyMotionBadge.hide(false);
+            dailyMotionBadge.setBadgeNumber(num);
+        } else {
+            dailyMotionBadge.hide(true);
+        }
+    }
+
+    public void setYouTubeTabBadge(int num) {
+        if (youtubeBadge == null) {
+            View view = ((ViewGroup) mSearchTabLayout.getChildAt(0)).getChildAt(1);
+            QBadgeView qBadgeView = new QBadgeView(mContext);
+            youtubeBadge = qBadgeView.bindTarget(view);
+            youtubeBadge.setExactMode(true);
+            youtubeBadge.hide(true);
+        }
+        if (num > 0) {
+            youtubeBadge.hide(false);
+            youtubeBadge.setBadgeNumber(num);
+        } else {
+            youtubeBadge.hide(true);
+        }
     }
 
     @Override
@@ -214,8 +259,6 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                     @Override
                     public void call(Integer integer) {
                         mHistoryDatabase.addItem(new SearchItem(query));
-                        VideoBoxContract.SearchHistory.insertNewHistroy(mContext,
-                                VideoBoxContract.SearchHistory.createContentValue(query));
                     }
                 });
     }

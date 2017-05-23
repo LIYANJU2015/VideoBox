@@ -1,5 +1,6 @@
 package com.videobox.search;
 
+import android.app.Activity;
 import android.content.pm.ProviderInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
+import com.commonlibs.util.UIThreadHelper;
 import com.paginate.Paginate;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
@@ -63,6 +65,14 @@ public class YoutubeSearchFragment extends BaseFragment implements Paginate.Call
     private String searchStr;
 
     private LoadingFrameLayout loadingFrameLayout;
+
+    private SearchActivity searchActivity;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        searchActivity = (SearchActivity)activity;
+    }
 
     @Nullable
     @Override
@@ -177,12 +187,26 @@ public class YoutubeSearchFragment extends BaseFragment implements Paginate.Call
                         if (startSearch && mVideoList.size() == 0) {
                             loadingFrameLayout.showDataNull();
                         }
+
+                        setYouTubeTabBadge(dmVideosPageBean.pageInfo.totalResults);
+                    }
+
+                    private void setYouTubeTabBadge(int num) {
+                        if (startSearch && !searchActivity.isFinishing()) {
+                            searchActivity.setYouTubeTabBadge(num);
+                        }
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         super.onError(e);
                         loadingFrameLayout.showError();
+                        UIThreadHelper.getInstance().runOnUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                setYouTubeTabBadge(0);
+                            }
+                        });
                     }
                 });
     }

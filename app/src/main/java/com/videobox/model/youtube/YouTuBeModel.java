@@ -146,7 +146,7 @@ public class YouTuBeModel extends BaseModel {
         if (StringUtils.isEmpty(pageToken)) {
             pageToken = "pageToken";
         }
-        return mCache.getCategoryVideos(videoObservable, new DynamicKey(pageToken), new EvictProvider(update))
+        return mCache.getCategoryVideos(videoObservable, new DynamicKey(pageToken+videoCategoryId), new EvictProvider(update))
                 .flatMap(new Func1<Reply<YTBVideoPageBean>,
                         Observable<YTBVideoPageBean>>() {
                     @Override

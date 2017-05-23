@@ -30,6 +30,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+import static com.tencent.bugly.crashreport.crash.c.m;
+
 
 /**
  * dailymotion_poster2
@@ -91,9 +93,11 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                         mIVideoListFragment.showChannelVideoByID(channel.id);
                     }
                 } else {
-                    YTBCategoriesBean.Categories categories = mYouTubeChannel.get(postion);
-                    if (mIVideoListFragment != null) {
-                        mIVideoListFragment.showChannelVideoByID(categories.id);
+                    if (mYouTubeChannel.size() > postion) {
+                        YTBCategoriesBean.Categories categories = mYouTubeChannel.get(postion);
+                        if (mIVideoListFragment != null) {
+                            mIVideoListFragment.showChannelVideoByID(categories.id);
+                        }
                     }
                 }
                 viewDelegate.drawerToggle();
@@ -220,7 +224,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         if (mChannelType == DAILY_MOTION_TYPE) {
             requestDMChannel(true);
         } else {
-            requestYouTubeChannel(false);
+            requestYouTubeChannel(true);
         }
     }
 
@@ -230,7 +234,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         if (((int)tab.getTag()) == YOU_TU_BE_TYPE) {
             mChannelType = YOU_TU_BE_TYPE;
             if (mYouTubeChannel.size() == 0) {
-                requestYouTubeChannel(false);
+                requestYouTubeChannel(true);
             } else {
                 viewDelegate.menuItemAdapter.updateYouTubeCategories(mYouTubeChannel);
             }
