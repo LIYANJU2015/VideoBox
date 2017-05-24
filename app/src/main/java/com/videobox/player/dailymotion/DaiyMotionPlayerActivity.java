@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
@@ -251,5 +252,6 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
     protected void onDestroy() {
         super.onDestroy();
         stopProgress();
+        viewDelegate.destroyWebView();
     }
 }

@@ -2,6 +2,7 @@ package com.videobox.main;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.View;
 import android.widget.AdapterView;
@@ -30,6 +31,7 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
 
+import static android.media.CamcorderProfile.get;
 import static com.tencent.bugly.crashreport.crash.c.m;
 
 
@@ -45,7 +47,7 @@ import static com.tencent.bugly.crashreport.crash.c.m;
  *
  */
 
-public class MainActivity extends ActivityPresenter<MainViewDelegate> implements SwipeRefreshLayout.OnRefreshListener,
+public class MainActivity extends ActivityPresenter<MainViewDelegate> implements DrawerLayout.DrawerListener, SwipeRefreshLayout.OnRefreshListener,
         TabLayout.OnTabSelectedListener {
 
     private static final String TAG = MainActivity.class.getSimpleName();
@@ -77,6 +79,32 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
             super.onBackPressed(); // finish
         }
     }
+
+    @Override
+    public void onDrawerSlide(View drawerView, float slideOffset) {
+
+    }
+
+    @Override
+    public void onDrawerOpened(View drawerView) {
+
+    }
+
+    @Override
+    public void onDrawerClosed(View drawerView) {
+        if (channelType == SEARCH_CHANCEL) {
+            channelType = 0;
+            SearchActivity.launch(mContext, MainActivity.this);
+        }
+    }
+
+    @Override
+    public void onDrawerStateChanged(int newState) {
+
+    }
+
+    public static final int SEARCH_CHANCEL = 1;
+    public int channelType = 0;
 
     @Override
     protected void initAndBindEven() {
@@ -117,15 +145,12 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         viewDelegate.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                SearchActivity.launch(mContext, MainActivity.this);
-                UIThreadHelper.getInstance().getHandler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        viewDelegate.drawerToggle();
-                    }
-                }, 300);
+                channelType = SEARCH_CHANCEL;
+                viewDelegate.drawerToggle();
             }
         }, R.id.search);
+
+        ((DrawerLayout)viewDelegate.get(R.id.drawer_layout)).addDrawerListener(this);
 
         CoordinatorTabLayout coordinatorTabLayout = viewDelegate.get(R.id.coordinatortablayout);
         coordinatorTabLayout.getTabLayout().getTabAt(0).setTag(DAILY_MOTION_TYPE);

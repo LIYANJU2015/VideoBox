@@ -2,6 +2,7 @@ package com.videobox.view.delegate;
 
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.widget.FrameLayout;
 
 import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.themvp.view.AppDelegate;
@@ -32,6 +33,9 @@ public class DMPlayerDelegate extends AppDelegate{
 
     private MaterialProgressBar playProgressBar;
 
+    private DMWebVideoView dmWebVideoView;
+
+    private FrameLayout webviewContainer;
 
     @Override
     public int getRootLayoutId() {
@@ -50,8 +54,9 @@ public class DMPlayerDelegate extends AppDelegate{
         tabLayout.setupWithViewPager(viewPager);
         tabLayout.setSelectedTabIndicatorHeight(SizeUtils.dp2px(3));
 
-        DMWebVideoView dmWebVideoView = get(R.id.dmWebVideoView);
+        dmWebVideoView = get(R.id.dmWebVideoView);
         dmWebVideoView.getLayoutParams().height = (int)(ScreenUtils.getScreenWidth()*(9.0f/16.0f));
+        webviewContainer = get(R.id.webview_container);
 
         playProgressBar = get(R.id.play_progress);
         playProgressBar.setIndeterminateDrawable(new IndeterminateHorizontalProgressDrawable(mContext));
@@ -71,5 +76,14 @@ public class DMPlayerDelegate extends AppDelegate{
     public void setProgress(int progress) {
         LogUtils.v("setProgress", "progress" + progress);
         playProgressBar.setProgress(progress);
+    }
+
+    public void destroyWebView() {
+        try {
+            webviewContainer.removeView(dmWebVideoView);
+            dmWebVideoView.destroy();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 }

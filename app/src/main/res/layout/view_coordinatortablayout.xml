@@ -40,12 +40,18 @@
                 app:titleMarginTop="15dp"
                 >
 
-                <ImageView
-                    android:padding="5dp"
+                <LinearLayout
+                    android:background="@drawable/comon_img_bg"
                     android:layout_gravity="center|left|top"
+                    android:id="@+id/navigation_left_linear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_margin="5dp"
                     android:id="@+id/navigation_left"
                     style="@style/ImageView.Hamburger"
                      />
+                </LinearLayout>
 
                 <com.videobox.view.widget.CanaroTextView
                     android:textSize="20sp"

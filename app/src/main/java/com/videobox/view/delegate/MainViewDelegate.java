@@ -97,7 +97,7 @@ public class MainViewDelegate extends AppDelegate {
             public void onClick(View view) {
                 drawerToggle();
             }
-        }, R.id.navigation_left);
+        }, R.id.navigation_left_linear);
 
         initDrawerMenu();
     }
