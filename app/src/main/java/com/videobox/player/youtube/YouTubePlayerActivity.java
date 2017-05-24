@@ -1,17 +1,23 @@
 package com.videobox.player.youtube;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.StatusBarColorCompat;
 import com.commonlibs.util.StringUtils;
 import com.google.android.youtube.player.YouTubeApiServiceUtil;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -25,6 +31,7 @@ import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.search.SearchActivity;
 import com.videobox.view.adapter.YouTubePlayerRecyclerAdapter;
 import com.videobox.view.widget.LoadingFrameLayout;
 
@@ -78,6 +85,9 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
+        StatusBarColorCompat.setColorNoTranslucent(YouTubePlayerActivity.this,
+                ContextCompat.getColor(mContext, R.color.material_black));
+
         mContext = getApplicationContext();
         mAppApplication = (AppAplication)getApplication();
 
@@ -119,9 +129,9 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         if (requestCode == 1 && resultCode == RESULT_OK) {
             finish();
             if (!StringUtils.isEmpty(mPlaylistID)) {
-                YouTubePlayerActivity.launchVideoID(mContext, mPlaylistID);
+                YouTubePlayerActivity.launchVideoID(this, mPlaylistID);
             } else {
-                YouTubePlayerActivity.launchVideoID(mContext, mVideoID);
+                YouTubePlayerActivity.launchVideoID(this, mVideoID);
             }
         }
     }
@@ -270,7 +280,7 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     }
 
     private void savePlayRecord() {
-        if (youTubePlayer == null){
+        if (youTubePlayer == null) {
             return;
         }
         boolean isSave = mPlayerManager.getDurationMillis() - mPlayerManager.getCurrentTimeMillis()
@@ -282,7 +292,11 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         YTBVideoPageBean.YouTubeVideo video = mPlayerManager.getCurPlayVideo();
         if (video != null) {
             PlayRecordBean recordBean = new PlayRecordBean();
-            recordBean.vid = video.snippet.resourceId.videoId;
+            if (video.snippet.resourceId != null) {
+                recordBean.vid = video.snippet.resourceId.videoId;
+            } else {
+                recordBean.vid = video.getVideoID();
+            }
             recordBean.totalTime = mPlayerManager.getDurationMillis();
             recordBean.playTime = mPlayerManager.getCurrentTimeMillis();
             recordBean.thumbnailUrl = video.getThumbnailsUrl();
@@ -324,23 +338,29 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
             }
     }
 
+    @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
+    }
 
     @Override
     protected YouTubePlayer.Provider getYouTubePlayerProvider() {
         return mYouTubePlayerView;
     }
 
-    public static void launchVideoID(Context context, String videoID) {
-        Intent intent = new Intent(context, YouTubePlayerActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    public static void launchVideoID(Activity activity, String videoID) {
+        Intent intent = new Intent(activity, YouTubePlayerActivity.class);
         intent.putExtra(VIDEO_ID, videoID);
-        context.startActivity(intent);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
 
-    public static void launchPlayListID(Context context, String playlistid) {
-        Intent intent = new Intent(context, YouTubePlayerActivity.class);
+    public static void launchPlayListID(Activity activity, String playlistid) {
+        Intent intent = new Intent(activity, YouTubePlayerActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(PLAY_LIST, playlistid);
-        context.startActivity(intent);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
     }
 }

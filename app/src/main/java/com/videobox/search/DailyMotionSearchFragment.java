@@ -101,7 +101,7 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
 
     @Override
     public void onItemClick(View view, int viewType, DMVideoBean data, int position) {
-        DaiyMotionPlayerActivity.launch(data);
+        DaiyMotionPlayerActivity.launch((Activity) view.getContext(), data);
     }
 
     public void gotoSearchVideo(String search) {

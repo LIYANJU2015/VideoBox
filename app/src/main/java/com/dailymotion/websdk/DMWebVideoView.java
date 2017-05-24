@@ -24,6 +24,7 @@ import android.widget.VideoView;
 import com.commonlibs.util.LogUtils;
 import com.videobox.player.dailymotion.DMWebViewEvent;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 import static com.commonlibs.util.LogUtils.v;
 
 // import com.dailymotion.sdk.util.DMLog;
@@ -263,7 +264,7 @@ public class DMWebVideoView extends WebView {
                         case "video_start":
                         case "ad_start":
                         case "ad_play":
-                        case "playing":
+                        case "playing": LogUtils.v("playing>>");
                         case "play": paused = false; break;
                         case "end": ended = true; break;
                         case "ad_pause":

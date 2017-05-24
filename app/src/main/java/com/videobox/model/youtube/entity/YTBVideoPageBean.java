@@ -1,5 +1,6 @@
 package com.videobox.model.youtube.entity;
 
+import android.app.Activity;
 import android.content.Context;
 
 import com.commonlibs.commonloader.ComDataLoadTask;
@@ -207,13 +208,13 @@ public class YTBVideoPageBean {
             public String playlistId;
         }
 
-        public void intoPlayer(Context context) {
+        public void intoPlayer(Activity activity) {
             String videoID = getVideoID();
             String playlistID = getPlaylistID();
             if (!StringUtils.isEmpty(videoID)) {
-                YouTubePlayerActivity.launchVideoID(context, videoID);
+                YouTubePlayerActivity.launchVideoID(activity, videoID);
             } else if (!StringUtils.isEmpty(playlistID)) {
-                YouTubePlayerActivity.launchPlayListID(context, playlistID);
+                YouTubePlayerActivity.launchPlayListID(activity, playlistID);
             }
         }
 

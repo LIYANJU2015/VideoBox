@@ -330,6 +330,6 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
     @Override
     public void onItemClick(View view, int viewType, DMVideoBean data, int position) {
         LogUtils.v("onItemClick", " video id " + data.id);
-        DaiyMotionPlayerActivity.launch(data);
+        DaiyMotionPlayerActivity.launch((Activity) view.getContext(), data);
     }
 }

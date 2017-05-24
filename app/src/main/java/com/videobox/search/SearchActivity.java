@@ -1,5 +1,6 @@
 package com.videobox.search;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -75,6 +76,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         setContentView(R.layout.search_layout);
         mContext = getApplicationContext();
         mHistoryDatabase = SearchHistoryTable.getSearchHistoryTable(mContext);
+        mHistoryDatabase.setHistorySize(10);
 
         mSearchAppBar = (AppBarLayout)findViewById(R.id.search_app_bar);
         mSearchAppBar.setBackgroundColor(ContextCompat.
@@ -203,6 +205,12 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.anim.slide_out_left);
+    }
+
+    @Override
     public boolean onQueryTextSubmit(final String query) {
         submitSearch(query);
         return true;
@@ -263,10 +271,10 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                 });
     }
 
-    public static void launch(Context context) {
+    public static void launch(Context context, Activity activity) {
         Intent intent = new Intent(context, SearchActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(intent);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_in_right, 0);
     }
 
 }

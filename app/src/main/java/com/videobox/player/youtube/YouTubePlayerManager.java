@@ -67,6 +67,11 @@ public class YouTubePlayerManager implements IPlayCallBack,
         if (mPlayerListHander != null) {
             return mPlayerListHander.getCurPlayVideo();
         }
+
+        if (mRelateVideoHandler != null) {
+            return mRelateVideoHandler.getCurPlayVideo();
+        }
+
         return null;
     }
 

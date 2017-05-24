@@ -93,7 +93,7 @@ public class YoutubeSearchFragment extends BaseFragment implements Paginate.Call
 
     @Override
     public void onItemClick(View view, int viewType, YTBVideoPageBean.YouTubeVideo data, int position) {
-        data.intoPlayer(mContext);
+        data.intoPlayer(searchActivity);
     }
 
     @Override

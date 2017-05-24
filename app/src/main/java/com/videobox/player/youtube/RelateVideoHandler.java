@@ -26,6 +26,7 @@ import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static android.media.CamcorderProfile.get;
+import static android.view.View.Y;
 import static com.videobox.view.adapter.YouTubePlayerRecyclerAdapter.RELATED_VIDEO;
 import static rx.Emitter.BackpressureMode.NONE;
 
@@ -47,6 +48,8 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
 
     private boolean hasPlayList;
 
+    private YTBVideoPageBean.YouTubeVideo currYouTubeVideo;
+
     public RelateVideoHandler(Context context, String videoId, YouTuBeModel youTuBeModel,
                               ArrayList<YouTubePlayerItem> items, IPlayItemUpdate itemUpdate,
                               YouTubePlayerItem.IntroduceVideo curPlayVideo) {
@@ -56,6 +59,10 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
         this.youTuBeModel = youTuBeModel;
         this.itemUpdate = itemUpdate;
         this.curPlayVideo = curPlayVideo;
+    }
+
+    public YTBVideoPageBean.YouTubeVideo getCurPlayVideo() {
+        return currYouTubeVideo;
     }
 
     public String getNextVideoId() {
@@ -68,6 +75,8 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
                     vid = item.relateVideo.getVideoID();
                     item.relateVideo.isPlaying = true;
                     itemUpdate.onUpdateItems(i);
+
+                    currYouTubeVideo = item.relateVideo;
 
                     curPlayVideo.description = item.relateVideo.snippet.description;
                     curPlayVideo.title = item.relateVideo.snippet.title;
@@ -127,6 +136,7 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
                         if (dmVideosPageBean.items.size() > 0) {
                             curPlayVideo.title = dmVideosPageBean.items.get(0).snippet.title;
                             curPlayVideo.description = dmVideosPageBean.items.get(0).snippet.description;
+                            currYouTubeVideo = dmVideosPageBean.items.get(0);
                         }
                         itemUpdate.onUpateAll();
                     }
@@ -228,6 +238,8 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
         curIndex = data.position;
         LogUtils.v("onItemClick", " curIndex "+ curIndex);
         updatePlayingStatus(position);
+
+        currYouTubeVideo = data.relateVideo;
 
         curPlayVideo.title = data.relateVideo.snippet.title;
         curPlayVideo.description = data.relateVideo.snippet.description;

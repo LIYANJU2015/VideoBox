@@ -117,7 +117,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         viewDelegate.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
-                SearchActivity.launch(mContext);
+                SearchActivity.launch(mContext, MainActivity.this);
                 UIThreadHelper.getInstance().getHandler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -136,10 +136,10 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
     }
 
     private void requestYouTubeChannel(boolean update) {
-        mYoutuBeModel.getYouTubeCategories(AppAplication.getCurrentRegions(), APIConstant.YouTube.sCategoriesMap, update)
+        mYoutuBeModel.getYouTubeCategories(AppAplication.getCurrentRegions(),
+                APIConstant.YouTube.sCategoriesMap, update)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<YTBCategoriesBean>bindToLifecycle())
-                .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -176,7 +176,6 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         mDaiyMotionModel.getChannels(APIConstant.DailyMontion.sChannelsMap, update, 1)
                 .subscribeOn(Schedulers.io())
                 .compose(this.<DMChannelsBean>bindToLifecycle())
-                .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {

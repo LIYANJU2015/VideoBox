@@ -1,20 +1,26 @@
 package com.videobox.player.dailymotion;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.os.Build;
+import android.os.Bundle;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
 import com.commonlibs.base.BaseFragment;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
+import com.commonlibs.util.HandlerUtils;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.StatusBarColorCompat;
 import com.dailymotion.websdk.DMWebVideoView;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.bean.PlayRecordBean;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.db.VideoBoxContract;
+import com.videobox.player.youtube.YouTubePlayerActivity;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.DMPlayerDelegate;
 
@@ -25,7 +31,7 @@ import java.util.List;
  * Created by liyanju on 2017/5/1.
  */
 
-public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate> implements Contract.DMPlayerHost, DMWebViewEvent {
+public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate> implements HandlerUtils.OnReceiveMessageListener, Contract.DMPlayerHost, DMWebViewEvent {
 
     private DMWebVideoView mVideoView;
 
@@ -38,9 +44,18 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
     private DMVideoBean mDMVideoBean;
     private String videoId;
 
+    private HandlerUtils.HandlerHolder mMainHandler;
+
     @Override
     protected Class<DMPlayerDelegate> getDelegateClass() {
         return DMPlayerDelegate.class;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        StatusBarColorCompat.setColorNoTranslucent(DaiyMotionPlayerActivity.this,
+                ContextCompat.getColor(mContext, R.color.material_black));
     }
 
     @Override
@@ -55,8 +70,20 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
         mVideoView.load();
         mVideoView.setDMEventListener(this);
 
-        viewDelegate.setMaxProgress(mDMVideoBean.duration-1);
+        viewDelegate.setMaxProgress(mDMVideoBean.duration);
         viewDelegate.setProgress(0);
+
+        mMainHandler = new HandlerUtils.HandlerHolder(this);
+    }
+
+    private void startProgress() {
+        isStopUpdate = false;
+        mMainHandler.sendEmptyMessage(0);
+    }
+
+    private void stopProgress() {
+        mMainHandler.removeCallbacksAndMessages(null);
+        isStopUpdate = true;
     }
 
     @Override
@@ -73,18 +100,18 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
 
     @Override
     public void onLoadedmetadata() {
-
+        LogUtils.v("onLoadedmetadata", " onLoadedmetadata ");
+        startProgress();
     }
 
     @Override
     public void onProgress(double bufferedTime) {
         LogUtils.v("onProgress", " bufferedTime " + bufferedTime);
-        viewDelegate.setProgress((int)bufferedTime);
     }
 
     @Override
     public void onDurationchange(double duration) {
-
+        LogUtils.v("onDurationchange " + duration);
     }
 
     @Override
@@ -130,7 +157,9 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
 
     @Override
     public void onEnd(boolean end) {
+        LogUtils.v("onEnd " + end);
         if (end) {
+            stopProgress();
             viewDelegate.setProgressEnd();
         }
     }
@@ -176,6 +205,12 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
     }
 
     @Override
+    public void finish() {
+        super.finish();
+        overridePendingTransition(0, R.anim.slide_bottom_out);
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -191,11 +226,30 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
         }
     }
 
-    public static void launch(DMVideoBean dmVideoBean) {
+    public static void launch(Activity activity, DMVideoBean dmVideoBean) {
         Intent intent = new Intent(AppAplication.getContext(), DaiyMotionPlayerActivity.class);
         intent.putExtra(VIDEO_ID, dmVideoBean.id);
         intent.putExtra(DMVIDEOBEAN, dmVideoBean);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        AppAplication.getContext().startActivity(intent);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.slide_bottom_in, 0);
+    }
+
+    private boolean isStopUpdate = false;
+
+    @Override
+    public void handlerMessage(Message msg) {
+        if (viewDelegate != null && mVideoView != null) {
+            viewDelegate.setProgress((int)mVideoView.currentTime);
+        }
+
+        if (!isStopUpdate) {
+            mMainHandler.sendEmptyMessageDelayed(0, 500);
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopProgress();
     }
 }

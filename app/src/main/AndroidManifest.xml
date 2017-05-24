@@ -36,7 +36,6 @@
         <activity android:name=".search.SearchActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-
             />
 
         <activity android:name=".player.youtube.YouTubePlayerActivity"

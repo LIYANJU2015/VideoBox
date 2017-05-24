@@ -66,9 +66,12 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
         return YouTubeDelegate.class;
     }
 
+    private Activity activity;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        this.activity = activity;
         mYoutuBeModel = new YouTuBeModel(getAppComponent().repositoryManager());
         mRxErrorHandler = getAppComponent().rxErrorHandler();
         mIsFirst = true;
@@ -289,7 +292,7 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
 
     @Override
     public void onItemClick(View view, int viewType, YTBVideoPageBean.YouTubeVideo data, int position) {
-        data.intoPlayer(mContext);
+        data.intoPlayer(activity);
     }
 
     @Override
