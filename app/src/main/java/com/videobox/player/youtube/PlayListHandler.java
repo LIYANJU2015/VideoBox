@@ -15,6 +15,7 @@ import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -198,5 +199,8 @@ public class PlayListHandler implements YouTubePlayer.PlaylistEventListener,
         updateListPlayStatus();
         mIPlayCallBack.onCanPlayList(mPlaylistId, position, 0,
                 mVideoList.get(position).snippet.resourceId.videoId);
+
+        FirebaseAnalyticsUtil.of().logEventYouTubePlayerClick("playlist click title "
+                + data.snippet.title);
     }
 }

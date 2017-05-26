@@ -41,6 +41,10 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         return false;
     }
 
+    public int getAddAdViewCount() {
+        return mAdViewAdapter.getAddAdViewCount();
+    }
+
     public void setAdViewAdapter(AdViewWrapperAdapter adViewAdapter) {
         mAdViewAdapter = adViewAdapter;
     }
@@ -60,6 +64,7 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
     public BaseHolder<T> onCreateViewHolder(ViewGroup parent, final int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(getLayoutId(viewType), parent, false);
         mHolder = getHolder(view, viewType);
+        mHolder.setViewType(viewType);
 //        mHolder.setOnItemClickListener(new BaseHolder.OnViewClickListener() {//设置Item点击事件
 //            @Override
 //            public void onViewClick(View view, int position) {

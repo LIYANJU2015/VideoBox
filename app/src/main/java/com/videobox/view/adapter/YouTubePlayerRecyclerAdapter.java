@@ -7,12 +7,16 @@ import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.util.LogUtils;
-import com.util.YouTubeUtil;
+import com.google.android.gms.ads.AdSize;
+import com.google.android.gms.ads.AdView;
+import com.videobox.util.AdViewManager;
+import com.videobox.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
@@ -136,11 +140,20 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
 
         private TextView titleTV;
         private ExpandableTextView introduceTV;
+        private AdView adView;
+        private LinearLayout introduceLinear;
 
         public YouTubeIntroduceHodler(View itemView) {
             super(itemView);
             titleTV = (TextView) itemView.findViewById(R.id.title_tv);
             introduceTV = (ExpandableTextView) itemView.findViewById(R.id.expand_text_view);
+            introduceLinear = (LinearLayout)itemView.findViewById(R.id.introduce_linear);
+
+            AdView adView = new AdView(mActivity);
+            adView.setAdUnitId(mActivity.getString(R.string.player_ad));
+            adView.setAdSize(AdSize.BANNER);
+            introduceLinear.addView(adView);
+            AdViewManager.getInstances().loadCurrShowAdView(mActivity.getClass(), adView);
         }
 
         @Override

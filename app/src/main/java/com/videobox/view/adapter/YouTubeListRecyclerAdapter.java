@@ -13,7 +13,7 @@ import com.commonlibs.commonloader.IComDataLoader;
 import com.commonlibs.commonloader.IComDataLoaderListener;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
-import com.util.YouTubeUtil;
+import com.videobox.util.YouTubeUtil;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;

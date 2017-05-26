@@ -1,9 +1,7 @@
 package com.videobox;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Typeface;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
 
@@ -11,7 +9,6 @@ import com.commonlibs.base.BaseApplication;
 import com.commonlibs.base.GlobalConfig;
 import com.commonlibs.http.GlobeHttpHandler;
 import com.commonlibs.http.RequestInterceptor;
-import com.commonlibs.integration.ActivityLifecycle;
 import com.commonlibs.integration.IRepositoryManager;
 import com.commonlibs.integration.RepositoryManager;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
@@ -23,7 +20,9 @@ import com.commonlibs.util.SnackbarUtils;
 import com.commonlibs.util.Utils;
 import com.google.android.gms.ads.MobileAds;
 import com.tencent.bugly.crashreport.CrashReport;
-import com.util.MyActivityLifecycleCallbacks;
+import com.videobox.util.AdViewManager;
+import com.videobox.util.FirebaseAnalyticsUtil;
+import com.videobox.util.MyActivityLifecycleCallbacks;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.cache.DailyMotionCache;
 import com.videobox.model.dailymotion.service.DailymotionService;
@@ -62,10 +61,18 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
 
     public static RxErrorHandler sRxErrorHandler;
 
+    public static boolean sIsColdLaunch = false;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        sIsColdLaunch = true;
         Utils.init(getContext());
+
+        MobileAds.initialize(this, getResources().getString(R.string.admob_appid));
+        AdViewManager.getInstances().initInterstitialAd();
+        AdViewManager.getInstances().requestNewInterstitial();
+
         CrashReport.initCrashReport(getApplicationContext());
         spUtils = new SPUtils("video_box");
         initTypeface();
@@ -73,9 +80,18 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         initYouTubeLanguages();
         sRxErrorHandler = getAppComponent().rxErrorHandler();
 
-        MobileAds.initialize(this, getResources().getString(R.string.admob_appid));
-
         registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
+
+        FirebaseAnalyticsUtil.of().logEventEnterApp();
+    }
+
+    public static boolean isShowInterstitialAd() {
+        long duration = Math.abs(System.currentTimeMillis() - spUtils.getLong("showedTime", 0));
+        if (duration >= 1000 * 60 * 60 * 24 * 2) {
+            spUtils.put("showedTime", System.currentTimeMillis());
+            return true;
+        }
+        return false;
     }
 
     private void initYouTubeRegions() {

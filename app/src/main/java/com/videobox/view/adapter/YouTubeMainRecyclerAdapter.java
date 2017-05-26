@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
-import com.util.YouTubeUtil;
+import com.videobox.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 

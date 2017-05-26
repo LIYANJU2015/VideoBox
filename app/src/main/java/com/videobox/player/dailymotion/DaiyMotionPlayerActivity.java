@@ -22,6 +22,7 @@ import com.videobox.model.bean.PlayRecordBean;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.player.youtube.YouTubePlayerActivity;
+import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.DMPlayerDelegate;
 
@@ -57,6 +58,8 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
         super.onCreate(savedInstanceState);
         StatusBarColorCompat.setColorNoTranslucent(DaiyMotionPlayerActivity.this,
                 ContextCompat.getColor(mContext, R.color.material_black));
+
+        FirebaseAnalyticsUtil.of().logEventDMPlayer();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.util;
+package com.videobox.util;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.animation.OvershootInterpolator;

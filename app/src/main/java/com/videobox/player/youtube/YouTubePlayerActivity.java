@@ -28,6 +28,7 @@ import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.adapter.YouTubePlayerRecyclerAdapter;
 import com.videobox.view.widget.LoadingFrameLayout;
 
@@ -103,6 +104,8 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
         initView();
 
         checkYouTube();
+
+        FirebaseAnalyticsUtil.of().logEventYouTubePlayer();
     }
 
     private void checkYouTube() {

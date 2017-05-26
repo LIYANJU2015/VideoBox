@@ -191,30 +191,4 @@ public class MainViewDelegate extends AppDelegate {
         mCoordinatorTabLayout.getTabLayout().addOnTabSelectedListener(mMainActivity);
         mCoordinatorTabLayout.getTabLayout().setSelectedTabIndicatorHeight(SizeUtils.dp2px(3));
     }
-
-    private void changeToolbarColor(Bitmap bitmap) {
-        Palette.Builder builder = Palette.from(bitmap);
-        builder.generate(new Palette.PaletteAsyncListener() {
-            @Override
-            public void onGenerated(Palette palette) {
-                LogUtils.v("changeToolbarColor");
-                //获取到充满活力的这种色调
-                Palette.Swatch vibrant = palette.getVibrantSwatch();
-                if (vibrant != null) {
-                    mCoordinatorTabLayout.setContentScrimColor(vibrant.getRgb());
-                }
-            }
-        });
-    }
-
-    private int colorBurn(int RGBValues) {
-        int alpha = RGBValues >> 24;
-        int red = RGBValues >> 16 & 0xFF;
-        int green = RGBValues >> 8 & 0xFF;
-        int blue = RGBValues & 0xFF;
-        red = (int) Math.floor(red * (1 - 0.1));
-        green = (int) Math.floor(green * (1 - 0.1));
-        blue = (int) Math.floor(blue * (1 - 0.1));
-        return Color.rgb(red, green, blue);
-    }
 }

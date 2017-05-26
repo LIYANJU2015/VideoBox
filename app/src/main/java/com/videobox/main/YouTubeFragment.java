@@ -158,10 +158,16 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                             loadingFrameLayout.showDataNull();
                         }
 
-                        if (pullToRefresh)
+                        if (pullToRefresh) {
                             mMainAdapter.notifyDataSetChanged();
-                        else
-                            mMainAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
+                        } else {
+                            if (mMainAdapter.getAddAdViewCount() > 0) {
+                                mMainAdapter.notifyItemRangeInserted(preEndIndex + mMainAdapter.getAddAdViewCount(),
+                                        dmVideosPageBean.items.size());
+                            } else {
+                                mMainAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
+                            }
+                        }
                     }
 
                     @Override
@@ -268,8 +274,14 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
 
                         if (pullToRefresh)
                             mListAdapter.notifyDataSetChanged();
-                        else
-                            mListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
+                        else {
+                            if (mMainAdapter.getAddAdViewCount() > 0) {
+                                mListAdapter.notifyItemRangeInserted(preEndIndex + mMainAdapter.getAddAdViewCount(),
+                                        dmVideosPageBean.items.size());
+                            } else {
+                                mListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());
+                            }
+                        }
                     }
 
                     @Override

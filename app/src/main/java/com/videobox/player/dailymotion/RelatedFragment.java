@@ -19,6 +19,7 @@ import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
+import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
@@ -109,6 +110,8 @@ public class RelatedFragment extends BaseFragment<Contract.DMPlayerHost> impleme
         mHost.setCurrentVideoBean(data);
         mHost.getCurrentPlayer().load();
         mHost.getCurrentPlayer().play();
+
+        FirebaseAnalyticsUtil.of().logEventDMPlayerClick(" related video click " + data.title);
     }
 
     private void initData() {

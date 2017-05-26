@@ -20,6 +20,7 @@ import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 import com.videobox.view.adapter.YouTubeListRecyclerAdapter;
 import com.videobox.view.widget.LoadingFrameLayout;
@@ -87,6 +88,7 @@ public class YoutubeSearchFragment extends BaseFragment implements Paginate.Call
     @Override
     public void onItemClick(View view, int viewType, YTBVideoPageBean.YouTubeVideo data, int position) {
         data.intoPlayer(searchActivity);
+        FirebaseAnalyticsUtil.of().logEventSearchClick("search youtube title " + data.snippet.title);
     }
 
     @Override

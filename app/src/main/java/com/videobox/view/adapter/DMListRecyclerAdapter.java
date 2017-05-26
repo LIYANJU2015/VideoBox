@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.util.TimeUtils;
-import com.util.DaiymotionUtil;
+import com.videobox.util.DaiymotionUtil;
 import com.videobox.R;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 

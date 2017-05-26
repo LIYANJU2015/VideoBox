@@ -10,6 +10,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.commonlibs.base.BaseFragment;
+import com.google.android.gms.ads.AdView;
+import com.videobox.util.AdViewManager;
 import com.videobox.R;
 import com.videobox.view.delegate.Contract;
 
@@ -39,6 +41,9 @@ public class IntroductionFragment extends BaseFragment<Contract.DMPlayerHost> {
 
         ExpandableTextView describeTV = (ExpandableTextView)view.findViewById(R.id.describe);
         describeTV.setText(Html.fromHtml(mHost.getCurrentVideoBean().description));
+
+        AdView adView = (AdView)view.findViewById(R.id.player_ad_view);
+        AdViewManager.getInstances().loadCurrShowAdView(mActivity.getClass(), adView);
         return view;
     }
 }

@@ -1,12 +1,9 @@
-package com.util;
+package com.videobox.util;
 
-import android.content.Context;
 import android.content.res.Resources;
 
 import com.videobox.AppAplication;
 import com.videobox.R;
-
-import java.text.SimpleDateFormat;
 
 /**
  * Created by liyanju on 2017/5/16.

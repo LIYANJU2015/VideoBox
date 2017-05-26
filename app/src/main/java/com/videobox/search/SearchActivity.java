@@ -27,6 +27,7 @@ import com.lapism.searchview.SearchItem;
 import com.lapism.searchview.SearchView;
 import com.videobox.R;
 import com.videobox.model.db.VideoBoxContract;
+import com.videobox.util.FirebaseAnalyticsUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,6 +97,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                 initSearchSuggestions();
             }
         });
+        FirebaseAnalyticsUtil.of().logEventSearch();
     }
 
     private void initSearchViewPager() {

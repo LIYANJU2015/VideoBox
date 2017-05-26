@@ -21,6 +21,7 @@ import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
 import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
+import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.widget.LoadingFrameLayout;
@@ -99,6 +100,7 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
     @Override
     public void onItemClick(View view, int viewType, DMVideoBean data, int position) {
         DaiyMotionPlayerActivity.launch((Activity) view.getContext(), data);
+        FirebaseAnalyticsUtil.of().logEventSearchClick("search DM title " + data.title);
     }
 
     public void gotoSearchVideo(String search) {

@@ -10,8 +10,8 @@ import com.commonlibs.themvp.view.AppDelegate;
 import com.commonlibs.util.NetworkUtils;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
-import com.util.AdViewManager;
-import com.util.DaiymotionUtil;
+import com.videobox.util.AdViewManager;
+import com.videobox.util.DaiymotionUtil;
 import com.videobox.R;
 import com.videobox.main.DailyMotionFragment;
 import com.videobox.view.adapter.AdViewWrapperAdapter;
@@ -51,13 +51,6 @@ public class DailyMotionDelegate extends AppDelegate {
 
         mSwipeRefreshLayout = get(R.id.dm_swipeRefresh);
         mSwipeRefreshLayout.setOnRefreshListener(mDailymotionFragment);
-    }
-
-    public boolean isAdapterAddAdView() {
-        if (adViewWrapperAdapter != null) {
-            return adViewWrapperAdapter.isAddAdView();
-        }
-        return false;
     }
 
     public void setAdapter(BaseRecyclerViewAdapter adapter) {

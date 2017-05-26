@@ -48,6 +48,10 @@ public class AdViewWrapperAdapter extends RecyclerView.Adapter<RecyclerView.View
         return mADViews.size() > 0;
     }
 
+    public int getAddAdViewCount() {
+        return mADViews.size();
+    }
+
     @Override
     public int getItemViewType(int position) {
         int viewType = findAdViewTypeByPostion(position);

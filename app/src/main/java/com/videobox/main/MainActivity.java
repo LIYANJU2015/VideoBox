@@ -8,11 +8,10 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
-import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
 import com.commonlibs.util.ErrorHandleSubscriber2;
 import com.commonlibs.util.LogUtils;
-import com.commonlibs.util.UIThreadHelper;
+import com.videobox.util.AdViewManager;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
@@ -21,6 +20,7 @@ import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBCategoriesBean;
 import com.videobox.search.SearchActivity;
+import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.MainViewDelegate;
 import com.videobox.view.widget.CoordinatorTabLayout;
@@ -30,9 +30,6 @@ import java.util.ArrayList;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-
-import static android.media.CamcorderProfile.get;
-import static com.tencent.bugly.crashreport.crash.c.m;
 
 
 /**
@@ -76,6 +73,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         if (viewDelegate.mDrawerLayout != null && viewDelegate.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
             viewDelegate.mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
+            FirebaseAnalyticsUtil.of().logEventExitApp();
             super.onBackPressed(); // finish
         }
     }
@@ -87,7 +85,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
 
     @Override
     public void onDrawerOpened(View drawerView) {
-
+        FirebaseAnalyticsUtil.of().logEventLeftMenu();
     }
 
     @Override
@@ -119,12 +117,15 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                     DMChannelsBean.Channel channel = mDMChannel.get(postion);
                     if (mIVideoListFragment != null) {
                         mIVideoListFragment.showChannelVideoByID(channel.id);
+                        FirebaseAnalyticsUtil.of().logEventLeftMenuClick(" DM Channel name " + channel.name);
                     }
                 } else {
                     if (mYouTubeChannel.size() > postion) {
                         YTBCategoriesBean.Categories categories = mYouTubeChannel.get(postion);
                         if (mIVideoListFragment != null) {
                             mIVideoListFragment.showChannelVideoByID(categories.id);
+                            FirebaseAnalyticsUtil.of().logEventLeftMenuClick(" Youtube Channel name "
+                                    + categories.snippet.title);
                         }
                     }
                 }
@@ -158,6 +159,10 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         coordinatorTabLayout.getTabLayout().addOnTabSelectedListener(this);
 
         requestDMChannel(false);
+
+        if (AppAplication.isShowInterstitialAd()) {
+            AdViewManager.getInstances().interstitialAdShow();
+        }
     }
 
     private void requestYouTubeChannel(boolean update) {

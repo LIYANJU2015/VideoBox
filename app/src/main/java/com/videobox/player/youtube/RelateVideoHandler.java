@@ -14,6 +14,7 @@ import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 
 import java.util.ArrayList;
@@ -260,6 +261,9 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
                         iPlayCallBack.onCanPlayVideo(data.relateVideo.getVideoID(), (int)time.longValue());
                     }
                 });
+
+        FirebaseAnalyticsUtil.of().logEventYouTubePlayerClick("relateVideo click title "
+                + currYouTubeVideo.snippet.title);
 
     }
 }

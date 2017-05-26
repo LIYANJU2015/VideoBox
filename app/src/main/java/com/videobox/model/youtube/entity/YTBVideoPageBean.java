@@ -1,7 +1,6 @@
 package com.videobox.model.youtube.entity;
 
 import android.app.Activity;
-import android.content.Context;
 
 import com.commonlibs.commonloader.ComDataLoadTask;
 import com.commonlibs.commonloader.IComDataLoader;
@@ -9,7 +8,6 @@ import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
-import com.util.YouTubeUtil;
 import com.videobox.AppAplication;
 import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.service.YouTubeService;
@@ -21,13 +19,6 @@ import java.util.Map;
 
 
 import retrofit2.Call;
-import retrofit2.Response;
-
-import static android.R.attr.data;
-import static android.R.attr.duration;
-import static android.R.attr.title;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
-import static com.commonlibs.util.LogUtils.I;
 
 /**
  * Created by liyanju on 2017/4/14.

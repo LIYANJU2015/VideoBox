@@ -1,10 +1,8 @@
-package com.util;
+package com.videobox.util;
 
 import android.app.Activity;
 import android.app.Application;
 import android.os.Bundle;
-
-import com.commonlibs.util.LogUtils;
 
 /**
  * Created by liyanju on 2017/5/25.

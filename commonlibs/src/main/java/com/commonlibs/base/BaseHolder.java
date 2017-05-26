@@ -13,6 +13,10 @@ public abstract class BaseHolder<T> extends RecyclerView.ViewHolder implements V
 
     private int viewType;
 
+    public void setViewType(int viewType) {
+        this.viewType = viewType;
+    }
+
     public int getViewType() {
         return viewType;
     }
