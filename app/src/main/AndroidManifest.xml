@@ -22,6 +22,11 @@
             </intent-filter>
         </activity>
 
+        <activity android:name=".main.SplashActivity"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
+            />
+
         <activity
             android:name=".player.dailymotion.DaiyMotionPlayerActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -40,6 +45,7 @@
 
         <activity android:name=".player.youtube.YouTubePlayerActivity"
             android:screenOrientation="nosensor"
+            android:launchMode="singleTask"
             android:configChanges="orientation|screenSize|keyboardHidden"
             >
             <meta-data android:name="@string/minVersion" android:value="11"/>
@@ -60,7 +66,7 @@
         <!-- 配置Bugly调试模式（true或者false）-->
         <meta-data
             android:name="BUGLY_ENABLE_DEBUG"
-            android:value="true" />
+            android:value="false" />
 
     </application>
 

@@ -275,8 +275,8 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
                         if (pullToRefresh)
                             mListAdapter.notifyDataSetChanged();
                         else {
-                            if (mMainAdapter.getAddAdViewCount() > 0) {
-                                mListAdapter.notifyItemRangeInserted(preEndIndex + mMainAdapter.getAddAdViewCount(),
+                            if (mListAdapter.getAddAdViewCount() > 0) {
+                                mListAdapter.notifyItemRangeInserted(preEndIndex + mListAdapter.getAddAdViewCount(),
                                         dmVideosPageBean.items.size());
                             } else {
                                 mListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.items.size());

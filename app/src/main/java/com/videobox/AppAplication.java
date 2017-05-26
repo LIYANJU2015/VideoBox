@@ -20,6 +20,7 @@ import com.commonlibs.util.SnackbarUtils;
 import com.commonlibs.util.Utils;
 import com.google.android.gms.ads.MobileAds;
 import com.tencent.bugly.crashreport.CrashReport;
+import com.videobox.main.MainActivity;
 import com.videobox.util.AdViewManager;
 import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.util.MyActivityLifecycleCallbacks;
@@ -34,6 +35,7 @@ import com.videobox.model.youtube.entity.YTbRegionsListBean;
 import com.videobox.model.youtube.service.YouTubeService;
 
 import java.util.Locale;
+
 
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
@@ -71,7 +73,6 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
 
         MobileAds.initialize(this, getResources().getString(R.string.admob_appid));
         AdViewManager.getInstances().initInterstitialAd();
-        AdViewManager.getInstances().requestNewInterstitial();
 
         CrashReport.initCrashReport(getApplicationContext());
         spUtils = new SPUtils("video_box");
@@ -87,6 +88,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
 
     public static boolean isShowInterstitialAd() {
         long duration = Math.abs(System.currentTimeMillis() - spUtils.getLong("showedTime", 0));
+
         if (duration >= 1000 * 60 * 60 * 24 * 2) {
             spUtils.put("showedTime", System.currentTimeMillis());
             return true;
