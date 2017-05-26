@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
@@ -23,6 +23,8 @@ import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
 import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
+import com.videobox.view.adapter.AdViewWrapperAdapter;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.adapter.DMMainRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
@@ -57,10 +59,6 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
     private ArrayList<DMVideoBean> mDMVideoList = new ArrayList<>();
 
-    private DMMainRecyclerAdapter mAdapter;
-    private DMListRecyclerAdapter mListAdapter;
-
-
     private ImageLoader mImageLoader;
 
     private Context mContext;
@@ -76,6 +74,10 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
     private boolean mIsLoadedAll = false;
 
     private LoadingFrameLayout loadingFrameLayout;
+
+    private DMMainRecyclerAdapter mAdapter;
+    private DMListRecyclerAdapter mListAdapter;
+
 
     @Override
     protected Class<DailyMotionDelegate> getDelegateClass() {
@@ -165,6 +167,11 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                         if (pullToRefresh) {
                             mDMVideoList.clear();
                         }
+
+                        if (mDMVideoList.contains(dmVideosPageBean.list)) {
+                            return;
+                        }
+
                         mIsLoadedAll = !dmVideosPageBean.has_more;
                         if (dmVideosPageBean.has_more) {
                             pagenum = dmVideosPageBean.page + 1;
@@ -188,10 +195,15 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                             mPaginate.setHasMoreDataToLoad(false);
                         }
 
-                        if (pullToRefresh)
+                        if (pullToRefresh) {
                             mListAdapter.notifyDataSetChanged();
-                        else
-                            mListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
+                        }else {
+                            if (mListAdapter.isAddAdView()) {
+                                mListAdapter.notifyItemRangeInserted(preEndIndex + 1, dmVideosPageBean.list.size());
+                            } else {
+                                mListAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
+                            }
+                        }
                     }
                 });
     }
@@ -204,6 +216,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
             mIsFirst = false;
             isEvictCache = false;
         }
+
         LogUtils.v("getVideoData", "isEvictCache " + isEvictCache);
 
         mDaiyMotionModel.getVideos(APIConstant.DailyMontion.sWatchVideosMap, isEvictCache, pagenum)
@@ -250,6 +263,11 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                 if (pullToRefresh) {
                     mDMVideoList.clear();
                 }
+
+                if (mDMVideoList.contains(dmVideosPageBean.list)) {
+                    return;
+                }
+
                 mIsLoadedAll = !dmVideosPageBean.has_more;
                 if (dmVideosPageBean.has_more) {
                     pagenum = dmVideosPageBean.page + 1;
@@ -279,10 +297,15 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
                     loadingFrameLayout.showDataNull();
                 }
 
-                if (pullToRefresh)
+                if (pullToRefresh) {
                     mAdapter.notifyDataSetChanged();
-                else
-                    mAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
+                } else {
+                    if (mAdapter.isAddAdView()) {
+                        mAdapter.notifyItemRangeInserted(preEndIndex + 1, dmVideosPageBean.list.size());
+                    } else {
+                        mAdapter.notifyItemRangeInserted(preEndIndex, dmVideosPageBean.list.size());
+                    }
+                }
             }
 
             @Override

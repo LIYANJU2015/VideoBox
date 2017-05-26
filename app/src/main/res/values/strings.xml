@@ -43,4 +43,12 @@
     <string name="relativeTimeInYearOne">%d year ago</string>
     <string name="relativeTimeInYearOther">%d years ago</string>
     <string name="relativeTimeJustNow">just now</string>
+    
+    <string name="main_dailymotionplayer_ad">ca-app-pub-9880857526519562/5063887339</string>
+
+    <string name="main_ad">ca-app-pub-9880857526519562/3137998935</string>
+
+    <string name="admob_appid">ca-app-pub-9880857526519562~2250021730</string>
+
+
 </resources>

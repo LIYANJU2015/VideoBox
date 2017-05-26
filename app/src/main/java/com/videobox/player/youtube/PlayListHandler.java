@@ -3,7 +3,6 @@ package com.videobox.player.youtube;
 import android.content.Context;
 import android.view.View;
 
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
@@ -16,15 +15,12 @@ import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 
 import java.util.ArrayList;
 
-import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by liyanju on 2017/5/11.

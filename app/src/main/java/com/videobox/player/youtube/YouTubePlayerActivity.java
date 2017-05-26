@@ -6,13 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 
@@ -31,7 +28,6 @@ import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
-import com.videobox.search.SearchActivity;
 import com.videobox.view.adapter.YouTubePlayerRecyclerAdapter;
 import com.videobox.view.widget.LoadingFrameLayout;
 
@@ -86,7 +82,7 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         StatusBarColorCompat.setColorNoTranslucent(YouTubePlayerActivity.this,
-                ContextCompat.getColor(mContext, R.color.material_black));
+                ContextCompat.getColor(getApplicationContext(), R.color.material_black));
 
         mContext = getApplicationContext();
         mAppApplication = (AppAplication)getApplication();

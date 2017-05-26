@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.commonlibs.base.BaseFragment;
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
@@ -22,8 +21,8 @@ import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
 import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
-import com.videobox.view.delegate.Contract;
 import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
@@ -31,8 +30,6 @@ import java.util.ArrayList;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-
-import static android.R.attr.data;
 
 /**
  * Created by liyanju on 2017/5/6.

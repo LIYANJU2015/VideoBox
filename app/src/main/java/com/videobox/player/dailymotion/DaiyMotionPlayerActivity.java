@@ -252,6 +252,8 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
     protected void onDestroy() {
         super.onDestroy();
         stopProgress();
-        viewDelegate.destroyWebView();
+        if (viewDelegate != null) {
+            viewDelegate.destroyWebView();
+        }
     }
 }

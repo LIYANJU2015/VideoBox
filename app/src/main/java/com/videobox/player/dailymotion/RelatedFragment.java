@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.animation.OvershootInterpolator;
 
 import com.commonlibs.base.BaseFragment;
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
@@ -20,6 +19,7 @@ import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 import com.videobox.model.dailymotion.entity.DMVideosPageBean;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 import com.videobox.view.adapter.DMListRecyclerAdapter;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.widget.LoadingFrameLayout;
@@ -30,9 +30,6 @@ import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-
-import static android.media.CamcorderProfile.get;
-import static com.commonlibs.util.LogUtils.D;
 
 /**
  * Created by liyanju on 2017/5/5.

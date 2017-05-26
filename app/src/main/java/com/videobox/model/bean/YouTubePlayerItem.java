@@ -1,7 +1,7 @@
 package com.videobox.model.bean;
 
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 
 import java.util.ArrayList;
 

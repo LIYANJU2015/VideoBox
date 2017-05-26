@@ -14,6 +14,8 @@ import java.text.SimpleDateFormat;
 
 public class DaiymotionUtil {
 
+    public static final int MAIN_DM_AD_VIEWTYPE = 111;
+
     public static String getRelativeTimeString(long secondsSinceEpoch) {
         return getRelativeTimeString(secondsSinceEpoch, 0);
     }

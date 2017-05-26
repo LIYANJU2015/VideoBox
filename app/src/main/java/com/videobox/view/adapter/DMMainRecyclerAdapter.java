@@ -7,14 +7,10 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.util.TimeUtils;
-import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
-import com.videobox.model.dailymotion.service.DailymotionService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,7 +60,7 @@ public class DMMainRecyclerAdapter extends BaseRecyclerViewAdapter<DMVideoBean> 
                     .placeholder(R.drawable.dm_item_img_default)
                     .error(R.drawable.dm_item_img_default).crossFade().into(videoPoster);
             titleTV.setText(data.title);
-            timeTV.setText(TimeUtils.stringForTime(data.duration*1000));
+            timeTV.setText(TimeUtils.stringForTime(data.duration * 1000));
         }
     }
 }

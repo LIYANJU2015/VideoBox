@@ -39,6 +39,21 @@ public class DMVideoBean implements Parcelable{
         return 0;
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return super.equals(obj);
+        }
+        if (obj instanceof DMVideoBean) {
+            return id.equals (((DMVideoBean) obj).id);
+        }
+        return super.equals(obj);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
+    }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

@@ -10,9 +10,23 @@ import android.view.View;
 public abstract class BaseHolder<T> extends RecyclerView.ViewHolder implements View.OnClickListener {
     protected OnViewClickListener mOnViewClickListener = null;
     protected final String TAG = this.getClass().getSimpleName();
+
+    private int viewType;
+
+    public int getViewType() {
+        return viewType;
+    }
+
     public BaseHolder(View itemView) {
+        this(itemView, true, 0);
+    }
+
+    public BaseHolder(View itemView, boolean isClick, int viewType) {
         super(itemView);
-        itemView.setOnClickListener(this);//点击事件
+        this.viewType = viewType;
+        if (isClick) {
+            itemView.setOnClickListener(this);//点击事件
+        }
     }
 
 
@@ -30,7 +44,7 @@ public abstract class BaseHolder<T> extends RecyclerView.ViewHolder implements V
     /**
      * 释放资源
      */
-    protected void onRelease(){
+    public void onRelease(){
 
     }
 

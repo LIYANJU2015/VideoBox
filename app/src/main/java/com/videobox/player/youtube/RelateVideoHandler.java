@@ -3,12 +3,10 @@ package com.videobox.player.youtube;
 import android.content.Context;
 import android.view.View;
 
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
-import com.google.android.youtube.player.YouTubePlayer;
 import com.videobox.AppAplication;
 import com.videobox.model.APIConstant;
 import com.videobox.model.bean.PlayRecordBean;
@@ -16,6 +14,7 @@ import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.db.VideoBoxContract;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 
 import java.util.ArrayList;
 
@@ -25,8 +24,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
-import static android.media.CamcorderProfile.get;
-import static android.view.View.Y;
 import static com.videobox.view.adapter.YouTubePlayerRecyclerAdapter.RELATED_VIDEO;
 import static rx.Emitter.BackpressureMode.NONE;
 

@@ -5,7 +5,6 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
@@ -18,6 +17,7 @@ import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 import com.videobox.view.adapter.YouTubeListRecyclerAdapter;
 import com.videobox.view.adapter.YouTubeMainRecyclerAdapter;
 import com.videobox.view.delegate.Contract;

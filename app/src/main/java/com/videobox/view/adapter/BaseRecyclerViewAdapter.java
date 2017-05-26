@@ -1,9 +1,11 @@
-package com.commonlibs.base;
+package com.videobox.view.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.commonlibs.base.BaseHolder;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
     protected OnRecyclerViewItemClickListener mOnItemClickListener = null;
     private BaseHolder<T> mHolder;
 
+    private AdViewWrapperAdapter mAdViewAdapter;
+
     public BaseRecyclerViewAdapter(List<T> infos) {
         super();
         this.mInfos = infos;
@@ -24,7 +28,21 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
         if (mInfos != null) {
             mInfos.clear();
         }
+        if (mAdViewAdapter != null) {
+            mAdViewAdapter.clearAdView();
+        }
         notifyDataSetChanged();
+    }
+
+    public boolean isAddAdView() {
+        if (mAdViewAdapter != null) {
+            return mAdViewAdapter.isAddAdView();
+        }
+        return false;
+    }
+
+    public void setAdViewAdapter(AdViewWrapperAdapter adViewAdapter) {
+        mAdViewAdapter = adViewAdapter;
     }
 
     public void setData(List<T> infos){
@@ -42,14 +60,14 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
     public BaseHolder<T> onCreateViewHolder(ViewGroup parent, final int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(getLayoutId(viewType), parent, false);
         mHolder = getHolder(view, viewType);
-        mHolder.setOnItemClickListener(new BaseHolder.OnViewClickListener() {//设置Item点击事件
-            @Override
-            public void onViewClick(View view, int position) {
-                if (mOnItemClickListener != null && mInfos.size() > 0) {
-                    mOnItemClickListener.onItemClick(view, viewType, mInfos.get(position), position);
-                }
-            }
-        });
+//        mHolder.setOnItemClickListener(new BaseHolder.OnViewClickListener() {//设置Item点击事件
+//            @Override
+//            public void onViewClick(View view, int position) {
+//                if (mOnItemClickListener != null && mInfos.size() > 0) {
+//                    mOnItemClickListener.onItemClick(view, viewType, mInfos.get(position), position);
+//                }
+//            }
+//        });
         return mHolder;
     }
 
@@ -57,11 +75,22 @@ public abstract class BaseRecyclerViewAdapter<T> extends RecyclerView.Adapter<Ba
      * 绑定数据
      *
      * @param holder
-     * @param position
+     * @param
      */
     @Override
-    public void onBindViewHolder(BaseHolder<T> holder, int position) {
-        holder.setData(mInfos.get(position), position);
+    public void onBindViewHolder(final BaseHolder<T> holder, final int newPosition) {
+        if (mInfos.size() <= newPosition) {
+            return;
+        }
+        holder.setData(mInfos.get(newPosition), newPosition);
+        holder.setOnItemClickListener(new BaseHolder.OnViewClickListener() {//设置Item点击事件
+            @Override
+            public void onViewClick(View view, int position) {
+                if (mOnItemClickListener != null && mInfos.size() > 0) {
+                    mOnItemClickListener.onItemClick(view, holder.getViewType(), mInfos.get(newPosition), newPosition);
+                }
+            }
+        });
     }
 
 

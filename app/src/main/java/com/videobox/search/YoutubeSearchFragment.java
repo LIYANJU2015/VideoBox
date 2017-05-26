@@ -1,18 +1,15 @@
 package com.videobox.search;
 
 import android.app.Activity;
-import android.content.pm.ProviderInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.commonlibs.base.BaseFragment;
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
@@ -21,12 +18,10 @@ import com.commonlibs.util.UIThreadHelper;
 import com.paginate.Paginate;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
-import com.videobox.model.dailymotion.DaiyMotionModel;
-import com.videobox.model.dailymotion.entity.DMVideosPageBean;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 import com.videobox.view.adapter.YouTubeListRecyclerAdapter;
-import com.videobox.view.delegate.Contract;
 import com.videobox.view.widget.LoadingFrameLayout;
 
 import java.util.ArrayList;
@@ -34,8 +29,6 @@ import java.util.ArrayList;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by liyanju on 2017/5/6.

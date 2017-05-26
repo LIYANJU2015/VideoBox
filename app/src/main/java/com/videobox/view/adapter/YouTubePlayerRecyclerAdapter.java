@@ -1,7 +1,6 @@
 package com.videobox.view.adapter;
 
 import android.app.Activity;
-import android.media.Image;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,9 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.util.LogUtils;
-import com.commonlibs.util.TimeUtils;
 import com.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.bean.YouTubePlayerItem;
@@ -23,9 +20,6 @@ import com.videobox.model.youtube.entity.YTBVideoPageBean;
 import java.util.List;
 
 import jaydenxiao.com.expandabletextview.ExpandableTextView;
-
-import static android.R.attr.x;
-import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
 
 /**
  * Created by liyanju on 2017/5/13.

@@ -5,10 +5,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.animation.OvershootInterpolator;
 
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.themvp.view.AppDelegate;
 import com.videobox.R;
 import com.videobox.main.YouTubeFragment;
+import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 
 import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
 

@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
-import com.commonlibs.base.BaseRecyclerViewAdapter;
 import com.commonlibs.commonloader.AsyncComDataLoader;
 import com.commonlibs.commonloader.IComDataLoader;
 import com.commonlibs.commonloader.IComDataLoaderListener;

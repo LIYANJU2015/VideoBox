@@ -1,26 +1,18 @@
 package com.videobox.view.adapter;
 
 import android.app.Activity;
-import android.content.pm.ProviderInfo;
-import android.text.format.DateUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
-import com.commonlibs.base.BaseRecyclerViewAdapter;
-import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.TimeUtils;
 import com.util.DaiymotionUtil;
 import com.videobox.R;
 import com.videobox.model.dailymotion.entity.DMVideoBean;
 
 import java.util.List;
-
-import static android.R.attr.thumbnail;
-import static com.commonlibs.util.LogUtils.D;
-import static com.commonlibs.util.TimeUtils.millis2String;
 
 /**
  * Created by liyanju on 2017/5/5.
