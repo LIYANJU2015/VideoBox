@@ -209,7 +209,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     @Override
     public void finish() {
         super.finish();
-        overridePendingTransition(0, R.anim.slide_out_left);
+        overridePendingTransition(0, R.anim.slide_out_right);
     }
 
     @Override

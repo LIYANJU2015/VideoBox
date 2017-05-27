@@ -83,7 +83,11 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
 
         registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
 
-        FirebaseAnalyticsUtil.of().logEventEnterApp();
+        if (AppAplication.spUtils.getBoolean("Shortcut", false)) {
+            AppAplication.spUtils.put("Shortcut", true);
+            Utils.addShortcut(this, MainActivity.class, getString(R.string.app_name),
+                    R.mipmap.ic_launcher);
+        }
     }
 
     public static boolean isShowInterstitialAd() {

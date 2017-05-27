@@ -13,8 +13,10 @@ import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.StringUtils;
 import com.commonlibs.util.UIThreadHelper;
 import com.paginate.Paginate;
+import com.trello.rxlifecycle.android.FragmentEvent;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
+import com.videobox.model.dailymotion.entity.DMVideosPageBean;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
 import com.videobox.view.adapter.BaseRecyclerViewAdapter;
@@ -97,7 +99,7 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
 
         mYoutuBeModel.getMostPopularVideos(APIConstant.YouTube.sMostPopularVideos, pageToken, isEvictCache)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<YTBVideoPageBean>bindToLifecycle())
+                .compose(this.<YTBVideoPageBean>bindUntilEvent(FragmentEvent.PAUSE))
                 .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -211,7 +213,7 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
     private void requestChannelVideo(boolean update, final boolean pullToRefresh) {
         mYoutuBeModel.getCategoryVideos(pageToken, mCurChannelID, APIConstant.YouTube.sMostPopularVideos, update)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<YTBVideoPageBean>bindToLifecycle())
+                .compose(this.<YTBVideoPageBean>bindUntilEvent(FragmentEvent.PAUSE))
                 .retryWhen(new RetryWithDelay(3, 2))
                 .doOnSubscribe(new Action0() {
                     @Override

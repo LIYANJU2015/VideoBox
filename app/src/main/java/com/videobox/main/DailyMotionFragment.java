@@ -17,6 +17,8 @@ import com.commonlibs.util.StringUtils;
 import com.commonlibs.util.UIThreadHelper;
 import com.commonlibs.widget.imageloader.ImageLoader;
 import com.paginate.Paginate;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.android.FragmentEvent;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
@@ -135,7 +137,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
         mDaiyMotionModel.getChannelVideos(id,
                 APIConstant.DailyMontion.sChannelVideosMap, page, update)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<DMVideosPageBean>bindToLifecycle())
+                .compose(this.<DMVideosPageBean>bindUntilEvent(FragmentEvent.PAUSE))
                 .retryWhen(new RetryWithDelay(3, 2))
                 .doOnSubscribe(new Action0() {
                     @Override
@@ -221,7 +223,7 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
         mDaiyMotionModel.getVideos(APIConstant.DailyMontion.sWatchVideosMap, isEvictCache, pagenum)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<DMVideosPageBean>bindToLifecycle())
+                .compose(this.<DMVideosPageBean>bindUntilEvent(FragmentEvent.PAUSE))
                 .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override

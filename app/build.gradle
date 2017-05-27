@@ -41,7 +41,7 @@ dependencies {
 
     compile 'com.google.firebase:firebase-ads:10.0.1'
 
-    compile 'com.facebook.shimmer:shimmer:0.1.0@aar'
+    compile 'com.romainpiel.shimmer:library:1.4.0@aar'
 
 }
 apply plugin: 'com.google.gms.google-services'

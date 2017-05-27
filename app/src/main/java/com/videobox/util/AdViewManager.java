@@ -52,9 +52,20 @@ public class AdViewManager {
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
+                if (closeRunnable != null) {
+                    closeRunnable.run();
+                    closeRunnable = null;
+                }
+
                 requestNewInterstitial();
             }
         });
+    }
+
+    private Runnable closeRunnable;
+
+    public void setInterstitialAdCloseListener(Runnable runnable) {
+        closeRunnable = runnable;
     }
 
     public boolean interstitialAdShow() {

@@ -2,6 +2,7 @@ package com.videobox.main;
 
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -109,6 +110,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
             AppAplication.sIsColdLaunch = false;
             SplashActivity.launch(this);
         }
+        FirebaseAnalyticsUtil.of().logEventEnterApp();
     }
 
     public static final int SEARCH_CHANCEL = 1;
@@ -169,10 +171,6 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         coordinatorTabLayout.getTabLayout().addOnTabSelectedListener(this);
 
         requestDMChannel(false);
-
-        if (AppAplication.isShowInterstitialAd()) {
-            AdViewManager.getInstances().interstitialAdShow();
-        }
     }
 
     private void requestYouTubeChannel(boolean update) {
