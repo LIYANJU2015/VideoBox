@@ -42,7 +42,7 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
     private IPlayCallBack iPlayCallBack;
     private YouTubePlayerItem.IntroduceVideo curPlayVideo;
 
-    private int curIndex = 0;
+    private int nextVideoIndex = 0;
 
     private boolean hasPlayList;
 
@@ -66,10 +66,13 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
     public String getNextVideoId() {
         int index = 0;
         String vid = null;
+
+        LogUtils.v("getNextVideoId nextVideoIndex " + nextVideoIndex);
+
         for (int i = 0; i < items.size(); i++) {
             YouTubePlayerItem item = items.get(i);
             if (item.type == RELATED_VIDEO) {
-                if (index == curIndex) {
+                if (index == nextVideoIndex) {
                     vid = item.relateVideo.getVideoID();
                     item.relateVideo.isPlaying = true;
                     itemUpdate.onUpdateItems(i);
@@ -92,14 +95,14 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
        }
 
         if (!StringUtils.isEmpty(vid)) {
-            curIndex++;
+            nextVideoIndex++;
         }
 
         return vid;
     }
 
     public void cancelPlayingStatus() {
-        curIndex = 0;
+        nextVideoIndex = 0;
         for (int i = 0; i < items.size(); i++) {
             YouTubePlayerItem item = items.get(i);
             if (item.relateVideo != null && item.relateVideo.isPlaying) {
@@ -233,8 +236,8 @@ public class RelateVideoHandler implements BaseRecyclerViewAdapter.OnRecyclerVie
 
     @Override
     public void onItemClick(View view, int viewType, final YouTubePlayerItem data, int position) {
-        curIndex = data.position;
-        LogUtils.v("onItemClick", " curIndex "+ curIndex);
+        nextVideoIndex = data.position + 1;
+        LogUtils.v("onItemClick", " nextVideoIndex "+ nextVideoIndex);
         updatePlayingStatus(position);
 
         currYouTubeVideo = data.relateVideo;

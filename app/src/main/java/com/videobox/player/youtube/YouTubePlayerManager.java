@@ -225,7 +225,6 @@ public class YouTubePlayerManager implements IPlayCallBack,
         if (mPlayer == null) {
             return;
         }
-        LogUtils.v("handlerMessage", "getCurrentTimeMillis "+mPlayer.getCurrentTimeMillis());
         mPlayProgressBar.setProgress(mPlayer.getCurrentTimeMillis());
         if (!isStopUpdate) {
             mMainHandler.sendEmptyMessageDelayed(0, 500);
