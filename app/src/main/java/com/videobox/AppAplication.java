@@ -83,7 +83,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
 
         registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
 
-        if (AppAplication.spUtils.getBoolean("Shortcut", false)) {
+        if (!AppAplication.spUtils.getBoolean("Shortcut", false)) {
             AppAplication.spUtils.put("Shortcut", true);
             Utils.addShortcut(this, MainActivity.class, getString(R.string.app_name),
                     R.mipmap.ic_launcher);

@@ -8,6 +8,7 @@ import android.view.animation.OvershootInterpolator;
 
 import com.commonlibs.themvp.view.AppDelegate;
 import com.commonlibs.util.NetworkUtils;
+import com.commonlibs.util.ScreenUtils;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
 import com.videobox.util.AdViewManager;
@@ -18,6 +19,8 @@ import com.videobox.view.adapter.AdViewWrapperAdapter;
 import com.videobox.view.adapter.BaseRecyclerViewAdapter;
 
 import jp.wasabeef.recyclerview.adapters.SlideInBottomAnimationAdapter;
+
+import static com.commonlibs.util.LogUtils.A;
 
 /**
  * Created by liyanju on 2017/5/1.
@@ -63,7 +66,7 @@ public class YouTubeDelegate extends AppDelegate{
             adView.setAdSize(AdSize.BANNER);
             adView.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
                     RecyclerView.LayoutParams.WRAP_CONTENT));
-            AdViewWrapperAdapter.AdViewItem adViewItem = new AdViewWrapperAdapter.AdViewItem(adView, 2);
+            AdViewWrapperAdapter.AdViewItem adViewItem = new AdViewWrapperAdapter.AdViewItem(adView, 4);
             adViewWrapperAdapter.addAdView(DaiymotionUtil.MAIN_DM_AD_VIEWTYPE, adViewItem);
 
             AdViewManager.getInstances().loadCurrShowAdView(mActivity.getClass(), adView);

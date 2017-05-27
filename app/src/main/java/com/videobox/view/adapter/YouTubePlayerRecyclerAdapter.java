@@ -5,7 +5,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -13,8 +15,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.ScreenUtils;
+import com.commonlibs.util.SizeUtils;
+import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.NativeExpressAdView;
+import com.google.android.gms.ads.VideoOptions;
 import com.videobox.util.AdViewManager;
 import com.videobox.util.YouTubeUtil;
 import com.videobox.R;
@@ -149,18 +156,44 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
             introduceTV = (ExpandableTextView) itemView.findViewById(R.id.expand_text_view);
             introduceLinear = (LinearLayout)itemView.findViewById(R.id.introduce_linear);
 
-            AdView adView = new AdView(mActivity);
-            adView.setAdUnitId(mActivity.getString(R.string.player_ad));
-            adView.setAdSize(AdSize.BANNER);
-            introduceLinear.addView(adView);
-            AdViewManager.getInstances().loadCurrShowAdView(mActivity.getClass(), adView);
+            NativeExpressAdView adView = new NativeExpressAdView(mActivity);
+            adView.setAdUnitId(mActivity.getString(R.string.main_dailymotionplayer_ad2));
+
+            int adWidth = SizeUtils.px2dp(ScreenUtils.getScreenWidth() - SizeUtils.dp2px(40));
+
+            adView.setAdSize(new AdSize(adWidth, 100));
+            adView.setVideoOptions(new VideoOptions.Builder()
+                .setStartMuted(true)
+                .build());
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SizeUtils.dp2px(adWidth),
+                    SizeUtils.dp2px(100));
+            introduceLinear.addView(adView, params);
+            adView.loadAd(AdViewManager.createAdRequest());
         }
 
         @Override
         public void setData(YouTubePlayerItem data, int position) {
             titleTV.setText(data.curPlayVideo.title);
             introduceTV.setText(data.curPlayVideo.description, position);
+            introduceTV.setOnExpandStateChangeListener(new ExpandableTextView.OnExpandStateChangeListener() {
+                @Override
+                public void onExpandStateChanged(TextView textView, boolean isExpanded) {
+                    if (!isExpanded) {
+                        if (recyclerView != null) {
+                            recyclerView.scrollToPosition(0);
+                        }
+                    }
+                }
+            });
         }
+    }
+
+    private RecyclerView recyclerView;
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        this.recyclerView = recyclerView;
+        super.onAttachedToRecyclerView(recyclerView);
     }
 
     public class YouTubePlayItemHodler extends BaseHolder<YouTubePlayerItem> {

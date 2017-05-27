@@ -8,6 +8,7 @@
     >
 
     <LinearLayout
+        android:id="@+id/introduce_linear"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -23,6 +24,7 @@
         <jaydenxiao.com.expandabletextview.ExpandableTextView
             android:id="@+id/describe"
             android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:animDuration="200"
@@ -35,15 +37,5 @@
             app:maxCollapsedLines="5"
             app:textCollapse="@string/collapse"
             app:textExpand="@string/expand" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/player_ad_view"
-            android:layout_marginTop="8dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_alignParentBottom="true"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/player_ad" />
     </LinearLayout>
 </ScrollView>

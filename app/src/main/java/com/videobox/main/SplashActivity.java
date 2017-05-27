@@ -10,7 +10,8 @@ import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AnticipateOvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,7 +25,6 @@ import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.util.AdViewManager;
 
-import static android.os.Build.VERSION_CODES.M;
 import static com.videobox.util.AdViewManager.getInstances;
 
 /**
@@ -56,6 +56,10 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.splash_layout);
 
         getInstances().requestNewInterstitial();
@@ -65,6 +69,7 @@ public class SplashActivity extends BaseActivity {
         shimmerTitleTV.setTypeface(AppAplication.sCanaroExtraBold);
         signinBlurredIV = (ImageView) findViewById(R.id.signin_blurred_iv);
         coutTV = (TextView) findViewById(R.id.count_tv);
+
         findViewById(R.id.skip_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

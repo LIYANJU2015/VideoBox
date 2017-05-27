@@ -3,17 +3,23 @@ package com.videobox.util;
 
 import android.app.Activity;
 import android.content.Context;
+import android.view.View;
 
 import com.commonlibs.util.LogUtils;
+import com.commonlibs.util.ScreenUtils;
+
+import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.NativeExpressAdView;
 import com.videobox.AppAplication;
 import com.videobox.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 
 /**
  * Created by liyanju on 2017/5/25.
@@ -25,7 +31,7 @@ public class AdViewManager {
 
     public static final boolean IS_DEBUG = true;
 
-    private HashMap<Class, ArrayList<AdView>> mAdViewMaps = new HashMap();
+    private HashMap<Class, ArrayList<View>> mAdViewMaps = new HashMap();
 
     private InterstitialAd mInterstitialAd;
 
@@ -89,7 +95,7 @@ public class AdViewManager {
     }
 
 
-    public AdRequest createAdRequest() {
+    public static AdRequest createAdRequest() {
         AdRequest.Builder builder = new AdRequest.Builder();
         if (IS_DEBUG) {
             builder.addTestDevice(AdRequest.DEVICE_ID_EMULATOR);
@@ -97,17 +103,25 @@ public class AdViewManager {
         return builder.build();
     }
 
-    public synchronized void loadCurrShowAdView(Class clazz, AdView adView) {
-        ArrayList<AdView> adViews = mAdViewMaps.get(clazz);
+    public synchronized void loadCurrShowAdView(Class clazz, View adView) {
+        ArrayList<View> adViews = mAdViewMaps.get(clazz);
         if (adViews != null){
             LogUtils.v("loadCurrShowAdView2222");
-            adView.loadAd(createAdRequest());
+            if (adView instanceof AdView) {
+                ((AdView)adView).loadAd(createAdRequest());
+            } else if (adView instanceof NativeExpressAdView) {
+                ((NativeExpressAdView)adView).loadAd(createAdRequest());
+            }
             adViews.add(adView);
             return;
         }
 
         LogUtils.v("loadCurrShowAdView");
-        adView.loadAd(createAdRequest());
+        if (adView instanceof AdView) {
+            ((AdView)adView).loadAd(createAdRequest());
+        } else if (adView instanceof NativeExpressAdView) {
+            ((NativeExpressAdView)adView).loadAd(createAdRequest());
+        }
         adViews = new ArrayList<>();
         adViews.add(adView);
         mAdViewMaps.put(clazz, adViews);
@@ -122,8 +136,10 @@ public class AdViewManager {
             for (Class clazz : mAdViewMaps.keySet()) {
                 if (clazz == activity.getClass()) {
                     LogUtils.v("onDestroy " + activity.getClass());
-                    for (AdView adView : mAdViewMaps.get(clazz)) {
-                         adView.destroy();
+                    for (View adView : mAdViewMaps.get(clazz)) {
+                         if (adView instanceof AdView) {
+                             ((AdView) adView).destroy();
+                         }
                     }
                 }
             }
@@ -142,8 +158,10 @@ public class AdViewManager {
             for (Class clazz : mAdViewMaps.keySet()) {
                 if (clazz == activity.getClass()) {
                     LogUtils.v("onResume "+ activity.getClass());
-                    for (AdView adView : mAdViewMaps.get(clazz)) {
-                         adView.resume();
+                    for (View adView : mAdViewMaps.get(clazz)) {
+                         if (adView instanceof AdView) {
+                             ((AdView)adView).resume();
+                         }
                     }
                 }
             }
@@ -161,8 +179,10 @@ public class AdViewManager {
             for (Class clazz : mAdViewMaps.keySet()) {
                 if (clazz == activity.getClass()) {
                     LogUtils.v("onPause " + activity.getClass());
-                    for (AdView adView : mAdViewMaps.get(clazz)) {
-                        adView.pause();
+                    for (View adView : mAdViewMaps.get(clazz)) {
+                        if (adView instanceof AdView) {
+                            ((AdView)adView).pause();
+                        }
                     }
                 }
             }

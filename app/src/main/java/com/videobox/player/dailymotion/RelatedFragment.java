@@ -14,6 +14,7 @@ import com.commonlibs.rxerrorhandler.handler.ErrorHandleSubscriber;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
 import com.paginate.Paginate;
+import com.trello.rxlifecycle.android.FragmentEvent;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
@@ -117,7 +118,7 @@ public class RelatedFragment extends BaseFragment<Contract.DMPlayerHost> impleme
     private void initData() {
         mDaiyMotionModel.getVideoRelated(APIConstant.DailyMontion.sRelatedVideosMap,
                 mHost.getCurrentVid(), pagenum, true).subscribeOn(Schedulers.io())
-                .compose(this.<DMVideosPageBean>bindToLifecycle())
+                .compose(this.<DMVideosPageBean>bindUntilEvent(FragmentEvent.PAUSE))
                 .retryWhen(new RetryWithDelay(3, 2))
                 .doOnSubscribe(new Action0() {
                     @Override

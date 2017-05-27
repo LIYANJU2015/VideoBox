@@ -53,5 +53,9 @@
 
     <string name="admob_appid">ca-app-pub-9880857526519562~2250021730</string>
 
+    <!--原生广告-->
+    <string name="main_dailymotionplayer_ad2">ca-app-pub-9880857526519562/1497985334</string>
+    <string name="player_ad2">ca-app-pub-9880857526519562/7265317330</string>
+    <string name="main_youtube_ad2">ca-app-pub-9880857526519562/1218783732</string>
 
 </resources>

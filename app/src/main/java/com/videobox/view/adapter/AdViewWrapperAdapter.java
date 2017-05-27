@@ -2,6 +2,7 @@ package com.videobox.view.adapter;
 
 import android.support.v4.util.SparseArrayCompat;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.commonlibs.base.BaseHolder;
@@ -133,12 +134,12 @@ public class AdViewWrapperAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     public static class AdViewItem {
 
-        public AdViewItem(AdView adView, int postion) {
+        public AdViewItem(View adView, int postion) {
             this.adView = adView;
             this.postion = postion;
         }
 
-        public AdView adView;
+        public View adView;
 
         public int postion;
     }
