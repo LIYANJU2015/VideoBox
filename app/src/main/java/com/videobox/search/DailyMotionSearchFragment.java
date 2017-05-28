@@ -15,6 +15,8 @@ import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.UIThreadHelper;
 import com.paginate.Paginate;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.android.FragmentEvent;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
 import com.videobox.model.dailymotion.DaiyMotionModel;
@@ -125,7 +127,7 @@ public class DailyMotionSearchFragment extends BaseFragment implements Paginate.
         }
         mDaiyMotionModel.getSearchVideo(APIConstant.DailyMontion.sSearchVideosMap, mSearchStr, pagenum, true)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<DMVideosPageBean>bindToLifecycle())
+                .compose(this.<DMVideosPageBean>bindUntilEvent(FragmentEvent.PAUSE))
                 .retryWhen(new RetryWithDelay(3, 2))
                 .doOnSubscribe(new Action0() {
                     @Override

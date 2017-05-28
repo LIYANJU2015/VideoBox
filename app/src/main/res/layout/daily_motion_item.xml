@@ -6,8 +6,8 @@
     android:gravity="center"
     android:orientation="vertical"
     android:layout_margin="10dp"
-    app:rv_zoomDuration="100"
-    app:rv_rippleDuration="200">
+    app:rv_color="#F3F3F3"
+    >
 
     <FrameLayout
         android:id="@+id/framelayout"

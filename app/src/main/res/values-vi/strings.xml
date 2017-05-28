@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Video Box</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="netwokr_error">Lỗi mạng</string>
+    <string name="category_text">Phân loại</string>
+    <string name="home_text">Trang chủ</string>
+    
+    <string name="player_introduction">Giới thiệu.</string>
+    <string name="player_related">Liên quan đến</string>
+    <string name="search">Tìm kiếm</string>
+
+    <string name="collapse">Thu hẹp</string>
+    <string name="expand">Mở rộng</string>
+
+    <string name="error_player">Youtubeplayer đầu hóa, có lỗi xảy ra.(%1$s)</string>
+    <string name="voice_tips">Bây giờ, nói cho tôi đi.</string>
+    <string name="video">%s Video</string>
+
+    <string name="relativeTimeFutureDayOne">trong %d ngày</string>
+    <string name="relativeTimeFutureDayOther">trong %d ngày</string>
+    <string name="relativeTimeFutureHourOne">trong %d giờ</string>
+    <string name="relativeTimeFutureHourOther">trong %d giờ</string>
+    <string name="relativeTimeFutureMinuteOne">trong %d phút</string>
+    <string name="relativeTimeFutureMinuteOther">trong %d phút</string>
+    <string name="relativeTimeFutureMonthOne">trong %d tháng</string>
+    <string name="relativeTimeFutureMonthOther">trong %d tháng</string>
+    <string name="relativeTimeFutureWeekOne">trong %d tuần</string>
+    <string name="relativeTimeFutureWeekOther">trong %d tuần</string>
+    <string name="relativeTimeFutureYearOne">trong %d năm</string>
+    <string name="relativeTimeFutureYearOther">trong %d năm</string>
+    <string name="relativeTimeInAFewSeconds">trong một vài giây</string>
+    <string name="relativeTimeInDayOne">cách đây %d ngày</string>
+    <string name="relativeTimeInDayOther">cách đây %d ngày</string>
+    <string name="relativeTimeInHourOne">cách đây %d giờ</string>
+    <string name="relativeTimeInHourOther">cách đây %d giờ</string>
+    <string name="relativeTimeInMinuteOne">cách đây %d phút</string>
+    <string name="relativeTimeInMinuteOther">cách đây %d phút</string>
+    <string name="relativeTimeInMonthOne">cách đây %d tháng</string>
+    <string name="relativeTimeInMonthOther">cách đây %d tháng</string>
+    <string name="relativeTimeInWeekOne">cách đây %d tuần</string>
+    <string name="relativeTimeInWeekOther">cách đây %d tuần</string>
+    <string name="relativeTimeInYearOne">cách đây %d năm</string>
+    <string name="relativeTimeInYearOther">cách đây %d năm</string>
+    <string name="relativeTimeJustNow">ngay bây giờ</string>
+    
+    <string name="skip_text">Bỏ qua</string>
+
+</resources>

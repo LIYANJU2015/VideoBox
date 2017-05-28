@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Video Box</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="netwokr_error">ネットワークエラー</string>
+    <string name="category_text">カテゴリー</string>
+    <string name="home_text">ホーム</string>
+    
+    <string name="player_introduction">導入</string>
+    <string name="player_related">関連</string>
+    <string name="search">検索</string>
+
+    <string name="collapse">崩壊</string>
+    <string name="expand">拡大</string>
+
+    <string name="error_player">youtubeplayerを初期化して、エラーが発生しました (%1$s)</string>
+    <string name="voice_tips">今、言ってください</string>
+    <string name="video">%s ビデオ</string>
+
+    <string name="relativeTimeFutureDayOne">%d 日以内に</string>
+    <string name="relativeTimeFutureDayOther">%d 日以内に</string>
+    <string name="relativeTimeFutureHourOne">%d 時間以内に</string>
+    <string name="relativeTimeFutureHourOther">%d 時間以内に</string>
+    <string name="relativeTimeFutureMinuteOne">%d 分以内に</string>
+    <string name="relativeTimeFutureMinuteOther">%d 分以内に</string>
+    <string name="relativeTimeFutureMonthOne">%d か月以内に</string>
+    <string name="relativeTimeFutureMonthOther">%d か月以内に</string>
+    <string name="relativeTimeFutureWeekOne">%d 週以内に</string>
+    <string name="relativeTimeFutureWeekOther">%d 週以内に</string>
+    <string name="relativeTimeFutureYearOne">%d 年以内に</string>
+    <string name="relativeTimeFutureYearOther">%d 年以内に</string>
+    <string name="relativeTimeInAFewSeconds">数秒以内に</string>
+    <string name="relativeTimeInDayOne">%d日前</string>
+    <string name="relativeTimeInDayOther">%d日前</string>
+    <string name="relativeTimeInHourOne">%d時間前</string>
+    <string name="relativeTimeInHourOther">%d時間前</string>
+    <string name="relativeTimeInMinuteOne">%d分前</string>
+    <string name="relativeTimeInMinuteOther">%d分前</string>
+    <string name="relativeTimeInMonthOne">%dヶ月前</string>
+    <string name="relativeTimeInMonthOther">%dヶ月前</string>
+    <string name="relativeTimeInWeekOne">%d週間前</string>
+    <string name="relativeTimeInWeekOther">%d週間前</string>
+    <string name="relativeTimeInYearOne">%d年前</string>
+    <string name="relativeTimeInYearOther">%d年前</string>
+    <string name="relativeTimeJustNow">たった今</string>
+    
+    <string name="skip_text">スキップ</string>
+
+</resources>

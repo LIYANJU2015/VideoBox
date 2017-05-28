@@ -10,9 +10,11 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
+import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
 import com.commonlibs.util.ErrorHandleSubscriber2;
 import com.commonlibs.util.LogUtils;
+import com.trello.rxlifecycle.android.ActivityEvent;
 import com.videobox.util.AdViewManager;
 import com.videobox.AppAplication;
 import com.videobox.R;
@@ -177,7 +179,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         mYoutuBeModel.getYouTubeCategories(AppAplication.getCurrentRegions(),
                 APIConstant.YouTube.sCategoriesMap, update)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<YTBCategoriesBean>bindToLifecycle())
+                .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -195,11 +197,12 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                         }
                     }
                 })
+                .compose(this.<YTBCategoriesBean>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new ErrorHandleSubscriber2<YTBCategoriesBean>() {
                     @Override
                     public void onNext(YTBCategoriesBean dmChannelsBean) {
                         mYouTubeChannel.clear();
-
+                        LogUtils.v("requestYouTubeChannel onNext");
                         if (dmChannelsBean.items != null) {
                             mYouTubeChannel.addAll(dmChannelsBean.items);
                         }
@@ -213,7 +216,7 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
     private void requestDMChannel(boolean update) {
         mDaiyMotionModel.getChannels(APIConstant.DailyMontion.sChannelsMap, update, 1)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<DMChannelsBean>bindToLifecycle())
+                .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
@@ -231,11 +234,12 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
                         }
                     }
                 })
+                .compose(this.<DMChannelsBean>bindUntilEvent(ActivityEvent.DESTROY))
                 .subscribe(new ErrorHandleSubscriber2<DMChannelsBean>() {
                     @Override
                     public void onNext(DMChannelsBean dmChannelsBean) {
                         mDMChannel.clear();
-
+                        LogUtils.v("requestDMChannel onNext");
                         if (dmChannelsBean.list != null) {
                             mDMChannel.addAll(dmChannelsBean.list);
                         }

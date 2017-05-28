@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Video Box</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="netwokr_error">Netzwerk - Fehler</string>
+    <string name="category_text">Zu</string>
+    <string name="home_text">Homepage</string>
+    
+    <string name="player_introduction">Die</string>
+    <string name="player_related">über</string>
+    <string name="search">suche</string>
+
+    <string name="collapse">Schrumpfen</string>
+    <string name="expand">Erweiterte</string>
+
+    <string name="error_player">In den frühen youtubeplayer Weg, ein Fehler aufgetreten IST.(%1$s)</string>
+    <string name="voice_tips">Nun, SAG Ich!</string>
+    <string name="video">%s Video</string>
+
+    <string name="relativeTimeFutureDayOne">in %d Tag</string>
+    <string name="relativeTimeFutureDayOther">in %d Tagen</string>
+    <string name="relativeTimeFutureHourOne">in %d Stunde</string>
+    <string name="relativeTimeFutureHourOther">in %d Stunden</string>
+    <string name="relativeTimeFutureMinuteOne">in %d Minute</string>
+    <string name="relativeTimeFutureMinuteOther">in %d Minuten</string>
+    <string name="relativeTimeFutureMonthOne">in %d Monat</string>
+    <string name="relativeTimeFutureMonthOther">in %d Monaten</string>
+    <string name="relativeTimeFutureWeekOne">in %d Woche</string>
+    <string name="relativeTimeFutureWeekOther">in %d Wochen</string>
+    <string name="relativeTimeFutureYearOne">in %d Jahr</string>
+    <string name="relativeTimeFutureYearOther">in %d Jahren</string>
+    <string name="relativeTimeInAFewSeconds">in wenigen Sekunden</string>
+    <string name="relativeTimeInDayOne">vor %d Tag</string>
+    <string name="relativeTimeInDayOther">vor %d Tagen</string>
+    <string name="relativeTimeInHourOne">vor %d Stunde</string>
+    <string name="relativeTimeInHourOther">vor %d Stunden</string>
+    <string name="relativeTimeInMinuteOne">vor %d Minute</string>
+    <string name="relativeTimeInMinuteOther">vor %d Minuten</string>
+    <string name="relativeTimeInMonthOne">vor %d Monat</string>
+    <string name="relativeTimeInMonthOther">vor %d Monaten</string>
+    <string name="relativeTimeInWeekOne">vor %d Woche</string>
+    <string name="relativeTimeInWeekOther">vor %d Wochen</string>
+    <string name="relativeTimeInYearOne">vor %d Jahr</string>
+    <string name="relativeTimeInYearOther">vor %d Jahren</string>
+    <string name="relativeTimeJustNow">gerade</string>
+
+    <string name="skip_text">Skip</string>
+
+</resources>

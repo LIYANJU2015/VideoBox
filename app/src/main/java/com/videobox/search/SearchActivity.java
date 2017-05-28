@@ -115,7 +115,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         mSearchView.setOnQueryTextListener(this);
         mSearchView.setVoiceText(getString(R.string.voice_tips));
         mSearchView.setVersionMargins(SearchView.VERSION_MARGINS_TOOLBAR_SMALL);
-        mSearchView.setArrowOnly(true);
+        mSearchView.setArrowOnly(false);
         mSearchView.setOnMenuClickListener(new SearchView.OnMenuClickListener() {
             @Override
             public void onMenuClick() {
@@ -139,7 +139,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
                 mSearchAdapter = new SearchAdapter(mContext);
-                mSearchAdapter.setSuggestionsList(suggestionsList);
+                mSearchAdapter.getResultList().addAll(suggestionsList);
                 mSearchAdapter.setOnSearchItemClickListener(new SearchAdapter.OnSearchItemClickListener() {
 
                     @Override
@@ -150,6 +150,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
                         submitSearch(query);
                     }
                 });
+
                 mSearchView.setAdapter(mSearchAdapter);
                 mSearchView.open(true);
             }

@@ -147,7 +147,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
                 .doOnSubscribe(new Action0() {
                     @Override
                     public void call() {
-                        sWatchVideosMap.put("languages", getCurrentLanguage());
+                        //sWatchVideosMap.put("languages", getCurrentLanguage());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -173,7 +173,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
                                 }
                             }
                         }
-                        sWatchVideosMap.put("languages", getCurrentLanguage());
+                        //sWatchVideosMap.put("languages", getCurrentLanguage());
                     }
                 });
     }

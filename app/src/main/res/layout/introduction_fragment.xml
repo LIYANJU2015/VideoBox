@@ -19,11 +19,11 @@
             style="@style/content_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
              />
 
         <jaydenxiao.com.expandabletextview.ExpandableTextView
             android:id="@+id/describe"
-            android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

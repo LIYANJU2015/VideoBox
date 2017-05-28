@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Video Box</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="netwokr_error">ข้อผิดพลาดของเครือข่าย</string>
+    <string name="category_text">ประเภท</string>
+    <string name="home_text">ที่หน้าแรก</string>
+    
+    <string name="player_introduction">แนะนำ</string>
+    <string name="player_related">เกี่ยวกับ</string>
+    <string name="search">ค้นหา</string>
+
+    <string name="collapse">การหดตัว</string>
+    <string name="expand">ขยาย</string>
+
+    <string name="error_player">ในช่วงแรกของ youtubeplayer ข้อผิดพลาดเกิดขึ้น(%1$s)</string>
+    <string name="voice_tips">ตอนนี้บอกฉันมา</string>
+    <string name="video">%s วิดีโอ</string>
+
+    <string name="relativeTimeFutureDayOne">ใน %d วัน</string>
+    <string name="relativeTimeFutureDayOther">ใน %d วัน</string>
+    <string name="relativeTimeFutureHourOne">ใน %d ชั่วโมง</string>
+    <string name="relativeTimeFutureHourOther">ใน %d ชั่วโมง</string>
+    <string name="relativeTimeFutureMinuteOne">ใน %d นาที</string>
+    <string name="relativeTimeFutureMinuteOther">ใน %d นาที</string>
+    <string name="relativeTimeFutureMonthOne">ใน %d เดือน</string>
+    <string name="relativeTimeFutureMonthOther">ใน %d เดือน</string>
+    <string name="relativeTimeFutureWeekOne">ใน %d สัปดาห์</string>
+    <string name="relativeTimeFutureWeekOther">ใน %d สัปดาห์</string>
+    <string name="relativeTimeFutureYearOne">ใน %d ปี</string>
+    <string name="relativeTimeFutureYearOther">ใน %d ปี</string>
+    <string name="relativeTimeInAFewSeconds">ในไม่กี่วินาที</string>
+    <string name="relativeTimeInDayOne">%d วันที่ผ่าน</string>
+    <string name="relativeTimeInDayOther">%d วันที่ผ่านมา</string>
+    <string name="relativeTimeInHourOne">%d ชั่วโมงที่ผ่านมา</string>
+    <string name="relativeTimeInHourOther">%d ชั่วโมงที่ผ่านมา</string>
+    <string name="relativeTimeInMinuteOne">%d นาทีที่ผ่านมา</string>
+    <string name="relativeTimeInMinuteOther">%d นาทีที่ผ่านมา</string>
+    <string name="relativeTimeInMonthOne">%d เดือนที่ผ่านมา</string>
+    <string name="relativeTimeInMonthOther">%d เดือนที่ผ่านมา</string>
+    <string name="relativeTimeInWeekOne">%d สัปดาห์ที่ผ่านมา</string>
+    <string name="relativeTimeInWeekOther">%d สัปดาห์ที่ผ่านมา</string>
+    <string name="relativeTimeInYearOne">%d ปีที่ผ่านมา</string>
+    <string name="relativeTimeInYearOther">%d ปีที่ผ่านมา</string>
+    <string name="relativeTimeJustNow">เมื่อสักครู่นี้</string>
+    
+    <string name="skip_text">กระโดดข้าม</string>
+
+</resources>

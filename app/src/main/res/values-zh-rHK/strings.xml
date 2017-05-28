@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Video Box</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="netwokr_error">網絡錯誤</string>
+    <string name="category_text">類別</string>
+    <string name="home_text">主頁</string>
+    
+    <string name="player_introduction">介紹</string>
+    <string name="player_related">相關的</string>
+    <string name="search">蒐索</string>
+
+    <string name="collapse">崩潰</string>
+    <string name="expand">擴大</string>
+
+    <string name="error_player">youtubeplayer初期化了，發生了錯誤。(%1$s)</string>
+    <string name="voice_tips">現在，告訴我吧</string>
+    <string name="video">%s 視頻</string>
+
+    <string name="relativeTimeFutureDayOne">%d 天内</string>
+    <string name="relativeTimeFutureDayOther">%d 天内</string>
+    <string name="relativeTimeFutureHourOne">%d 个小时内</string>
+    <string name="relativeTimeFutureHourOther">%d 个小时内</string>
+    <string name="relativeTimeFutureMinuteOne">%d 分钟内</string>
+    <string name="relativeTimeFutureMinuteOther">%d 分钟内</string>
+    <string name="relativeTimeFutureMonthOne">%d 个月内</string>
+    <string name="relativeTimeFutureMonthOther">%d 个月内</string>
+    <string name="relativeTimeFutureWeekOne">%d 个星期内</string>
+    <string name="relativeTimeFutureWeekOther">%d 个星期内</string>
+    <string name="relativeTimeFutureYearOne">%d 年内</string>
+    <string name="relativeTimeFutureYearOther">%d 年内</string>
+    <string name="relativeTimeInAFewSeconds">几秒内</string>
+    <string name="relativeTimeInDayOne">%d天前</string>
+    <string name="relativeTimeInDayOther">%d天前</string>
+    <string name="relativeTimeInHourOne">%d小時前</string>
+    <string name="relativeTimeInHourOther">%d小時前</string>
+    <string name="relativeTimeInMinuteOne">%d分鐘前</string>
+    <string name="relativeTimeInMinuteOther">%d分鐘前</string>
+    <string name="relativeTimeInMonthOne">%d月前</string>
+    <string name="relativeTimeInMonthOther">%d月前</string>
+    <string name="relativeTimeInWeekOne">%d星期前</string>
+    <string name="relativeTimeInWeekOther">%d星期前</string>
+    <string name="relativeTimeInYearOne">%d年前</string>
+    <string name="relativeTimeInYearOther">%d年前</string>
+    <string name="relativeTimeJustNow">剛才</string>
+    
+    <string name="skip_text">跳過</string>
+
+</resources>

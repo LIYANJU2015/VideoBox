@@ -1,0 +1,50 @@
+<resources>
+    <string name="app_name">Video Box</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="netwokr_error">Ошибка сети</string>
+    <string name="category_text">категория</string>
+    <string name="home_text">Главная</string>
+    
+    <string name="player_introduction">Введение</string>
+    <string name="player_related">Связанный</string>
+    <string name="search">Поиск</string>
+
+    <string name="collapse">коллапс</string>
+    <string name="expand">расширять</string>
+
+    <string name="error_player">При инициализации YouTubePlayer произошла ошибка. (%1$s)</string>
+    <string name="voice_tips">Теперь скажите, пожалуйста,</string>
+    <string name="video">%s видео</string>
+
+    <string name="relativeTimeFutureDayOne">за %d день</string>
+    <string name="relativeTimeFutureDayOther">за %d дней</string>
+    <string name="relativeTimeFutureHourOne">за %d час</string>
+    <string name="relativeTimeFutureHourOther">за %d часов</string>
+    <string name="relativeTimeFutureMinuteOne">за %d минуту</string>
+    <string name="relativeTimeFutureMinuteOther">за %d минут</string>
+    <string name="relativeTimeFutureMonthOne">за %d месяц</string>
+    <string name="relativeTimeFutureMonthOther">за %d месяцев</string>
+    <string name="relativeTimeFutureWeekOne">за %d неделю</string>
+    <string name="relativeTimeFutureWeekOther">за %d недель</string>
+    <string name="relativeTimeFutureYearOne">за %d год</string>
+    <string name="relativeTimeFutureYearOther">за %d лет</string>
+    <string name="relativeTimeInAFewSeconds">за несколько секунд</string>
+    <string name="relativeTimeInDayOne">%d день назад</string>
+    <string name="relativeTimeInDayOther">%d дней назад</string>
+    <string name="relativeTimeInHourOne">%d час назад</string>
+    <string name="relativeTimeInHourOther">%d часов назад</string>
+    <string name="relativeTimeInMinuteOne">%d минута назад</string>
+    <string name="relativeTimeInMinuteOther">%d минут назад</string>
+    <string name="relativeTimeInMonthOne">%d месяц назад</string>
+    <string name="relativeTimeInMonthOther">%d месяцев назад</string>
+    <string name="relativeTimeInWeekOne">%d неделя назад</string>
+    <string name="relativeTimeInWeekOther">%d недель назад</string>
+    <string name="relativeTimeInYearOne">%d год назад</string>
+    <string name="relativeTimeInYearOther">%d лет назад</string>
+    <string name="relativeTimeJustNow">Только что</string>
+    
+    <string name="skip_text">ПРОПУСКАТЬ</string>
+
+
+</resources>

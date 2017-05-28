@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">Video Box</string>
+    <string name="drawer_open">drawer_open</string>
+    <string name="drawer_close">drawer_close</string>
+    <string name="netwokr_error">네트워크 오류</string>
+    <string name="category_text">분류</string>
+    <string name="home_text">홈 페이지</string>
+    
+    <string name="player_introduction">소개</string>
+    <string name="player_related">관련</string>
+    <string name="search">검색</string>
+
+    <string name="collapse">충돌</string>
+    <string name="expand">확대</string>
+
+    <string name="error_player">youtubeplayer 초기 녹아 중 오류가 발생했습니다.(%1$s)</string>
+    <string name="voice_tips">이제 말해줘</string>
+    <string name="video">%s 비디오</string>
+
+    <string name="relativeTimeFutureDayOne">%d일 내</string>
+    <string name="relativeTimeFutureDayOther">%d일 내</string>
+    <string name="relativeTimeFutureHourOne">%d시간 내</string>
+    <string name="relativeTimeFutureHourOther">%d시간 내</string>
+    <string name="relativeTimeFutureMinuteOne">%d분 내</string>
+    <string name="relativeTimeFutureMinuteOther">%d분 내</string>
+    <string name="relativeTimeFutureMonthOne">%d달 내</string>
+    <string name="relativeTimeFutureMonthOther">%d달 내</string>
+    <string name="relativeTimeFutureWeekOne">%d주 내</string>
+    <string name="relativeTimeFutureWeekOther">%d주 내</string>
+    <string name="relativeTimeFutureYearOne">%d년 내</string>
+    <string name="relativeTimeFutureYearOther">%d년 내</string>
+    <string name="relativeTimeInAFewSeconds">몇 초 내</string>
+    <string name="relativeTimeInDayOne">%d 일 전</string>
+    <string name="relativeTimeInDayOther">%d 일 전</string>
+    <string name="relativeTimeInHourOne">%d 시간 전</string>
+    <string name="relativeTimeInHourOther">%d 시간 전</string>
+    <string name="relativeTimeInMinuteOne">%d 분 전</string>
+    <string name="relativeTimeInMinuteOther">%d 분 전</string>
+    <string name="relativeTimeInMonthOne">%d 달 전</string>
+    <string name="relativeTimeInMonthOther">%d 달 전</string>
+    <string name="relativeTimeInWeekOne">%d 주 전</string>
+    <string name="relativeTimeInWeekOther">%d 주 전</string>
+    <string name="relativeTimeInYearOne">%d 년 전</string>
+    <string name="relativeTimeInYearOther">%d 년 전</string>
+    <string name="relativeTimeJustNow">지금 당장</string>
+    
+    <string name="skip_text">뛰어넘다</string>
+
+</resources>

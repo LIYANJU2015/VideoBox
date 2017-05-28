@@ -119,6 +119,16 @@ public class SplashActivity extends BaseActivity {
             public void onAnimationEnd(Animator animator) {
                 super.onAnimationEnd(animator);
                 signinBlurredIV.setVisibility(View.GONE);
+            }
+        });
+
+        ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(shimmerTitleTV, "alpha", 1f, 0f);
+        objectAnimator2.setDuration(1200);
+        objectAnimator2.addListener(new MyAnimatorListener(){
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                super.onAnimationEnd(animator);
+                shimmerTitleTV.setAlpha(1);
                 shimmer = new Shimmer();
                 shimmer.setRepeatCount(0)
                         .setDuration(1500)
@@ -136,7 +146,7 @@ public class SplashActivity extends BaseActivity {
         });
 
         animatorSet = new AnimatorSet();
-        animatorSet.playTogether(objectAnimator);
+        animatorSet.playTogether(objectAnimator, objectAnimator2);
         animatorSet.setStartDelay(500);
         animatorSet.start();
     }
