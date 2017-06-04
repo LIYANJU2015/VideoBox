@@ -59,7 +59,7 @@ public final class LogUtils {
     private static String          dir;// log存储目录
     private static ExecutorService executor;
 
-    private static boolean sLogSwitch       = true; // log总开关，默认开
+    private static boolean sLogSwitch       = false; // log总开关，默认开
     private static String  sGlobalTag       = null; // log标签
     private static boolean sTagIsSpace      = true; // log标签是否为空白
     private static boolean sLogHeadSwitch   = true; // log头部开关，默认开

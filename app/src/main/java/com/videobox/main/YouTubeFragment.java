@@ -99,7 +99,6 @@ public class YouTubeFragment extends FragmentPresenter<YouTubeDelegate>
 
         mYoutuBeModel.getMostPopularVideos(APIConstant.YouTube.sMostPopularVideos, pageToken, isEvictCache)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<YTBVideoPageBean>bindUntilEvent(FragmentEvent.PAUSE))
                 .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override

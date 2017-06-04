@@ -22,10 +22,13 @@
 
     <color name="youtube_color">#f11b19</color>
     <color name="dailymotion_color">#2f66db</color>
+    <color name="dailymotion_color2">#187ffd</color>
     <color name="colorOffWhite">#F3F3F3</color>
     <color name="colorDeepGray">#9B9B9B</color>
-    
+
     <color name="color_00000015">#26000000</color>
+    <color name="color_00000040">#40000000</color>
     <color name="color_ffffff15">#26FFFFFF</color>
+    <color name="color_444">#444</color>
 
 </resources>

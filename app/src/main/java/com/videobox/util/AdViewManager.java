@@ -29,7 +29,7 @@ public class AdViewManager {
 
     private static AdViewManager sAdViewManager;
 
-    public static final boolean IS_DEBUG = true;
+    public static final boolean IS_DEBUG = false;
 
     private HashMap<Class, ArrayList<View>> mAdViewMaps = new HashMap();
 

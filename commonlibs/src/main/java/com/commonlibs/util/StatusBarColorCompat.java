@@ -533,8 +533,10 @@ public class StatusBarColorCompat {
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     private static void setRootView(Activity activity) {
         ViewGroup rootView = (ViewGroup) ((ViewGroup) activity.findViewById(android.R.id.content)).getChildAt(0);
-        rootView.setFitsSystemWindows(true);
-        rootView.setClipToPadding(true);
+        if (rootView != null) {
+            rootView.setFitsSystemWindows(true);
+            rootView.setClipToPadding(true);
+        }
     }
 
     /**

@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.commonlibs.base.BaseActivity;
 import com.commonlibs.util.MyAnimatorListener;
 import com.commonlibs.util.UIThreadHelper;
+import com.commonlibs.util.Utils;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 import com.videobox.AppAplication;
@@ -34,10 +35,6 @@ import static com.videobox.util.AdViewManager.getInstances;
 public class SplashActivity extends BaseActivity {
 
     private CountDownTimer countDownTimer;
-
-    private ImageView signinBlurredIV;
-
-    private ImageView signiniv;
 
     private AnimatorSet animatorSet;
 
@@ -64,10 +61,8 @@ public class SplashActivity extends BaseActivity {
 
         getInstances().requestNewInterstitial();
 
-        signiniv = (ImageView) findViewById(R.id.signin_iv);
         shimmerTitleTV = (ShimmerTextView) findViewById(R.id.title);
         shimmerTitleTV.setTypeface(AppAplication.sCanaroExtraBold);
-        signinBlurredIV = (ImageView) findViewById(R.id.signin_blurred_iv);
         coutTV = (TextView) findViewById(R.id.count_tv);
 
         findViewById(R.id.skip_tv).setOnClickListener(new View.OnClickListener() {
@@ -77,10 +72,10 @@ public class SplashActivity extends BaseActivity {
             }
         });
 
-        UIThreadHelper.getInstance().runViewUIThread(signinBlurredIV, new Runnable() {
+        UIThreadHelper.getInstance().runViewUIThread(coutTV, new Runnable() {
             @Override
             public void run() {
-                startCountDownTimer(6 * 1000);
+                startCountDownTimer(8 * 1000);
                 startAnimation();
             }
         });
@@ -97,7 +92,9 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onFinish() {
                 coutTV.setText(String.valueOf(0));
-                AdViewManager.getInstances().interstitialAdShow();
+                if (AppAplication.isShowABC()) {
+                    AdViewManager.getInstances().interstitialAdShow();
+                }
                 finish();
             }
         };
@@ -111,17 +108,6 @@ public class SplashActivity extends BaseActivity {
     }
 
     private void startAnimation() {
-        ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(signinBlurredIV, "alpha", 1f, 0f);
-        objectAnimator.setInterpolator(new AnticipateOvershootInterpolator());
-        objectAnimator.setDuration(1200);
-        objectAnimator.addListener(new MyAnimatorListener() {
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                super.onAnimationEnd(animator);
-                signinBlurredIV.setVisibility(View.GONE);
-            }
-        });
-
         ObjectAnimator objectAnimator2 = ObjectAnimator.ofFloat(shimmerTitleTV, "alpha", 1f, 0f);
         objectAnimator2.setDuration(1200);
         objectAnimator2.addListener(new MyAnimatorListener(){
@@ -129,8 +115,10 @@ public class SplashActivity extends BaseActivity {
             public void onAnimationEnd(Animator animator) {
                 super.onAnimationEnd(animator);
                 shimmerTitleTV.setAlpha(1);
+                shimmerTitleTV.setTextColor(ContextCompat.getColor(SplashActivity.this,
+                        R.color.dailymotion_color2));
                 shimmer = new Shimmer();
-                shimmer.setRepeatCount(0)
+                shimmer.setRepeatCount(2)
                         .setDuration(1500)
                         .setStartDelay(300)
                         .setDirection(Shimmer.ANIMATION_DIRECTION_RTL)
@@ -140,13 +128,20 @@ public class SplashActivity extends BaseActivity {
                                 shimmerTitleTV.setTextColor(ContextCompat.getColor(mContext,
                                         R.color.material_white));
                             }
+
+                            @Override
+                            public void onAnimationRepeat(Animator animator) {
+                                super.onAnimationRepeat(animator);
+                                shimmerTitleTV.setTextColor(ContextCompat.getColor(mContext,
+                                        R.color.youtube_color));
+                            }
                         })
                         .start(shimmerTitleTV);
             }
         });
 
         animatorSet = new AnimatorSet();
-        animatorSet.playTogether(objectAnimator, objectAnimator2);
+        animatorSet.playTogether(objectAnimator2);
         animatorSet.setStartDelay(500);
         animatorSet.start();
     }

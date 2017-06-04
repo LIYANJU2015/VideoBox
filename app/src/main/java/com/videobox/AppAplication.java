@@ -77,8 +77,10 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         CrashReport.initCrashReport(getApplicationContext());
         spUtils = new SPUtils("video_box");
         initTypeface();
+
         initYouTubeRegions();
         initYouTubeLanguages();
+
         sRxErrorHandler = getAppComponent().rxErrorHandler();
 
         registerActivityLifecycleCallbacks(new MyActivityLifecycleCallbacks());
@@ -95,6 +97,18 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
 
         if (duration >= 1000 * 60 * 60 * 24 * 2) {
             spUtils.put("showedTime", System.currentTimeMillis());
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean isShowABC() {
+        if (spUtils.getLong("showadc", 0) == 0) {
+            spUtils.put("showadc", System.currentTimeMillis());
+            return false;
+        }
+        long duration = Math.abs(System.currentTimeMillis() - spUtils.getLong("showadc", 0));
+        if (duration > 1000 * 60 * 10) {
             return true;
         }
         return false;

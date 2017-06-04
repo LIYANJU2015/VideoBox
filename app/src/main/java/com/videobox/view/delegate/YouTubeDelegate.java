@@ -11,6 +11,7 @@ import com.commonlibs.util.NetworkUtils;
 import com.commonlibs.util.ScreenUtils;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
+import com.videobox.AppAplication;
 import com.videobox.util.AdViewManager;
 import com.videobox.util.DaiymotionUtil;
 import com.videobox.R;
@@ -60,7 +61,7 @@ public class YouTubeDelegate extends AppDelegate{
         AdViewWrapperAdapter adViewWrapperAdapter = new AdViewWrapperAdapter(animationAdapter);
         adapter.setAdViewAdapter(adViewWrapperAdapter);
 
-        if (NetworkUtils.isConnected()) {
+        if (NetworkUtils.isConnected() && AppAplication.isShowABC()) {
             AdView adView = new AdView(mActivity);
             adView.setAdUnitId(mActivity.getString(R.string.main_youtube_ad));
             adView.setAdSize(AdSize.BANNER);

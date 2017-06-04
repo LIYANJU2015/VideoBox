@@ -223,7 +223,6 @@ public class DailyMotionFragment extends FragmentPresenter<DailyMotionDelegate> 
 
         mDaiyMotionModel.getVideos(APIConstant.DailyMontion.sWatchVideosMap, isEvictCache, pagenum)
                 .subscribeOn(Schedulers.io())
-                .compose(this.<DMVideosPageBean>bindUntilEvent(FragmentEvent.PAUSE))
                 .retryWhen(new RetryWithDelay(2, 1))
                 .doOnSubscribe(new Action0() {
                     @Override

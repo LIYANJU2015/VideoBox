@@ -24,12 +24,12 @@ public class VideoBoxContentProvider extends BaseContentProvider{
 
     @Override
     public void onAddTableInfo(SparseArray<TableInfo> tableInfoArray) {
-        tableInfoArray.put(DMCHANNEL_CODE, new VideoBoxContract.DMChannels());
-        tableInfoArray.put(DMVIDEO_CODE, new VideoBoxContract.DMVideo());
-        tableInfoArray.put(CATEGORIES_CODE, new VideoBoxContract.YouTubeCategories());
-        tableInfoArray.put(LAUGUAGES_CODE, new VideoBoxContract.YouTubeLanguages());
-        tableInfoArray.put(REGIONS_CODE, new VideoBoxContract.YouTubeRgions());
-        tableInfoArray.put(VIDEO_CODE, new VideoBoxContract.YouTubeVideo());
+//        tableInfoArray.put(DMCHANNEL_CODE, new VideoBoxContract.DMChannels());
+//        tableInfoArray.put(DMVIDEO_CODE, new VideoBoxContract.DMVideo());
+//        tableInfoArray.put(CATEGORIES_CODE, new VideoBoxContract.YouTubeCategories());
+//        tableInfoArray.put(LAUGUAGES_CODE, new VideoBoxContract.YouTubeLanguages());
+//        tableInfoArray.put(REGIONS_CODE, new VideoBoxContract.YouTubeRgions());
+//        tableInfoArray.put(VIDEO_CODE, new VideoBoxContract.YouTubeVideo());
         tableInfoArray.put(SEARCH_HISTORY_CODE, new VideoBoxContract.SearchHistory());
         tableInfoArray.put(PLAYRECORD_CODE, new VideoBoxContract.PlayRecord());
     }

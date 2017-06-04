@@ -1,14 +1,19 @@
 package com.videobox.main;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
@@ -34,6 +39,8 @@ import java.util.ArrayList;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
+
+import static com.commonlibs.util.LogUtils.A;
 
 
 /**
@@ -127,23 +134,27 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         viewDelegate.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int postion, long l) {
-                if (mChannelType == DAILY_MOTION_TYPE) {
-                    DMChannelsBean.Channel channel = mDMChannel.get(postion);
-                    if (mIVideoListFragment != null) {
-                        mIVideoListFragment.showChannelVideoByID(channel.id);
-                        FirebaseAnalyticsUtil.of().logEventLeftMenuClick(" DM Channel name " + channel.name);
-                    }
-                } else {
-                    if (mYouTubeChannel.size() > postion) {
-                        YTBCategoriesBean.Categories categories = mYouTubeChannel.get(postion);
+                try {
+                    if (mChannelType == DAILY_MOTION_TYPE) {
+                        DMChannelsBean.Channel channel = mDMChannel.get(postion);
                         if (mIVideoListFragment != null) {
-                            mIVideoListFragment.showChannelVideoByID(categories.id);
-                            FirebaseAnalyticsUtil.of().logEventLeftMenuClick(" Youtube Channel name "
-                                    + categories.snippet.title);
+                            mIVideoListFragment.showChannelVideoByID(channel.id);
+                            FirebaseAnalyticsUtil.of().logEventLeftMenuClick(" DM Channel name " + channel.name);
+                        }
+                    } else {
+                        if (mYouTubeChannel.size() > postion) {
+                            YTBCategoriesBean.Categories categories = mYouTubeChannel.get(postion);
+                            if (mIVideoListFragment != null) {
+                                mIVideoListFragment.showChannelVideoByID(categories.id);
+                                FirebaseAnalyticsUtil.of().logEventLeftMenuClick(" Youtube Channel name "
+                                        + categories.snippet.title);
+                            }
                         }
                     }
+                    viewDelegate.drawerToggle();
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
-                viewDelegate.drawerToggle();
             }
         }, R.id.navdrawer);
 
@@ -173,6 +184,37 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         coordinatorTabLayout.getTabLayout().addOnTabSelectedListener(this);
 
         requestDMChannel(false);
+
+//        if (AppAplication.spUtils.getBoolean("Disclaimer", true)) {
+//            new MaterialDialog.Builder(this)
+//                    .title(R.string.dialog_title)
+//                    .content(R.string.dialog_cotent)
+//                    .positiveText(R.string.dialog_cancel)
+//                    .negativeText(R.string.dilaog_agress)
+//                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+//                        @Override
+//                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                            dialog.dismiss();
+//                            AppAplication.spUtils.put("Disclaimer", false);
+//                        }
+//                    })
+//                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+//                        @Override
+//                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+//                            dialog.dismiss();
+//                            MainActivity.this.finish();
+//                        }
+//                    })
+//                    .show().setOnKeyListener(new DialogInterface.OnKeyListener() {
+//                @Override
+//                public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
+//                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+//                        finish();
+//                    }
+//                    return false;
+//                }
+//            });
+//        }
     }
 
     private void requestYouTubeChannel(boolean update) {
