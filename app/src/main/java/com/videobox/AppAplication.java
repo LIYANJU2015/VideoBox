@@ -108,7 +108,7 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
             return false;
         }
         long duration = Math.abs(System.currentTimeMillis() - spUtils.getLong("showadc", 0));
-        if (duration > 1000 * 60 * 10) {
+        if (duration > 1000 * 60 * 9) {
             return true;
         }
         return false;

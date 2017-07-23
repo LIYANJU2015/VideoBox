@@ -46,6 +46,7 @@ public class SplashActivity extends BaseActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(0, android.R.anim.fade_out);
+        DownloadTubeRecomActivity.launch(mContext);
     }
 
     Shimmer shimmer;
@@ -92,9 +93,7 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onFinish() {
                 coutTV.setText(String.valueOf(0));
-                if (AppAplication.isShowABC()) {
-                    AdViewManager.getInstances().interstitialAdShow();
-                }
+                AdViewManager.getInstances().interstitialAdShow();
                 finish();
             }
         };

@@ -56,6 +56,13 @@
             <meta-data android:name="@string/isLaunchableActivity" android:value="true"/>
         </activity>
 
+        <activity android:name=".main.DownloadTubeRecomActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:theme="@style/AfterCallDialog.Theme"
+            />
+
         <meta-data
             android:name="BUGLY_APPID"
             android:value="93ea534848" />

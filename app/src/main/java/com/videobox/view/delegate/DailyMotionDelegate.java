@@ -64,7 +64,7 @@ public class DailyMotionDelegate extends AppDelegate {
         AdViewWrapperAdapter adViewWrapperAdapter = new AdViewWrapperAdapter(animationAdapter);
         adapter.setAdViewAdapter(adViewWrapperAdapter);
 
-        if (NetworkUtils.isConnected() && AppAplication.isShowABC()) {
+        if (NetworkUtils.isConnected()) {
             AdView adView = new AdView(mActivity);
             adView.setAdUnitId(mActivity.getString(R.string.main_dailymotionplayer_ad));
             adView.setAdSize(AdSize.BANNER);

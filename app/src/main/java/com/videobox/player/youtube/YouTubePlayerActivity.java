@@ -80,6 +80,15 @@ public class YouTubePlayerActivity extends YouTubeFailureRecoveryActivity implem
     private MaterialProgressBar playProgressBar;
 
     @Override
+    protected void onSaveInstanceState(Bundle bundle) {
+        try {
+            super.onSaveInstanceState(bundle);
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         StatusBarColorCompat.setColorNoTranslucent(YouTubePlayerActivity.this,
