@@ -46,7 +46,6 @@ public class SplashActivity extends BaseActivity {
     public void finish() {
         super.finish();
         overridePendingTransition(0, android.R.anim.fade_out);
-        DownloadTubeRecomActivity.launch(mContext);
     }
 
     Shimmer shimmer;
@@ -148,15 +147,19 @@ public class SplashActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (animatorSet != null) {
-            animatorSet.cancel();
-        }
+        try {
+            if (animatorSet != null) {
+                animatorSet.cancel();
+            }
 
-        if (shimmer != null) {
-            shimmer.cancel();
-        }
+            if (shimmer != null) {
+                shimmer.cancel();
+            }
 
-        stopCountDownTimer();
+            stopCountDownTimer();
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
     }
 
     public static void launch(Activity activity) {

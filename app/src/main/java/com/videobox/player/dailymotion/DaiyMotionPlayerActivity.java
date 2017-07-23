@@ -146,16 +146,20 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
     @Override
     public void onFullscreenchange(boolean fullscreen) {
         LogUtils.v("onFullscreenchange", " fullscreen " + fullscreen);
-        if (fullscreen) {
-            viewDelegate.get(R.id.dm_player_viewpager).setVisibility(View.GONE);
-            viewDelegate.get(R.id.dm_tabLayout).setVisibility(View.GONE);
+        try {
+            if (fullscreen) {
+                viewDelegate.get(R.id.dm_player_viewpager).setVisibility(View.GONE);
+                viewDelegate.get(R.id.dm_tabLayout).setVisibility(View.GONE);
 
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-        } else {
-            viewDelegate.get(R.id.dm_player_viewpager).setVisibility(View.VISIBLE);
-            viewDelegate.get(R.id.dm_tabLayout).setVisibility(View.VISIBLE);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            } else {
+                viewDelegate.get(R.id.dm_player_viewpager).setVisibility(View.VISIBLE);
+                viewDelegate.get(R.id.dm_tabLayout).setVisibility(View.VISIBLE);
 
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 

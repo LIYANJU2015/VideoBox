@@ -81,11 +81,15 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
 
     @Override
     public void onBackPressed() {
-        if (viewDelegate.mDrawerLayout != null && viewDelegate.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            viewDelegate.mDrawerLayout.closeDrawer(GravityCompat.START);
-        } else {
-            FirebaseAnalyticsUtil.of().logEventExitApp();
-            super.onBackPressed(); // finish
+        try {
+            if (viewDelegate.mDrawerLayout != null && viewDelegate.mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
+                viewDelegate.mDrawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                FirebaseAnalyticsUtil.of().logEventExitApp();
+                super.onBackPressed(); // finish
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
         }
     }
 

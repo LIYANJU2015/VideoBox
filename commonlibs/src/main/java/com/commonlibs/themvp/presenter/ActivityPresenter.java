@@ -82,7 +82,7 @@ public abstract class ActivityPresenter<T extends IDelegate> extends BaseActivit
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (viewDelegate.getOptionsMenuId() != 0) {
+        if (viewDelegate != null && viewDelegate.getOptionsMenuId() != 0) {
             getMenuInflater().inflate(viewDelegate.getOptionsMenuId(), menu);
         }
         return super.onCreateOptionsMenu(menu);
