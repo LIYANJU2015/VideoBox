@@ -6,9 +6,9 @@ android {
     defaultConfig {
         applicationId "com.apphome.somevideo"
         minSdkVersion 16
-        targetSdkVersion 22
-        versionCode 8
-        versionName "1.0.4"
+        targetSdkVersion 25
+        versionCode 10
+        versionName "1.0.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
