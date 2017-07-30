@@ -29,6 +29,7 @@ import com.videobox.model.dailymotion.entity.DMChannelsBean;
 import com.videobox.model.youtube.YouTuBeModel;
 import com.videobox.model.youtube.entity.YTBCategoriesBean;
 import com.videobox.search.SearchActivity;
+import com.videobox.util.DownloadTubeRecomUtils;
 import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.view.delegate.Contract;
 import com.videobox.view.delegate.MainViewDelegate;
@@ -124,6 +125,13 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
             SplashActivity.launch(this);
         }
         FirebaseAnalyticsUtil.of().logEventEnterApp();
+
+        if (AppAplication.spUtils.getBoolean("isShowDownloadTube", true)) {
+            AppAplication.spUtils.put("isShowDownloadTube", false);
+            if (!DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
+                DownloadTubeRecomUtils.showDownloadTubeRecomDialog(this);
+            }
+        }
     }
 
     public static final int SEARCH_CHANCEL = 1;

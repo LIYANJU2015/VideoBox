@@ -148,11 +148,13 @@ public class DaiyMotionPlayerActivity extends ActivityPresenter<DMPlayerDelegate
         LogUtils.v("onFullscreenchange", " fullscreen " + fullscreen);
         try {
             if (fullscreen) {
+                viewDelegate.setDownloadIconStatus(false);
                 viewDelegate.get(R.id.dm_player_viewpager).setVisibility(View.GONE);
                 viewDelegate.get(R.id.dm_tabLayout).setVisibility(View.GONE);
 
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
             } else {
+                viewDelegate.setDownloadIconStatus(true);
                 viewDelegate.get(R.id.dm_player_viewpager).setVisibility(View.VISIBLE);
                 viewDelegate.get(R.id.dm_tabLayout).setVisibility(View.VISIBLE);
 

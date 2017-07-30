@@ -21,9 +21,9 @@
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:layout_gravity="bottom"
-            app:mpb_useIntrinsicPadding="false"
             android:minHeight="2dp"
-            app:mpb_progressStyle="horizontal" />
+            app:mpb_progressStyle="horizontal"
+            app:mpb_useIntrinsicPadding="false" />
 
         <me.zhanghai.android.materialprogressbar.MaterialProgressBar
             android:id="@+id/dm_progressbar"
@@ -37,17 +37,31 @@
 
     <android.support.design.widget.TabLayout
         android:id="@+id/dm_tabLayout"
+        style="@style/TabLayoutStyle"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        style="@style/TabLayoutStyle"
         app:tabBackground="@color/color_1d1e20"
         app:tabIndicatorColor="@color/color_0d64d4"
         app:tabSelectedTextColor="@color/color_efeff0"
         app:tabTextColor="@color/color_818181" />
 
-    <android.support.v4.view.ViewPager
-        android:id="@+id/dm_player_viewpager"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/dm_player_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/dm_download_icon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp"
+            android:src="@drawable/browser_download_normal" />
+
+    </FrameLayout>
 
 </LinearLayout>

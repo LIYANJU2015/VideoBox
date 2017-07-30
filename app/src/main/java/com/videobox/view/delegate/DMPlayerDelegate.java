@@ -1,8 +1,12 @@
 package com.videobox.view.delegate;
 
+import android.animation.ObjectAnimator;
+import android.os.Handler;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.commonlibs.base.AdapterViewPager;
 import com.commonlibs.themvp.view.AppDelegate;
@@ -13,6 +17,7 @@ import com.dailymotion.websdk.DMWebVideoView;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.player.dailymotion.DaiyMotionPlayerActivity;
+import com.videobox.util.DownloadTubeRecomUtils;
 
 import me.zhanghai.android.materialprogressbar.IndeterminateHorizontalProgressDrawable;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
@@ -37,6 +42,10 @@ public class DMPlayerDelegate extends AppDelegate{
 
     private FrameLayout webviewContainer;
 
+    private ImageView mDmDownloadIcon;
+
+    private ObjectAnimator leftRightAnimator;
+
     @Override
     public int getRootLayoutId() {
         return R.layout.dm_player_layout;
@@ -60,6 +69,50 @@ public class DMPlayerDelegate extends AppDelegate{
 
         playProgressBar = get(R.id.play_progress);
         playProgressBar.setIndeterminateDrawable(new IndeterminateHorizontalProgressDrawable(mContext));
+
+        mDmDownloadIcon = get(R.id.dm_download_icon);
+        if (AppAplication.spUtils.getBoolean("isDmDownloadClick", false)
+                || DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
+            mDmDownloadIcon.setVisibility(View.INVISIBLE);
+        } else {
+            mDmDownloadIcon.setVisibility(View.VISIBLE);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        leftRightAnimator = DownloadTubeRecomUtils.leftRightShake(mDmDownloadIcon);
+                        leftRightAnimator.setRepeatCount(3);
+                        leftRightAnimator.start();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, 600);
+        }
+        mDmDownloadIcon.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                if (!DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
+                    AppAplication.spUtils.put("isDmDownloadClick", true);
+                    DownloadTubeRecomUtils.showDownloadTubeRecomDialog(playerActivity);
+                }
+            }
+        });
+    }
+
+    public void setDownloadIconStatus(boolean isShown) {
+        if (isShown) {
+            if (AppAplication.spUtils.getBoolean("isDmDownloadClick", false)
+                    || DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
+                return;
+            }
+            mDmDownloadIcon.setVisibility(View.VISIBLE);
+        } else {
+            if (leftRightAnimator != null && leftRightAnimator.isRunning()) {
+                leftRightAnimator.cancel();
+            }
+            mDmDownloadIcon.setVisibility(View.INVISIBLE);
+        }
     }
 
     public void setMaxProgress(int max) {
@@ -80,6 +133,10 @@ public class DMPlayerDelegate extends AppDelegate{
 
     public void destroyWebView() {
         try {
+            if (leftRightAnimator != null && leftRightAnimator.isRunning()) {
+                leftRightAnimator.cancel();
+            }
+
             webviewContainer.removeView(dmWebVideoView);
             dmWebVideoView.destroy();
         } catch (Throwable e) {

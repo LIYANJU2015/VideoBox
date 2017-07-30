@@ -49,6 +49,18 @@ public class FirebaseAnalyticsUtil {
         logEvent("dm_player_show", bundle);
     }
 
+    public void logEventClickDownloadTube(){
+        Bundle bundle = new Bundle();
+        bundle.putString("time", String.valueOf(TimeUtils.millis2Date(System.currentTimeMillis())));
+        logEvent("clickDownloadTube", bundle);
+    }
+
+    public void logEventShowDownloadTube(){
+        Bundle bundle = new Bundle();
+        bundle.putString("time", String.valueOf(TimeUtils.millis2Date(System.currentTimeMillis())));
+        logEvent("showDownloadTube", bundle);
+    }
+
     public void logEventDMPlayerClick(String value) {
         Bundle bundle = new Bundle();
         bundle.putString("time", String.valueOf(TimeUtils.millis2Date(System.currentTimeMillis())));
