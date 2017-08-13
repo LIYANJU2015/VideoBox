@@ -7,13 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.animation.OvershootInterpolator;
 
 import com.commonlibs.themvp.view.AppDelegate;
-import com.commonlibs.util.NetworkUtils;
-import com.commonlibs.util.Utils;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.videobox.AppAplication;
-import com.videobox.util.AdViewManager;
-import com.videobox.util.DaiymotionUtil;
 import com.videobox.R;
 import com.videobox.main.DailyMotionFragment;
 import com.videobox.view.adapter.AdViewWrapperAdapter;
@@ -64,17 +57,6 @@ public class DailyMotionDelegate extends AppDelegate {
         AdViewWrapperAdapter adViewWrapperAdapter = new AdViewWrapperAdapter(animationAdapter);
         adapter.setAdViewAdapter(adViewWrapperAdapter);
 
-        if (NetworkUtils.isConnected()) {
-            AdView adView = new AdView(mActivity);
-            adView.setAdUnitId(mActivity.getString(R.string.main_dailymotionplayer_ad));
-            adView.setAdSize(AdSize.BANNER);
-            adView.setLayoutParams(new RecyclerView.LayoutParams(RecyclerView.LayoutParams.MATCH_PARENT,
-                    RecyclerView.LayoutParams.WRAP_CONTENT));
-            AdViewWrapperAdapter.AdViewItem adViewItem = new AdViewWrapperAdapter.AdViewItem(adView, 1);
-            adViewWrapperAdapter.addAdView(DaiymotionUtil.MAIN_DM_AD_VIEWTYPE, adViewItem);
-
-            AdViewManager.getInstances().loadCurrShowAdView(mActivity.getClass(), adView);
-        }
 
         mRecyclerView.setAdapter(adViewWrapperAdapter);
     }

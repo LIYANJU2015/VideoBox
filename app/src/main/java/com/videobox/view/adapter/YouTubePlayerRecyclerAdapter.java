@@ -5,9 +5,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseBooleanArray;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -15,25 +13,14 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.util.LogUtils;
-import com.commonlibs.util.ScreenUtils;
-import com.commonlibs.util.SizeUtils;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.NativeExpressAdView;
-import com.google.android.gms.ads.VideoOptions;
-import com.videobox.AppAplication;
-import com.videobox.util.AdViewManager;
-import com.videobox.util.YouTubeUtil;
 import com.videobox.R;
 import com.videobox.model.bean.YouTubePlayerItem;
 import com.videobox.model.youtube.entity.YTBVideoPageBean;
+import com.videobox.util.YouTubeUtil;
 
 import java.util.List;
 
 import jaydenxiao.com.expandabletextview.ExpandableTextView;
-
-import static android.R.attr.data;
 
 /**
  * Created by liyanju on 2017/5/13.
@@ -150,7 +137,7 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
 
         private TextView titleTV;
         private ExpandableTextView introduceTV;
-        private AdView adView;
+
         private LinearLayout introduceLinear;
 
         public YouTubeIntroduceHodler(View itemView) {
@@ -159,21 +146,6 @@ public class YouTubePlayerRecyclerAdapter extends BaseRecyclerViewAdapter<YouTub
             introduceTV = (ExpandableTextView) itemView.findViewById(R.id.expand_text_view);
             introduceLinear = (LinearLayout)itemView.findViewById(R.id.introduce_linear);
 
-            if (AppAplication.isShowABC()) {
-                NativeExpressAdView adView = new NativeExpressAdView(mActivity);
-                adView.setAdUnitId(mActivity.getString(R.string.main_dailymotionplayer_ad2));
-
-                int adWidth = SizeUtils.px2dp(ScreenUtils.getScreenWidth() - SizeUtils.dp2px(40));
-
-                adView.setAdSize(new AdSize(adWidth, 100));
-                adView.setVideoOptions(new VideoOptions.Builder()
-                        .setStartMuted(true)
-                        .build());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(SizeUtils.dp2px(adWidth),
-                        SizeUtils.dp2px(100));
-                introduceLinear.addView(adView, params);
-                adView.loadAd(AdViewManager.createAdRequest());
-            }
         }
 
         @Override

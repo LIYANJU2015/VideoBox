@@ -70,34 +70,34 @@ public class DMPlayerDelegate extends AppDelegate{
         playProgressBar = get(R.id.play_progress);
         playProgressBar.setIndeterminateDrawable(new IndeterminateHorizontalProgressDrawable(mContext));
 
-        mDmDownloadIcon = get(R.id.dm_download_icon);
-        if (AppAplication.spUtils.getBoolean("isDmDownloadClick", false)
-                || DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
-            mDmDownloadIcon.setVisibility(View.INVISIBLE);
-        } else {
-            mDmDownloadIcon.setVisibility(View.VISIBLE);
-            new Handler().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        leftRightAnimator = DownloadTubeRecomUtils.leftRightShake(mDmDownloadIcon);
-                        leftRightAnimator.setRepeatCount(3);
-                        leftRightAnimator.start();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, 600);
-        }
-        mDmDownloadIcon.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View v) {
-                if (!DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
-                    AppAplication.spUtils.put("isDmDownloadClick", true);
-                    DownloadTubeRecomUtils.showDownloadTubeRecomDialog(playerActivity);
-                }
-            }
-        });
+//        mDmDownloadIcon = get(R.id.dm_download_icon);
+//        if (AppAplication.spUtils.getBoolean("isDmDownloadClick", false)
+//                || DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
+//            mDmDownloadIcon.setVisibility(View.INVISIBLE);
+//        } else {
+//            mDmDownloadIcon.setVisibility(View.VISIBLE);
+//            new Handler().postDelayed(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        leftRightAnimator = DownloadTubeRecomUtils.leftRightShake(mDmDownloadIcon);
+//                        leftRightAnimator.setRepeatCount(3);
+//                        leftRightAnimator.start();
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }, 600);
+//        }
+//        mDmDownloadIcon.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View v) {
+//                if (!DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
+//                    AppAplication.spUtils.put("isDmDownloadClick", true);
+//                    DownloadTubeRecomUtils.showDownloadTubeRecomDialog(playerActivity);
+//                }
+//            }
+//        });
     }
 
     public void setDownloadIconStatus(boolean isShown) {

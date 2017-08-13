@@ -22,12 +22,12 @@ public class MyActivityLifecycleCallbacks implements Application.ActivityLifecyc
 
     @Override
     public void onActivityResumed(Activity activity) {
-        AdViewManager.getInstances().onResume(activity);
+
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-        AdViewManager.getInstances().onPause(activity);
+
     }
 
     @Override
@@ -42,6 +42,6 @@ public class MyActivityLifecycleCallbacks implements Application.ActivityLifecyc
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-        AdViewManager.getInstances().onDestroy(activity);
+
     }
 }

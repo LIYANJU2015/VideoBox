@@ -12,21 +12,15 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.AnticipateOvershootInterpolator;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.commonlibs.base.BaseActivity;
 import com.commonlibs.util.MyAnimatorListener;
 import com.commonlibs.util.UIThreadHelper;
-import com.commonlibs.util.Utils;
 import com.romainpiel.shimmer.Shimmer;
 import com.romainpiel.shimmer.ShimmerTextView;
 import com.videobox.AppAplication;
 import com.videobox.R;
-import com.videobox.util.AdViewManager;
-
-import static com.videobox.util.AdViewManager.getInstances;
 
 /**
  * Created by liyanju on 2017/5/26.
@@ -59,8 +53,6 @@ public class SplashActivity extends BaseActivity {
 
         setContentView(R.layout.splash_layout);
 
-        getInstances().requestNewInterstitial();
-
         shimmerTitleTV = (ShimmerTextView) findViewById(R.id.title);
         shimmerTitleTV.setTypeface(AppAplication.sCanaroExtraBold);
         coutTV = (TextView) findViewById(R.id.count_tv);
@@ -92,7 +84,6 @@ public class SplashActivity extends BaseActivity {
             @Override
             public void onFinish() {
                 coutTV.setText(String.valueOf(0));
-                AdViewManager.getInstances().interstitialAdShow();
                 finish();
             }
         };

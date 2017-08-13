@@ -18,10 +18,8 @@ import com.commonlibs.util.LogUtils;
 import com.commonlibs.util.SPUtils;
 import com.commonlibs.util.SnackbarUtils;
 import com.commonlibs.util.Utils;
-import com.google.android.gms.ads.MobileAds;
 import com.tencent.bugly.crashreport.CrashReport;
 import com.videobox.main.MainActivity;
-import com.videobox.util.AdViewManager;
 import com.videobox.util.FirebaseAnalyticsUtil;
 import com.videobox.util.MyActivityLifecycleCallbacks;
 import com.videobox.model.APIConstant;
@@ -71,8 +69,6 @@ public class AppAplication extends BaseApplication implements ResponseErroListen
         sIsColdLaunch = true;
         Utils.init(getContext());
 
-        MobileAds.initialize(this, getResources().getString(R.string.admob_appid));
-        AdViewManager.getInstances().initInterstitialAd();
 
         CrashReport.initCrashReport(getApplicationContext());
         spUtils = new SPUtils("video_box");

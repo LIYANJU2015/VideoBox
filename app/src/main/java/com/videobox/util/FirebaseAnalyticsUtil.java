@@ -3,8 +3,6 @@ package com.videobox.util;
 import android.os.Bundle;
 
 import com.commonlibs.util.TimeUtils;
-import com.google.firebase.analytics.FirebaseAnalytics;
-import com.videobox.AppAplication;
 
 /**
  * Created by liyanju on 2017/5/26.
@@ -12,7 +10,7 @@ import com.videobox.AppAplication;
 
 public class FirebaseAnalyticsUtil {
 
-    private FirebaseAnalytics firebaseAnalytics;
+//    private FirebaseAnalytics firebaseAnalytics;
 
     private static FirebaseAnalyticsUtil sfirebaseAnalyticsUtil;
 
@@ -24,11 +22,11 @@ public class FirebaseAnalyticsUtil {
     }
 
     private FirebaseAnalyticsUtil() {
-        firebaseAnalytics = FirebaseAnalytics.getInstance(AppAplication.getContext());
+//        firebaseAnalytics = FirebaseAnalytics.getInstance(AppAplication.getContext());
     }
 
     public void logEvent(final String event, final Bundle bundle) {
-        firebaseAnalytics.logEvent(event, bundle);
+//        firebaseAnalytics.logEvent(event, bundle);
     }
 
     public void logEventEnterApp(){

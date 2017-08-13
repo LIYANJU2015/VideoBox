@@ -11,19 +11,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.commonlibs.base.BaseFragment;
-import com.commonlibs.util.ScreenUtils;
-import com.commonlibs.util.SizeUtils;
-import com.google.android.gms.ads.AdSize;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.NativeExpressAdView;
-import com.google.android.gms.ads.VideoOptions;
-import com.videobox.util.AdViewManager;
 import com.videobox.R;
 import com.videobox.view.delegate.Contract;
 
 import jaydenxiao.com.expandabletextview.ExpandableTextView;
-
-import static com.videobox.R.id.introduce_linear;
 
 /**
  * Created by liyanju on 2017/5/5.
@@ -52,15 +43,6 @@ public class IntroductionFragment extends BaseFragment<Contract.DMPlayerHost> {
 
         LinearLayout linearLayout = (LinearLayout)view.findViewById(R.id.introduce_linear);
 
-        NativeExpressAdView adView = new NativeExpressAdView(mActivity);
-        int adWidth = SizeUtils.px2dp(ScreenUtils.getScreenWidth() - SizeUtils.dp2px(40));
-        adView.setAdSize(new AdSize(adWidth, 320));
-        adView.setAdUnitId(mActivity.getString(R.string.player_ad2));
-        adView.setVideoOptions(new VideoOptions.Builder()
-                .setStartMuted(true)
-                .build());
-        linearLayout.addView(adView);
-        adView.loadAd(AdViewManager.createAdRequest());
 
 
         return view;

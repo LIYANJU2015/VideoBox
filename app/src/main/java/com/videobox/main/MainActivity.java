@@ -1,26 +1,19 @@
 package com.videobox.main;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.commonlibs.rxerrorhandler.core.RxErrorHandler;
 import com.commonlibs.rxerrorhandler.handler.RetryWithDelay;
 import com.commonlibs.themvp.presenter.ActivityPresenter;
 import com.commonlibs.util.ErrorHandleSubscriber2;
 import com.commonlibs.util.LogUtils;
 import com.trello.rxlifecycle.android.ActivityEvent;
-import com.videobox.util.AdViewManager;
 import com.videobox.AppAplication;
 import com.videobox.R;
 import com.videobox.model.APIConstant;
@@ -40,8 +33,6 @@ import java.util.ArrayList;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action0;
 import rx.schedulers.Schedulers;
-
-import static com.commonlibs.util.LogUtils.A;
 
 
 /**
@@ -126,12 +117,12 @@ public class MainActivity extends ActivityPresenter<MainViewDelegate> implements
         }
         FirebaseAnalyticsUtil.of().logEventEnterApp();
 
-        if (AppAplication.spUtils.getBoolean("isShowDownloadTube", true)) {
-            AppAplication.spUtils.put("isShowDownloadTube", false);
-            if (!DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
-                DownloadTubeRecomUtils.showDownloadTubeRecomDialog(this);
-            }
-        }
+//        if (AppAplication.spUtils.getBoolean("isShowDownloadTube", true)) {
+//            AppAplication.spUtils.put("isShowDownloadTube", false);
+//            if (!DownloadTubeRecomUtils.isInstallDownloadTube(mContext)) {
+//                DownloadTubeRecomUtils.showDownloadTubeRecomDialog(this);
+//            }
+//        }
     }
 
     public static final int SEARCH_CHANCEL = 1;

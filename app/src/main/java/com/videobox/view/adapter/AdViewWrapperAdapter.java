@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 import com.commonlibs.base.BaseHolder;
 import com.commonlibs.base.ViewHolder;
 import com.commonlibs.util.LogUtils;
-import com.google.android.gms.ads.AdView;
 
 
 /**
